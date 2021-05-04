@@ -1,0 +1,7 @@
+hta_establishment_widget.admin-settings:
+  path: 'admin/config/establishment-widget-settings'
+  defaults:
+    _form: '\Drupal\hta_establishment_widget\Form\HTAWidgetSettingsForm'
+    _title: 'Establishment widget setting'
+  requirements:
+    _permission: 'administer site configuration'

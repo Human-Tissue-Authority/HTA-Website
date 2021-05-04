@@ -1,0 +1,50 @@
+.subscribe-establishment {
+  background-color: $ghost-white;
+  position: relative;
+  pointer-events: all;
+  margin: 0 20px;
+
+  .section-title {
+    margin-top: 32px;
+  }
+
+  form {
+    margin-top: 25px;
+  }
+
+  @include media('>=tablet') {
+    margin: 0;
+  }
+}
+
+.subscribe-establishment__inner-wrapper {
+  padding: 20px;
+
+  @include media(">=desktop-wide") {
+    padding: 20px 30px 40px;
+  }
+}
+
+.subscribe-establishment__establishments-link {
+  display: flex;
+  align-items: center;
+
+  img {
+    height: 11px;
+    width: 15px;
+    transform: rotate(180deg);
+    margin-right: 20px;
+  }
+
+  a {
+    font-size: 1.8rem;
+    line-height: 2.3rem;
+    font-family: $font-secondary;
+    color: $brand-primary;
+    padding-bottom: 2px;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

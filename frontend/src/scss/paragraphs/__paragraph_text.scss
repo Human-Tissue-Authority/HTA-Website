@@ -1,0 +1,14 @@
+.paragraph-text {
+  padding: 22.5px 20px 22.5px;
+  
+  @include media('>=tablet') {
+    padding: 0;
+  }
+  @include media('<=tablet') {
+    padding: 0 20px;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}

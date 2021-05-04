@@ -1,0 +1,122 @@
+.paragraph-accordion {
+  background-color: $alice-blue;
+  overflow: hidden;
+  
+  &__wrapper {
+    margin: 0 auto;
+    max-width: 1440px;
+    @include media('<=tablet') {
+      padding: 0 20px;
+    }
+  }
+}
+
+.paragraph-accordion-content  {
+
+  &__summary {
+    padding: 5px 0 12.5px 0;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2.6rem;
+    color: $brand-primary;
+    position: relative;
+    font-family: $font-primary;
+    line-height: 1.5;
+
+    @include media('<=tablet') {
+      font-size: 2.2rem;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 1px;
+      width: 100%;
+      background-color: $white;
+      transition: 300ms;
+      z-index: 9;
+    }
+  }
+
+}
+
+.paragraph-accordion-content.expanded .paragraph-accordion-content__summary {
+  @include media('>=desktop') {
+    &:after {
+      width: 880px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+}
+
+.paragraph-accordion-nested {
+  margin: 0 auto;
+  transition: 100ms;
+  @include media('>=desktop') {
+    max-width: 880px;
+  }
+
+  &__summary {
+    padding: 12px 30px;
+    width: 100%;
+    border-bottom: 1px solid $white;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2.2rem;
+    color: $brand-primary;
+    position: relative;
+    font-family: $font-primary;
+    line-height: 1.5;
+
+    @include media('<=tablet') {
+      font-size: 1.8rem;
+    }
+    
+    @include media('<=425px') {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  &__details {
+    .webform__body {
+      padding: 0 30px 30px 30px;
+      margin: 0;
+      @include media('<=425px') {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+
+}
+
+.paragraph-accordion-nested.expanded {
+  position: relative;
+
+  @include media('>=425px') {
+    background-color: $white;
+  }
+  
+  @include media('<=425px') {
+    &:after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -50vw;
+      right: -50vw;
+      height: calc(100% + 1px);
+      background-color: $white;
+      z-index: -1;
+    }
+  }
+}

@@ -1,0 +1,56 @@
+.node-pagination {
+  max-width: $desktop-wide;
+  margin: 40px auto 0;
+}
+
+.node-pagination__control {
+  border-top: 1px solid #D9E8EE;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  position: relative;
+
+  &--next {
+    border-left: 1px solid #D9E8EE;
+  }
+
+  a {
+    font-family: $font-primary;
+    font-weight: 700;
+    color: $brand-primary;
+    font-size: 1.8rem;
+    line-height: 2.5rem;
+    transition: opacity .175s ease-in-out;
+
+    &:focus,
+    &:hover {
+      opacity: .7;
+    }
+
+    @include media('>tablet') {
+      font-size: 2.1rem;
+      line-height: 2.8rem;
+    }
+  }
+}
+
+.node-pagination__control-wrapper {
+  @include media('<=tablet') {
+    padding: 0 20px;
+  }
+}
+
+.node-pagination__title {
+  font-family: $font-secondary;
+  font-size: 1.4rem;
+  line-height: 2.3rem;
+  color: $jet;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  margin: 0;
+  padding-bottom: 0;
+
+  @include media('>tablet') {
+    font-size: 1.8rem;
+    line-height: 3rem;
+  }
+}

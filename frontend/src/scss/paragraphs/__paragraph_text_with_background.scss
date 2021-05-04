@@ -1,0 +1,122 @@
+.paragraph-text-with-background {
+  padding: 22.5px 20px;
+  max-width: $desktop-wide;
+  margin: 0 auto;
+
+  @include media('>tablet') {
+    padding: 22.5px 0;
+  }
+
+  .paragraph-text-with-background__inner-wrapper {
+    padding: 30px;
+    
+    @include media('>=tablet') {
+      padding: 50px 50px 50px 0;
+    }
+  }
+
+  .cms {
+    p {
+      font-family: $font-primary;
+
+      font-size: 2rem;
+      line-height: 3rem;
+
+      @include media('>=tablet') {
+        font-size: 2.6rem;
+        line-height: 3.8rem;
+      }
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      @include media('>=tablet') {
+        li {
+          width: 45%;
+          padding-right: 20px;
+        }
+      }
+    }
+  }
+
+  // background colors
+  &.background-color--alice-blue {
+    .paragraph-text-with-background__inner-wrapper {
+      background: $alice-blue;
+    }
+  }
+
+  &.background-color--honeydew {
+    .paragraph-text-with-background__inner-wrapper {
+      background: $honeydew;
+    }
+  }
+
+  &.background-color--linen {
+    .paragraph-text-with-background__inner-wrapper {
+      background: $linen;
+    }
+  }
+
+  &.background-color--queen-pink {
+    .paragraph-text-with-background__inner-wrapper {
+      background: $queen-pink;
+    }
+  }
+
+  &.background-color--ghost-white {
+    .paragraph-text-with-background__inner-wrapper {
+      background: $ghost-white;
+    }
+  }
+
+  // text colors
+  &.text-color--blue-violet .cms {
+    p,
+    ul,
+    li,
+    a {
+      color: $brand-primary;
+    }
+
+    li:before {
+      color: $brand-primary;
+      opacity: .5;
+    }
+  }
+
+  &.text-color--amaranth .cms {
+    p,
+    ul,
+    li,
+    a {
+      color: $amaranth;
+    }
+
+    li:before {
+      color: $amaranth;
+      opacity: .5;
+    }
+  }
+
+  &.text-color--jet .cms {
+    p,
+    ul,
+    li,
+    a {
+      color: $jet;
+    }
+
+    li:before {
+      color: $jet;
+      opacity: .5;
+    }
+  }
+}

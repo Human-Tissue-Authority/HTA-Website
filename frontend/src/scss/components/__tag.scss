@@ -1,0 +1,33 @@
+.tag {
+  font-family: $font-secondary;
+  color: $mid-grey;
+  font-size: 1.4rem;
+  line-height: 1.8rem;
+  text-align: center;
+  padding: 6px 12px 8px;
+  border-radius: 100px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  background-color: #F4F4F4;
+  display: block;
+  border: 1px solid #f4f4f4;
+
+  &--link {
+    cursor: pointer;
+    
+    &:hover,
+    &:active {
+      color: $brand-primary;
+    }
+
+    &:focus {
+      border-color: $brand-primary;
+    }
+  }
+
+  &--active {
+    background: $ghost-white;
+    border-color: $ghost-white;
+    color: $brand-primary;
+  }
+}

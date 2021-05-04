@@ -1,0 +1,12 @@
+// No point duplicating the entire bulma library in the repo: reference external
+// resources from the main SCSS folder.
+@import '../node_modules/destyle.css/destyle';
+@import '../node_modules/bulma/sass/utilities/_all';
+
+// [00] settings
+@import '../../../../src/scss/settings/_breakpoints';
+@import '../../../../src/scss/settings/_colors';
+
+// 	[05] Pages
+//	Single, specific and unique page styles (e.g. homepage)
+@import 'pages/sitemap/sitemap';

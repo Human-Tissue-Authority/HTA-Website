@@ -1,0 +1,86 @@
+body {
+  .optanon-alert-box-wrapper {
+    background-color: $amaranth !important;
+    font-size: 1.8rem;
+
+    .optanon-alert-box-body {
+      padding-top: 1.4rem;
+      padding-bottom: 1.4rem;
+
+      .banner-content {
+        font-size: 1.8rem;
+        font-family: $font-secondary;
+      }
+
+      @include media(">=desktop-wide") {
+        margin-right: 65rem;
+      }
+    }
+
+    .optanon-alert-box-button-container {
+      right: 5rem;
+      .optanon-alert-box-button.optanon-button-allow {
+        margin-top: -7px;
+      }
+    }
+
+    .optanon-alert-box-button.optanon-button-more {
+      right: 10rem;
+
+      .optanon-alert-box-button-middle {
+        .cookie-settings-button {
+          font-size: 1.6rem;
+          text-transform: uppercase;
+          border: none !important;
+          font-weight: normal;
+
+          &::before {
+            content: '';
+            background-image: url("../images/arrow-white.png");
+            left: -25px;
+            top: 3px;
+            width: 12px;
+            height: 9px;
+            background-size: 12px 9px;
+            background-repeat: no-repeat;
+            background-position: 0 50%;
+          }
+        }
+      }
+    }
+
+    .optanon-alert-box-button-middle.accept-cookie-container {
+      color: #4E1965;
+      background: none !important;
+      border: none !important;
+      padding: 0 !important;
+
+      button {
+        color: #4E1965 !important;
+        text-transform: uppercase;
+        background: #E7EAF4;
+        border: 1px solid #4E1965;
+        border-radius: 2.3rem;
+        height: 4.7rem;
+        width: 18rem;
+        text-align: center;
+        font-weight: normal;
+
+        &::before {
+          content: '';
+          background-image: url("../images/arrow-purple.png");
+          display: inline-block;
+          width: 17px;
+          height: 9px;
+          background-size: 12px 9px;
+          background-repeat: no-repeat;
+          background-position: 0 50%;
+        }
+      }
+    }
+
+    p {
+      font-size: 1.8rem;
+    }
+  }
+}

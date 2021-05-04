@@ -1,0 +1,97 @@
+.card-meeting {
+  background-color: #FFFFFF;
+  box-shadow: 0 15px 40px 0 rgba(78,25,101,0.15);
+  padding: 20px 40px;
+  transform: translateY(-40px);
+  
+  display: flex;
+  flex-direction: column;
+  
+  @include media('>tablet') {
+    flex-direction: row;
+    padding: 40px 70px;
+  }
+
+  p {
+    margin: 0;
+    font-family: $font-secondary;
+  }
+}
+
+.card-meeting__title-wrapper,
+.card-meeting__info-wrapper {
+  width: 100%;
+  
+  @include media('>tablet') {
+    width: 50%;
+  }
+}
+
+.card-meeting__title-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  
+  @include media('>tablet') {
+    margin-bottom: 0;
+    padding-right: 20px;
+  }
+
+  .button-wrapper {
+    margin-top: auto;
+  }
+}
+
+.card-meeting__title {
+  font-family: $font-primary;
+  color: $brand-primary;
+  font-size: 3.5rem;
+  line-height: 1.25em;
+  padding-bottom: 20px;
+  display: block;
+}
+
+.card-meeting__info-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+p.card-meeting__family {
+  width: 100%;
+  color: $jet;
+  font-size: 2rem;
+  line-height: 1.5em;
+  margin-bottom: 20px;
+  
+  @include media('>desktop') {
+    padding-top: 10px;
+  }
+}
+
+.card-meeting__info {
+  width: 50%;
+  padding-right: 20px;
+  margin-top: auto;
+
+  @include media('>tablet', '<desktop') {
+    width: 100%;
+
+    &--time {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.card-meeting__label {
+  font-size: 1.4rem;
+  letter-spacing: .88px;
+  line-height: 2rem;
+  text-transform: uppercase;
+  color: $jet;
+}
+
+.card-meeting__timestamp {
+  color: $brand-primary;
+  font-size: 2rem;
+  line-height: 1.5em;
+}

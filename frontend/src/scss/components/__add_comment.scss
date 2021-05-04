@@ -1,0 +1,34 @@
+.add-comment {
+  &__wrapper {
+    margin: 0 auto;
+    max-width: 1440px;
+  }
+
+  &__title {
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+  }
+
+  textarea {
+    min-height: 200px;
+  }
+
+  @include media(">tablet") {
+    .field--add-comment.field {
+      label {
+        font-size: 2rem;
+        line-height: 1.875rem;
+      }
+      &--consent {
+        margin-bottom: 15px;
+      }
+      &--privacy-policy {
+        margin: 20px 0 35px 0;
+      }
+    }
+    .field--recaptcha {
+      display: flex;
+      padding-left: 25px;
+    }
+  }
+}

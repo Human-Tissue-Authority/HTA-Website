@@ -1,0 +1,5 @@
+name: Big Blue Door Emergency Alert Message
+type: module
+description: Adds Emergency Alert Message functionality
+core_version_requirement: ^8.8.0 || ^9.0
+package: Custom

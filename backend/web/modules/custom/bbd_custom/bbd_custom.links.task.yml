@@ -1,0 +1,6 @@
+bbd_custom.visit_node:
+  route_name: bbd_custom.visit_node
+  title: 'View front end'
+  base_route: entity.node.canonical
+  weight: -10
+

@@ -1,0 +1,19 @@
+uuid: ed556bc9-04b5-4d07-9062-1ce8d9f82f9a
+langcode: en
+status: true
+dependencies: {  }
+id: dev
+label: Dev
+description: ''
+folder: ../config/sync-dev-split
+module:
+  kint: 0
+  devel: 0
+theme: {  }
+blacklist: {  }
+graylist:
+  - maillog.settings
+  - mailsystem.settings
+graylist_dependents: true
+graylist_skip_equal: true
+weight: 0

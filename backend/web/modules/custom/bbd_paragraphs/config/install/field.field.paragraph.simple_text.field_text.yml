@@ -1,0 +1,21 @@
+uuid: 91193517-62e7-4116-bf6a-dbead5c2ebd1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - paragraphs.paragraphs_type.simple_text
+  module:
+    - text
+id: paragraph.simple_text.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: simple_text
+label: Text
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

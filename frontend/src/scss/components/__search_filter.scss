@@ -1,0 +1,50 @@
+.search-filter {
+  padding-bottom: 20px;
+  max-width: $desktop-wide;
+  margin: 20px auto 0 ;
+  display: flex;
+
+  @include media('<tablet') {
+    margin-top: 0;
+  }
+
+  @include media('>=tablet', '<=desktop-wide') {
+    padding: 0 20px 20px;
+  }
+
+  & > div {
+    border: 1px solid $brand-primary;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    img {
+      margin-left: auto;
+    }
+
+    @include media('>=tablet') {
+      padding: 0 20px;
+    }
+  }
+
+  input {
+    border: 0;
+    width: 100%;
+    padding: 10px 20px 10px 0;
+    font-size: 1.6rem;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: $mid-grey;
+    }
+
+    @include media('>=tablet') {
+      font-size: 2rem;
+      line-height: 2.5rem;
+    }
+  }  
+}

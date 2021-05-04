@@ -1,0 +1,22 @@
+.paragraph-buttons {
+  padding: 22.5px 20px;
+
+  @include media('>tablet') {
+    &__wrapper {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+
+  .columns {
+    display: flex;
+  }
+  .button-wrapper {
+    margin-right: 1.3rem;
+    margin-bottom: 1.6rem;
+
+    @include media('>desktop-wide') {
+      margin-right: 2.3rem;
+    }
+  }
+}

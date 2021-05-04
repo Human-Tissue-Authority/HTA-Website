@@ -1,0 +1,31 @@
+.card-publication {
+  padding: 30px;
+  background: $white;
+  box-shadow: 0 15px 40px 0 rgba(78,25,101,0.15);
+  display: flex;
+  flex-direction: column;
+
+  &__image {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  &__date {
+    font-family: $font-secondary;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+    color: $mid-grey;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    color: $brand-primary;
+    font-weight: 700;
+    font-size: 2.1rem;
+    line-height: 2.8rem;
+    margin: 0 0 20px;
+    display: block;
+  }
+}

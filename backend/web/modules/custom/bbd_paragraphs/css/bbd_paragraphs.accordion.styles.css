@@ -1,0 +1,13 @@
+.expandable-content-section {
+  margin-bottom: 20px;
+}
+.expandable-content-section .field--name-field-title {
+  background: #e3e3e3;
+  font-family: "montserrat_bold",sans-serif;
+  font-weight: 400;
+  padding: 10px 10px 10px 20px;
+  overflow: hidden;
+}
+.expandable-content-section .field--name-field-description {
+  display: none;
+}

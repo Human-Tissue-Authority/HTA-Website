@@ -1,0 +1,6 @@
+services:
+  bbd_custom_commands.commands:
+    class: Drupal\bbd_custom\Commands\BBDCustomCommands
+    tags:
+      - { name: drush.command }
+

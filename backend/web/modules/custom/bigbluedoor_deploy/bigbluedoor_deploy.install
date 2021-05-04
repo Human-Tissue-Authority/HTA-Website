@@ -1,0 +1,360 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the bigbluedoor_deploy module
+ */
+
+use Drupal\Core\Database\Database;
+use Drupal\node\Entity\Node;
+use Drupal\paragraphs\Entity\Paragraph;
+
+/**
+ * Creates taxonomy terms.
+ */
+function bigbluedoor_deploy_install() {
+  // Activities For Satellites
+  $voc_name = 'activities_for_satellites';
+  $new_terms = [
+     'a_examination',
+     'a_removal',
+     'a_storage_body',
+     'a_storage_specimen',
+     'ha_distribution',
+     'ha_export',
+     'ha_import',
+     'ha_processing',
+     'ha_procurement',
+     'ha_storage',
+     'ha_storage_rm',
+     'ha_testing',
+     'pd_display',
+     'pd_storage',
+     'pm_examination',
+     'pm_removal',
+     'pm_storage',
+     'r_removal',
+     'r_storage'
+  ];
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+
+  // Activity
+  $voc_name = 'activity';
+  $new_terms = [
+    'Anatomical Examination',
+    'Distribution',
+    'Donation',
+    'Donor Characterisation',
+    'Export',
+    'Implantation of an organ',
+    'Import',
+    'Making arrangements to transport an organ',
+    'Making of a Post Mortem Examination',
+    'Organ Characterisation',
+    'Preservation of an organ',
+    'Processing',
+    'Procurement',
+    'Removal of Relevant Material',
+    'Retrieval of an organ',
+    'Storage',
+    'Storage of a Body or Relevant Material',
+    'Storage of an Anatomical Specimen',
+    'Storage of Relevant Material',
+    'Storage of Relevant Material (Human Tissue Act)',
+    'Testing',
+    'Transplantation - Application for a licence to cover',
+    'Use for Public Display',
+  ];
+
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+
+  // Area Covered
+  $voc_name = 'area_covered';
+  $new_terms = [
+    'AB',
+    'AL',
+    'B',
+    'BA',
+    'BB',
+    'BD',
+    'BH',
+    'BL',
+    'BN',
+    'BR',
+    'BS',
+    'BT',
+    'CA',
+    'CB',
+    'CF',
+    'CH',
+    'CM',
+    'CO',
+    'CR',
+    'CT',
+    'CV',
+    'CW',
+    'DA',
+    'DD',
+    'DE',
+    'DG',
+    'DH',
+    'DL',
+    'DN-3',
+    '-DN',
+    'DN1-13',
+    '-DN',
+    'DN14-39',
+    '-DN',
+    'DT',
+    'DY',
+    'E',
+    'EC',
+    'EH',
+    'EN',
+    'EX',
+    'FK',
+    'FY',
+    'G',
+    'GL',
+    'GU',
+    'HA',
+    'HD',
+    'HG',
+    'HP',
+    'HR',
+    'HU',
+    'HX',
+    'IG',
+    'IM',
+    'IP',
+    'IV',
+    'KA',
+    'KT',
+    'KW',
+    'KY',
+    'L',
+    'LA',
+    'LD',
+    'LE',
+    'LL',
+    'LN',
+    'LS',
+    'LU',
+    'M',
+    'ME',
+    'MK',
+    'ML',
+    'N',
+    'NE',
+    'NG',
+    'NN',
+    'NP',
+    'NR',
+    'NW',
+    'OL',
+    'OX',
+    'PA',
+    'PE',
+    'PH',
+    'PL',
+    'PO',
+    'PR',
+    'RG',
+    'RH',
+    'RM',
+    'S',
+    'SA',
+    'SE',
+    'SG',
+    'SK',
+    'SK-6',
+    'SK0',
+    'SK1-16',
+    'SK10',
+    'SK11',
+    'SK17',
+    'SK22',
+    'SK23',
+    'SK7',
+    'SL',
+    'SM',
+    'SN',
+    'SO',
+    'SP',
+    'SR',
+    'SS',
+    'ST',
+    'SW',
+    'SY',
+    'TA',
+    'TD',
+    'TF',
+    'TN',
+    'TQ',
+    'TR',
+    'TS',
+    'TW',
+    'UB',
+    'W',
+    'WA',
+    'WC',
+    'WD',
+    'WF',
+    'WN',
+    'WR',
+    'WS',
+    'WV',
+    'YO',
+    'ZE'
+  ];
+
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+
+  // Audience
+  $voc_name = 'audience';
+  $new_terms = [
+   'Professional',
+   'Public',
+  ];
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+
+  // Branch
+  $voc_name = 'branch';
+  $new_terms = [
+   'Board members',
+   'Executives',
+  ];
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+
+  // Family
+  $voc_name = 'family';
+  $new_terms = [
+   'Audit, Risk and Assurance',
+   'Authority meetings',
+   'Histopathology Working Group',
+   'Remumeration',
+   'Remumeration Committee',
+   'Stakeholder Group',
+   'Transplantation Advisory Group',
+  ];
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+
+  // Make An Enquiry
+  $voc_name = 'make_an_enquiry';
+  $new_terms = [
+    'General enquiry',
+    'Body donation enquiry',
+    'Make a change to my licence',
+    'Enquiry about an establishment',
+    'Submit an FOI or DPA request',
+    'Media or website enquiry',
+    'Transplant Team enquiry',
+    'HTA careers',
+    'EU Import/Coding Directive',
+  ];
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+
+
+  // Sector
+  $voc_name = 'sector';
+  $new_terms = [
+    'Anatomy',
+    'Bone marrow and PBSC approvals',
+    'Human application',
+    'Living organ donation approvals',
+    'ODT',
+    'Organ donation and transplantation',
+    'Post mortem',
+    'Public display',
+    'Removal',
+    'Research',
+    'Transplant approvals'
+  ];
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+
+
+  // Establishment Type
+  $voc_name = 'establishment_type';
+  $new_terms = [
+    'Advice note sector',
+     'Anatomy sector',
+     'bone marrow and PBSC donation sector',
+     'Form sector',
+     'HTA standards sector',
+     'Human application sector',
+     'living organ donation sector',
+     'Medical school',
+     'Organ donation and transplant sector',
+     'Policy sector',
+     'Position statement sector',
+     'Post mortem sector',
+     'Public display sector',
+     'Regulatory alert sector',
+     'Research sector'
+  ];
+
+  bigbluedoor_deploy_create_terms($voc_name, $new_terms);
+}
+
+/**
+ * Creates taxonomy terms.
+ */
+function bigbluedoor_deploy_update_8001() {
+  bigbluedoor_deploy_install();
+}
+
+/**
+ * Publish establishment nodes with HTA license status = Licence Suspended
+ */
+function bigbluedoor_deploy_update_8002() {
+  $query = Database::getConnection()->select('node__field_hta_licence_status', 'licence_status');
+  $query->fields('licence_status', ['entity_id']);
+  $query->condition('licence_status.field_hta_licence_status_value', 'Licence Suspended');
+  $query->condition('licence_status.bundle', 'establishment');
+  $nids = $query->execute()->fetchCol();
+
+  if ($nids) {
+    $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+    $nodes = $node_storage->loadMultiple($nids);
+    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+    $moderation_info = \Drupal::service('content_moderation.moderation_information');
+
+    if ($nodes) {
+      foreach ($nodes as $node) {
+        $is_moderated = $moderation_info->isModeratedEntity($node);
+        if ($is_moderated) {
+          $node->set('moderation_state', 'published');
+          $node->save();
+        }
+        else {
+          $node->setPublished();
+          $node->save();
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Removes establishment nodes with empty GUID value.
+ */
+function bigbluedoor_deploy_update_8003() {
+  $query = Database::getConnection()->select('node', 'node');
+  $query->leftjoin('node__field_guid', 'guid', 'guid.entity_id = node.nid');
+  $query->fields('node', ['nid']);
+  $query->fields('guid', ['field_guid_value']);
+  $query->condition('node.type', 'establishment');
+  $query->isNull('guid.field_guid_value');
+  $nids = $query->execute()->fetchAllKeyed();
+
+  if ($nids) {
+    $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+    $nodes = $node_storage->loadMultiple(array_keys($nids));
+
+    if ($nodes) {
+      foreach ($nodes as $node) {
+        $node->delete();
+      }
+    }
+  }
+}

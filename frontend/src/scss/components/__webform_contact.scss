@@ -1,0 +1,79 @@
+.webform-contact {
+  padding: 22.5px 20px;
+  max-width: $desktop-wide;
+  margin: 0 auto;
+}
+
+.webform__form-wrapper {
+  padding: 30px;
+  background: $alice-blue;
+
+  @include media('>=tablet') {
+    padding: 50px;
+  }
+
+  .field--message {
+    margin-bottom: 35px;
+
+    textarea {
+      height: 200px;
+    }
+  }
+}
+
+.field--contact-as {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  
+  @include media('>=desktop') {
+    flex-direction: row;
+  }
+
+  label {
+    display: block;
+    font-size: 2.6rem;
+    line-height: 3.8rem;
+    font-family: $font-primary;
+    color: $brand-primary;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  button {
+    margin-bottom: 10px;
+    width: 100%;
+    border: 1px solid $white;
+    background: $white;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background .2s ease-in-out, border-color .2s ease-in-out, box-shadow .2s ease-in-out;
+
+    font-size: 1.6rem;
+    line-height: 2rem;
+    font-family: $font-secondary;
+    text-transform: uppercase;
+    color: $brand-primary;
+
+    padding: 12.5px 22.5px 14.5px;
+
+    &:focus,
+    &:hover {
+      border-color: $brand-primary;
+      box-shadow: 0 2px 15px 0 rgba(78,25,101,0.5);
+    }
+
+    &.webform-contact__contact-as-button--active {
+      background: $ghost-white;
+      border-color: $brand-primary;
+
+      &:hover {
+        box-shadow: none;
+      }
+    }
+
+    @include media('>=desktop') {
+      width: calc(50% - 20px);
+    }
+  }
+}

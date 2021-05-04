@@ -1,0 +1,85 @@
+uuid: e2bf2362-3d65-48f3-ac1a-ab80dbb2fc6c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_accordion
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.accordion_wrapper
+  module:
+    - entity_reference_revisions
+id: paragraph.accordion_wrapper.field_accordion
+field_name: field_accordion
+entity_type: paragraph
+bundle: accordion_wrapper
+label: 'Accordion Item'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      accordion: accordion
+    target_bundles_drag_drop:
+      accordion:
+        enabled: true
+        weight: 20
+      accordion_wrapper:
+        weight: 21
+        enabled: false
+      additional_venue_info:
+        weight: 22
+        enabled: false
+      additional_venue_info_item:
+        weight: 23
+        enabled: false
+      card:
+        weight: 24
+        enabled: false
+      direction:
+        weight: 25
+        enabled: false
+      featured_blocks:
+        weight: 26
+        enabled: false
+      featured_blocks_card:
+        weight: 27
+        enabled: false
+      grid:
+        weight: 28
+        enabled: false
+      image_series:
+        weight: 29
+        enabled: false
+      learn_two_panels:
+        weight: 30
+        enabled: false
+      learn_two_panels_card:
+        weight: 31
+        enabled: false
+      letterbox:
+        weight: 32
+        enabled: false
+      plan_your_visit:
+        weight: 33
+        enabled: false
+      simple_text:
+        weight: 34
+        enabled: false
+      split_panel_text_image:
+        weight: 35
+        enabled: false
+      sponsorship:
+        weight: 36
+        enabled: false
+      spotlight:
+        weight: 37
+        enabled: false
+      vertical_card_display:
+        weight: 38
+        enabled: false
+field_type: entity_reference_revisions

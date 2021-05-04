@@ -1,0 +1,44 @@
+.comments {
+  background-color: $alice-blue;
+  padding: 0 0 50px 0;
+  background-color: $alice-blue;
+  padding: 0 0 50px 0;
+
+  @include media("<=tablet") {
+    padding: 0 20px 50px 20px;
+  }
+
+  &__list {
+    margin: 0 auto 0;
+    max-width: 1440px;
+    padding: 75px 0 0 0;
+  }
+
+  &__title {
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+
+    @include media('>=tablet') {
+      font-size: 2.6rem;
+    }
+  }
+
+  .comment-content {
+    margin-bottom: 15px;
+    padding-right: 0;
+    
+    @include media('>=tablet') {
+      padding-right: 40px;
+    }
+  }
+
+  .author {
+    color: $brand-primary;
+    margin-bottom: 42px;
+    font-size: 20px;
+  }
+
+  li:nth-last-of-type(1) .author {
+    margin-bottom: 67px;
+  }
+}

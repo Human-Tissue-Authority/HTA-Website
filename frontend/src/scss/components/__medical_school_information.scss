@@ -1,0 +1,35 @@
+.medical-school-information {
+  padding: 22.5px 20px;
+  max-width: $desktop-wide;
+  margin: 0 auto;
+
+  .columns {
+    margin-left: 0;
+  }
+  .further__information {
+    margin-left: -0.75rem;
+    a {
+      color: #4E1965;
+    }
+
+    span:after {
+      content: ',';
+    }
+
+    span:last-child:after {
+      content: none;
+    }
+  }
+  .info-column, .button-wrapper {
+    margin-left: -0.75rem;
+    width: 50%;
+  }
+  @include media('>desktop-wide') {
+    padding: 22.5px 0;
+  }
+
+  h2 {
+    margin-bottom: 34px;
+    margin-left: -0.75rem;
+  }
+}

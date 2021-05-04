@@ -1,0 +1,38 @@
+.paragraph-large-list {
+  padding: 22.5px 20px;
+  max-width: $desktop-wide;
+  margin: 0 auto;
+
+  .numbered-textarea-wrapper {
+    display: flex;
+
+    p {
+      color: $brand-primary;
+      font-family:  $font-primary;
+
+      @include media('>desktop-wide') {
+        font-size: 2.6rem;
+      }
+    }
+  }
+  .textarea-number {
+    box-sizing: border-box;
+    height: 47px;
+    width: 47px;
+    border: 1px solid $brand-primary;
+    border-radius: 23px;
+    display: block;
+    background-color: $ghost-white;
+    text-align: center;
+    padding-top: 7px;
+    margin-right: 2rem;
+
+    @include media('>desktop-wide') {
+      margin-left: 11.5rem;
+    }
+  }
+
+  p {
+    margin: 0 0 2.3rem;
+  }
+}

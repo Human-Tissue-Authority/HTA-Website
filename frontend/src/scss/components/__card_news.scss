@@ -1,0 +1,122 @@
+.card-news {
+  padding: 30px;
+  background: $white;
+  box-shadow: 0 15px 40px 0 rgba(78, 25, 101, 0.15);
+  display: flex;
+  flex-direction: column;
+
+  @include media(">=tablet") {
+    min-height: 400px;
+    height: 100%;
+  }
+
+  &__body {
+    font-family: $font-secondary;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    color: $jet;
+  }
+
+  .inline-tags {
+    margin-bottom: 20px;
+  }
+
+  &__button-custom-wrapper {
+    align-self: flex-end;
+  }
+
+  &__footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
+    align-items: center;
+    width: 100%;
+    p {
+      font-size: 1.4rem;
+      line-height: 2.4rem;
+      margin: 0;
+      text-align: right;
+      color: $mid-grey;
+      text-transform: capitalize;
+    }
+  }
+
+  &__date {
+    font-family: $font-secondary;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+    color: $mid-grey;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    color: $brand-primary;
+    font-weight: 700;
+    font-size: 2.1rem;
+    line-height: 2.8rem;
+    margin: 0 0 20px;
+    display: block;
+  }
+
+  &__node-info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    span {
+      font-size: 1.4rem;
+      line-height: 2.4rem;
+      margin: 0;
+      text-align: right;
+      color: $mid-grey;
+      text-transform: capitalize;
+    }
+  }
+
+  .is-hidden-desktop {
+    @include media(">tablet") {
+      display: none;
+    }
+  }
+
+  .is-hidden-mobile {
+    @include media("<tablet") {
+      display: none;
+    }
+  }
+}
+
+.card-news.big {
+  flex-direction: unset;
+  min-height: 200px;
+  
+  .card-news {
+    @include media(">=tablet") {
+      &__title {
+        font-weight: 400;
+        font-size: 3.5rem;
+        font-family: $font-primary;
+        margin-top: 10px;
+        line-height: 1.2;
+        padding-right: 50px;
+      }
+
+      &__footer {
+        justify-content: flex-end;
+      }
+
+      &__col {
+        display: flex;
+        flex-direction: column;
+      }
+
+      &__body {
+        font-size: 2rem;
+        line-height: 1.5;
+        padding-top: 28px;
+      }
+    }
+  }
+}

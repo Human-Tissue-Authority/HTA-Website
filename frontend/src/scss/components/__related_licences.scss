@@ -1,0 +1,17 @@
+.related-licences {
+  padding: 22.5px 20px;
+  max-width: $desktop-wide;
+  margin: 0 auto;
+
+  @include media('>tablet') {
+    padding: 22.5px 0;
+  }
+
+  &__title {
+    margin-bottom: 20px;
+  }
+
+  a {
+    cursor: pointer;
+  }
+}

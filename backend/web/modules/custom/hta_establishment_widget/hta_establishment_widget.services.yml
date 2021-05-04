@@ -1,0 +1,9 @@
+services:
+  hta_establishment_widget.widget_embed:
+    class: Drupal\hta_establishment_widget\EventSubscriber\WidgetEmbedSubscriber
+    tags:
+      - { name: event_subscriber }
+  hta_establishment_widget.commands:
+    class: Drupal\hta_establishment_widget\Commands\HtaEstablishmentCustomCommands
+    tags:
+      - { name: drush.command }

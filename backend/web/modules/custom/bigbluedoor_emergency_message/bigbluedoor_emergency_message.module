@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains bigbluedoor_emergency_message.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function bigbluedoor_emergency_message_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the bigbluedoor_emergency_message module.
+    case 'help.page.bigbluedoor_emergency_message':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Adds Emergency alert message functionality.') . '</p>';
+      return $output;
+
+    default:
+  }
+}

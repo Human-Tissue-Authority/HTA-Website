@@ -1,0 +1,76 @@
+name: BBD Custom Profile
+type: profile
+description: Profile creation in Drupal8.
+core: 8.x
+
+distribution:
+  name: BBD Custom Distribution.
+
+dependencies:
+  - admin_toolbar
+  - admin_toolbar_tools
+  - automated_cron
+  - back_to_top
+  - block
+  - block_content
+  - breakpoint
+  - captcha
+  - ckeditor
+  - ckeditor_youtube
+  - color
+  - config_split
+  - config
+  - contact
+  - contextual
+  - datetime
+  - devel
+  - dblog
+  - dynamic_page_cache
+  - editor
+  - entity_reference_revisions
+  - eu_cookie_compliance
+  - field
+  - field_ui
+  - file
+  - filter
+  - focal_point
+  - help
+  - health_check
+  - history
+  - image
+  - link
+  - linkit
+  - maillog
+  - masquerade
+  - menu_ui
+  - metatag
+  - node
+  - options
+  - page_cache
+  - paragraphs
+  - path
+  - pathauto
+  - quickedit
+  - redirect
+  - replicate
+  - rdf
+  - recaptcha
+  - search_api
+  - shortcut
+  - system
+  - taxonomy
+  - taxonomy_manager
+  - text
+  - token
+  - toolbar
+  - tour
+  - user
+  - views_ui
+  - menu_link_content
+  - views
+
+themes:
+  - stable
+  - classy
+  - bartik
+  - seven

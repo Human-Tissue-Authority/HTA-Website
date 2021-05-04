@@ -1,0 +1,39 @@
+.reset-button {
+  border-radius: 100px;
+  background: $alice-blue;
+  display: flex;
+  padding: 10px 20px 10px 12px;
+  align-items: center;
+  transition: all .2s ease-in-out;
+  cursor: pointer;
+  border: 1px solid $alice-blue;
+
+  @include media('<400px') {
+    padding: 12px 9px 12px 11px;
+  }
+
+  img {
+    width: 16px;
+    margin-right: 4px;
+  }
+
+  &:hover {
+    background: $ghost-white;
+    border-color: $ghost-white;
+  }
+
+  &:focus {
+    border-color: $brand-primary;
+  }
+
+  span {
+    font-family: $font-secondary;
+    font-size: 1.4rem;
+    color: $brand-primary;
+    padding-left: 8px;
+
+    @include media('<400px') {
+      display: none;
+    }
+  }
+}

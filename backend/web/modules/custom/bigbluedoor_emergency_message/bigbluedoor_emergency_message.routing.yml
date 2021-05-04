@@ -1,0 +1,7 @@
+bigbluedoor_emergency_message.admin_settings:
+  path: '/admin/config/system/emergency-notice'
+  defaults:
+    _form: '\Drupal\bigbluedoor_emergency_message\Form\EmergencyMessageConfigurationForm'
+    _title: 'Emergency alert message'
+  requirements:
+    _permission: 'administer site configuration'

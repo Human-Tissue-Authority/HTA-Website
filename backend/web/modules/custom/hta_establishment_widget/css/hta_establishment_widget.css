@@ -1,0 +1,23 @@
+.hta-establishment-widget-embed {
+  margin-bottom: 10px;
+}
+.hta-establishment-widget-embed .field-label {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.hta-establishment-widget-embed .embed-copy {
+  -webkit-border-radius: 5px 0 0 5px;
+  -moz-border-radius: 5px 0 0 5px;
+  border-radius: 5px 0 0 5px;
+  float: left;
+}
+.hta-establishment-widget-embed .form-type-textfield {
+  margin: 0;
+}
+.hta-establishment-widget-embed .embed-code {
+  font-size: 15px;
+  margin: 0;
+  padding: 16px 10px;
+  font-family: Arial,sans-serif;
+  height: 1.8em;
+}

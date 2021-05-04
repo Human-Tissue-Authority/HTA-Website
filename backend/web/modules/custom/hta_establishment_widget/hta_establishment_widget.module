@@ -1,0 +1,62 @@
+<?php
+/**
+ * @file
+ * Contains Main Custom module functionality.
+ */
+
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_view() for node entities.
+ */
+function hta_establishment_widget_node_view(array &$build, EntityInterface $node, EntityViewDisplayInterface $display, $view_mode) {
+  if ($node->getType() == 'establishment_widget' && $view_mode == 'full') {
+    $form['#attached']['library'][] = 'hta_establishment_widget/hta_establishment_widget.widget_functionality';
+
+    $form['hta_establishment_widget_embed_copy'] = [
+      '#type' => 'button',
+      '#title' => t('Establishment widget embed code:'),
+      '#value' => t('Copy'),
+      '#attributes' => [
+        'class' => [
+          'embed-copy'
+        ],
+      ],
+    ];
+
+    $frontend_base_url = \Drupal::config('bbd_custom.settings')->get('frontend_url');
+    $form['hta_establishment_widget_embed_code'] = array(
+      '#type' => 'textfield',
+      '#value' => '<iframe frameborder="0" height="150" width="300" src="' . $frontend_base_url . 'establishments/widget/' . $node->id() . '/"></iframe>',
+      '#attributes' => [
+        'class' => [
+          'embed-code'
+        ],
+      ],
+    );
+
+
+    $build['hta_establishment_widget_embed_form'] = [
+      '#type' => 'container',
+      '#weight' => -50,
+      '#attributes' => [
+        'class' => [
+          'hta-establishment-widget-embed',
+          'clearfix',
+        ],
+      ],
+      0 => [
+        '#type' => 'html_tag',
+        '#tag' => 'div',
+        '#value' => t('Establishment widget embed:'),
+        '#attributes' => [
+          'class' => [
+            'field-label',
+          ],
+        ],
+      ],
+      1 => $form
+    ];
+  }
+}

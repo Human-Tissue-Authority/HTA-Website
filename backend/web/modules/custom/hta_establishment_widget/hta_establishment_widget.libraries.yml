@@ -1,0 +1,9 @@
+hta_establishment_widget.widget_functionality:
+  version: 1.x
+  css:
+    theme:
+      css/hta_establishment_widget.css: {}
+  js:
+    js/hta_establishment_widget.js: {}
+  dependencies:
+    - core/jquery

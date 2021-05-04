@@ -1,0 +1,12 @@
+bbd_custom.event_form:
+  version: 1.x
+  js:
+    js/bbd_custom.js: {}
+  dependencies:
+    - core/jquery
+admin:
+  version: 1.x
+  css:
+    theme:
+      css/admin.css: {}
+

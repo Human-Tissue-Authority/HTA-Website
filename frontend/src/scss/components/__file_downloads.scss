@@ -1,0 +1,13 @@
+.file-download-group {
+  padding: 22.5px 20px;
+  margin: 0 auto;
+  max-width: $desktop-wide;
+  
+  @include media('>tablet') {
+    padding: 0;
+  }
+
+  .section-title {
+    margin-bottom: 20px;
+  }
+}

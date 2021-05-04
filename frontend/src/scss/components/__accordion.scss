@@ -1,0 +1,23 @@
+.accordion {
+  &__arrow-wrapper {
+    width: 46px;
+    height: 46px;
+    border: 1px solid $brand-primary;
+    background-color: $white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  &__arrow {
+    height: 15px;
+    width: 10px;
+    transform-origin: center;
+  }
+}
+
+.print-view {
+  display: none;
+}

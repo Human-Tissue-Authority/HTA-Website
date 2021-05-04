@@ -1,0 +1,16 @@
+.current-vacancy-listing {
+    margin-top: 30px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: $alice-blue;
+  
+    @include media('<tablet') {
+      margin-top: 0;
+    }
+  }
+.current-vacancy-results {
+    transform: none;
+    margin-top: 0;
+    padding: 56px 0 59px 0;
+}

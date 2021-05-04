@@ -1,0 +1,356 @@
+.footer {
+  background-color: $brand-primary;
+  width: 100%;
+  padding: 2rem;
+
+  .footer__wrapper {
+    max-width: 1440px;
+    margin: 0 auto;
+
+    & > .footer__section {
+      width: 100%;
+    }
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    font-family: $font-secondary;
+    font-weight: normal;
+    color: $white;
+
+    a {
+      color: $white;
+      text-decoration: underline;
+    }
+  }
+
+  .footer__section {
+    border-bottom: 1px solid $amaranth;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+
+    .newsletter {
+      h2 {
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+      }
+
+      .newsletter__intro {
+        font-size: 1.4rem;
+        color: $blue;
+        margin-bottom: 1.9rem;
+      }
+
+      form {
+        position: relative;
+        margin-bottom: 2.9rem;
+
+        .newsletter__email {
+          border-radius: 18px;
+          height: 35px;
+          width: 100%;
+          font-size: 1.8rem;
+          line-height: 2.1rem;
+          padding: 0 90px 0 15px;
+          color: #585858;
+          border: 0;
+        }
+
+        .button__wrapper {
+          position: absolute;
+          right: 0;
+          top: 0;
+
+          img {
+            position: absolute;
+            z-index: 1;
+            right: 93px;
+            top: 20px;
+          }
+        }
+
+        .button {
+          position: absolute;
+          right: 0;
+          top: 0;
+          cursor: pointer;
+          box-sizing: border-box;
+          height: 35px;
+          width: 90px;
+          border: 1px solid $ghost-white;
+          border-radius: 18px;
+          background-color: $amaranth;
+          color: $ghost-white;
+          text-transform: uppercase;
+          font-size: 1.4rem;
+          padding: 0;
+          text-align: center;
+          display: block;
+          transition: background .2s ease-in-out;
+
+          &:focus,
+          &:hover {
+            background: #791B4A;
+          }
+        }
+
+        .user__type {
+          display: none;
+        }
+      }
+    }
+
+    &:last-child {
+      border: none;
+      margin-bottom: 0;
+      padding-bottom: 1rem;
+    }
+  }
+
+  .social__links {
+    h2 {
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    ul {
+      padding-top: 13px;
+
+      li {
+        display: inline-block;
+        width: 50px;
+      }
+
+      a {
+        display: block;
+      }
+    }
+  }
+
+  .twitter__feed {
+    h2 {
+      margin-bottom: .5em;
+
+      img {
+        margin-right: 10px;
+      }
+
+      a {
+        padding: 8px;
+        transition: background .2s ease-in-out;
+
+        &:hover {
+          background: #602E76;
+        }
+      }
+    }
+
+    li {
+      margin-bottom: 1rem;
+
+      a {
+        color: $blue;
+        word-break: break-all;
+      }
+
+      .tweet__content {
+        font-size: 1.6rem;
+        color: $blue;
+        margin: 0 0 1rem;
+        p {
+          font-size: 1.6rem;
+          color: $blue;
+        }
+
+        a {
+          color: $white;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .tweet__date {
+        font-size: 1.4rem;
+        color: $white;
+      }
+    }
+  }
+}
+
+.footer__nav ul {
+  li {
+    display: inline-block;
+    margin-right: 20px;
+
+    a {
+      color: $blue;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      text-decoration: underline;
+      padding: 8px;
+      transition: background .2s ease-in-out;
+
+      &:hover {
+        background: #602E76;
+      }
+    }
+    
+    .optanon-show-settings-left, .optanon-show-settings-right, .optanon-show-settings-middle {
+      background: none !important;
+      height: auto !important;
+      border: none !important;
+      float: none;
+
+      .optanon-show-settings {
+        margin: 0 !important;
+        font-weight: normal !important;
+        color: #8db9ca !important;
+      }
+    }
+  }
+}
+
+@include media('>=tablet') {
+  .footer {
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    .footer__section {
+      margin-top: 3.4rem;
+      margin-bottom: 3.4rem;
+      display: flex;
+
+      .newsletter {
+        flex-basis: 85%;
+        padding-right: 20px;
+
+        .newsletter__intro {
+          font-size: 1.6rem;
+          color: $blue;
+          display: inline-block;
+          width: 60%;
+          padding-right: 20px;
+        }
+
+        form {
+          display: inline-block;
+          width: 40%;
+          margin-left: -4px;
+          vertical-align: top;
+          position: relative;
+          margin-bottom: 0;
+        }
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .social__links {
+      flex-basis: 15%;
+
+      ul {
+        padding-top: 10px;
+
+        li {
+          margin-left: 10px;
+          width: auto;
+
+          &:first-child {
+            margin-left: 0;
+          }
+        }
+      }
+    }
+
+    .twitter__feed {
+      li {
+        display: inline-block;
+        vertical-align: top;
+        width: 33.3333%;
+        padding-left: 2rem;
+        margin-bottom: 1rem;
+
+        &:first-child {
+          padding-left: 0;
+        }
+      }
+    }
+  }
+
+  .footer__nav ul {
+    li {
+      margin-right: 50px;
+
+      a {
+        font-size: 1.4rem;
+      }
+    }
+  }
+}
+
+@include media('>=desktop-wide') {
+  .footer {
+    .footer__wrapper {
+      .footer__section {
+        padding-bottom: 3.4rem;
+      }
+      .social__links {
+        ul {
+          padding-top: 30px;
+
+          li {
+            margin-left: 15px;
+
+            &:first-child {
+              margin-left: 0;
+            }
+          }
+        }
+      }
+      .newsletter {
+        form {
+          .newsletter__email {
+            border-radius: 23px;
+            height: 46px;
+            padding: 0 125px 0 20px;
+          }
+
+          .button {
+            height: 46px;
+            width: 125px;
+            border-radius: 23px;
+            font-size: 1.6rem;
+            display: block;
+          }
+
+          .user__type {
+            display: block;
+
+            input {
+              display: inline-block;
+              width: 15px;
+              height: 15px;
+              vertical-align: top;
+              margin: 2px 9px 0 0;
+            }
+
+            div {
+              display: inline-block;
+              margin: 13px 6px 0 20px;
+
+              label {
+                color: $blue;
+                font-size: 1.6rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+bbd_custom.hta_establishments_notification_settings:
+  path: 'admin/config/establishments-notification-settings'
+  defaults:
+    _form: '\Drupal\bbd_custom\Form\HTANotificationSettingsForm'
+    _title: 'Establishment notifications setting'
+  requirements:
+    _permission: 'administer site configuration'
+bbd_custom.hta_cookie_banner_settings:
+  path: 'admin/config/custom-settings/cookie-banner'
+  defaults:
+    _form: '\Drupal\bbd_custom\Form\HTACookieBannerSettingsForm'
+    _title: 'HTA Cookie Banner'
+  requirements:
+    _permission: 'administer site configuration'
+bbd_custom.hta_comments_notification_settings:
+  path: 'admin/config/comments-notification-settings'
+  defaults:
+    _form: '\Drupal\bbd_custom\Form\HTACommentsSettingsForm'
+    _title: 'Comments notifications setting'
+  requirements:
+    _permission: 'administer site configuration'
+bbd_custom.hta_blog_notification_settings:
+  path: 'admin/config/blog-notification-settings'
+  defaults:
+    _form: '\Drupal\bbd_custom\Form\HTABlogSettingsForm'
+    _title: 'Blog notifications setting'
+  requirements:
+    _permission: 'administer site configuration'
+bbd_custom.visit_node:
+  path: '/node/{node}/visit'
+  defaults:
+    _controller: '\Drupal\bbd_custom\Controller\VisitNode::redirectFrontend'
+    _title: 'View front end'
+  requirements:
+    _permission: 'administer content'
+  options:
+    parameters:
+      node:
+        type: entity:node
+

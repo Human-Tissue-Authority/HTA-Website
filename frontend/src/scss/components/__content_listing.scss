@@ -1,0 +1,31 @@
+.content-listing {
+  margin-top: -1rem;
+  // padding-bottom: 80px;
+  display: flex;
+  justify-content: center;
+  transform: translateY((-50px));
+
+  .columns.is-variable .column {
+    padding: var(--columnGap);
+  }
+
+  &__wrapper {
+    width: 100%;
+    padding: 0 20px;
+    margin: 0 auto;
+    max-width: $desktop-wide;
+
+    @include media('>desktop-wide') {
+      padding: 0;
+    }
+  }
+
+  &__no-results {
+    padding: 100px 20px;
+    font-family: $font-primary;
+    color: $brand-primary;
+    font-size: 2rem;
+    line-height: 2.5rem;
+    text-align: center;
+  }
+}

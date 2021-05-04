@@ -1,0 +1,104 @@
+html {
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  color: $jet;
+}
+body {
+  padding: 1em;
+  min-height: 100%;
+  font-size: 1.8rem;
+  line-height: 1.5em;
+  background-color: $blue;
+  background-image: url(/static/_sitemap/noise-low.png), -webkit-radial-gradient(lighten( $blue, 10% ), darken( $blue, 10% ));
+  background-image: url(/static/_sitemap/noise-low.png), radial-gradient(lighten( $blue, 10% ), darken( $blue, 10% ));
+  background-attachment: fixed;
+}
+.sitemap-wrapper {
+  display: block;
+  width: auto;
+  background: #fff;
+  border-radius: 5px;
+  padding: 1.25em;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  margin: 0 auto 1em;
+  position: relative;
+}
+a.logo {
+  display: block;
+  position: static;
+  top: auto;
+  right: auto;
+}
+h1 {
+  word-wrap: break-word;
+  color: $brand-primary;
+  font-size: 2.5rem;
+  line-height: 1.25em;
+  margin: 0.725em 0;
+}
+#information {
+  margin-bottom: 15px;
+}
+table {
+  font-size: 1.2rem;
+  line-height: 1.25em;
+  border: 1px solid $blue;
+  margin: 10px 0 15px;
+  width: 100%;
+  text-align: left;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+  thead tr th,
+  tfoot tr th {
+    background-color: $alice-blue;
+    padding: 8px;
+  }
+  thead tr {
+    .header {
+      cursor: pointer;
+    }
+    .headerSortUp {
+      background: url(/static/_sitemap/twistie-up.svg) no-repeat center right;
+    }
+    .headerSortDown {
+      background: url(/static/_sitemap/twistie-down.svg) no-repeat center right;
+    }
+    .headerSortDown, .headerSortUp {
+      background-color: $blue;
+      color: #fff;
+      font-style: italic;
+    }
+  }
+  tbody {
+    td {
+      color: $jet;
+      padding: 8px;
+      background-color: #fff;
+      vertical-align: top;
+    }
+    .odd td {
+      background-color: lighten($alice-blue, 5%);
+    }
+  }
+}
+
+@include tablet {
+  h1 {
+    padding-right: 204px;
+    margin: 0 0 0.725em;
+  }
+  a.logo {
+    display: block;
+    position: absolute;
+    top: 25px;
+    right: 25px;
+  }
+}

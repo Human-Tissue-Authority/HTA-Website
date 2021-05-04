@@ -1,0 +1,203 @@
+/**
+    * Print Stylesheet Human Tissue Authority
+    * @version 1.0
+*/
+
+@media print {
+  @page {
+    margin: 2cm 1cm 2cm 1cm;
+  }
+
+  .entry iframe,
+  ins,
+  img,
+  form,
+  .section--overlay--wrapper,
+  .node-pagination__wrapper,
+  .add-comment-form-wrapper,
+  footer,
+  header,
+  .govuk-phase-banner,
+  .button-wrapper,
+  .file-download-group,
+  .paragraph-image-gallery,
+  .notification-banner__read-more,
+  .blog-listing-controls,
+  nav.pagination-wrapper,
+  .add-comment__wrapper,
+  .comments__title,
+  .article-listing-controls,
+  .paragraph-links-section, section.file-download-group,
+  .key-information.map,
+  .accordion__arrow-wrapper,
+  .accordion-wrapper .paragraph-biography-accordion__details,
+  .accordion-wrapper .paragraph-accordion-nested__details, 
+  .accordion-wrapper .paragraph-accordion-content__details,
+  .paragraph-publications,
+  .file-download-group .section-title,
+  .file-download-group ul, .file-download-group li {
+    display: none;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    line-height: 0pt !important;
+    white-space: nowrap;
+    margin:0!important;
+  }
+
+  .embed-youtube,
+  .embed-responsive {
+    position: absolute;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .card-event div {
+    flex-direction: column;
+  }
+
+  .column,
+  .columns {
+    width: 100%!important;
+    text-align: left;
+  }
+
+  .is-offset-1 {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .column.is-4-widescreen, .is-6-desktop {
+    width: 100%!important
+  }
+
+  span.tag {
+    border: 1px solid $mid-grey;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  table,
+  pre {
+    page-break-inside: avoid;
+  }
+
+  .paragraph-listing,
+  .comments {
+    page-break-before: always;
+  }
+
+  ul,
+  ol,
+  dl {
+    page-break-before: avoid;
+  }
+
+  p {
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .home-banner__title {
+    h1 {
+      color: $brand-primary !important;
+    }
+  }
+
+  .content-listing, .paragraph-publications {
+    transform: none !important;
+    margin-top: 0!important;
+    padding: 0!important;
+  }
+
+  .establishment__contact {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  a {
+    text-decoration: none!important;
+  }
+
+  .paragraph,
+  .cms,
+  section,
+  .page__title,
+  .page__title .column,
+  .related-licences,
+  .key-information,
+  .key-information__inner-wrapper,
+  .key-information__inner-wrapper .column,
+  .key-information__inner-wrapper .column,
+  .last-updated,
+  .last-updated .column,
+  .breadcrumbs,
+  .breadcrumbs .column,
+  .paragraph-accordion__wrapper,
+  .paragraph-biography__wrapper,
+  .paragraph-accordion-nested__summary {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .print-view {
+    display: block!important;
+    .columns {
+      display:block!important;
+    }
+    .column {
+      width: 100%!important;
+    }
+  }
+
+  .medical-school-information {
+    div {
+      display: block!important;
+    }
+  }
+
+  .comments,
+  .comments__list,
+  .comments ul,
+  .comments li {
+    display: block !important;
+    & > div {
+      display: block !important;
+    }
+    & > p {
+      -webkit-column-break-inside: avoid;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+  }
+
+  .content-listing__wrapper, .tag-group {
+    display: block !important;
+
+    & > div {
+      -webkit-column-break-inside: avoid;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      transform: none !important;
+    }
+
+    article {
+      display: block !important;
+
+      p {
+        -webkit-column-break-inside: avoid;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+    }
+  }
+}

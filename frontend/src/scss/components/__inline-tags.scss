@@ -1,0 +1,10 @@
+.inline-tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  .tag {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    align-self: baseline;
+  }
+}

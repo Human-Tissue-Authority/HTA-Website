@@ -1,0 +1,84 @@
+.paragraph-biography {
+  background-color: $alice-blue;
+  &__wrapper {
+    margin: 0 auto;
+    max-width: 1440px;
+    padding: 40px 0 60px 0;
+    @include media('<=desktop-wide') {
+      padding: 40px 20px 60px 20px;
+    }
+  }
+}
+.biography-wrapper {
+  margin: 0 -17.5px;
+  border-bottom: 1px solid $white; 
+  padding-bottom: 25px;
+}
+.biography-details {
+  padding: 50px 17.5px 0 17.5px;
+  @include media('<=tablet') {
+    padding: 25px 17.5px 0 17.5px;
+  }
+
+  &__header {
+    margin-bottom: 10px;
+    display: flex;
+  }
+
+  &__avatar {
+    width:90px;
+    height: 90px;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+
+  &__title {
+    font-size: 2.6rem;
+    color: $brand-primary;
+    line-height: 1.5;
+    font-family: $font-primary;
+    // @include media('>=tablet') {
+    //   font-size: 2.6rem;
+    // }
+  }
+  
+  &__job_title {
+    font-size: 1.6rem;
+    line-height: 1.5;
+    color: $brand-primary;
+    @include media('>=tablet') {
+      font-size: 2rem;
+    }
+  }
+
+  &__biography {
+    color:$brand-primary;
+    line-height: 1.5;
+  }
+
+}
+.paragraph-biography-accordion {
+
+  &__summary {
+    padding: 12px 0;
+    width: 100%;
+    border-bottom: 1px solid $white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2.2rem;
+    color: $brand-primary;
+    position: relative;
+    font-family: $font-primary;
+    
+    @include media('>=tablet') {
+      font-size: 2.6rem;
+    }
+  }
+
+  &__details {
+    overflow: hidden;
+  }
+
+}

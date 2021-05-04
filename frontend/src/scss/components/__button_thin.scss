@@ -1,0 +1,55 @@
+.button-thin {
+  a {
+    display: flex;
+    background: #F4F4F4;
+    border-radius: 100px;
+    padding: 4px 4px 4px 20px;
+    display: flex;
+    align-items: center;
+    transition: background .15s ease-out;
+
+    &:hover {
+      background: #E5E5E5;
+
+      .button-thin__icon {
+        background: $white;
+        box-shadow: 0 2px 10px 0 rgba(78,25,101,0.5);
+      }
+    }
+
+    &:active {
+      background: #E5E5E5;
+
+      .button-thin__icon {
+        background: $brand-primary;
+        box-shadow: 0 2px 10px 0 rgba(78,25,101,0.5);
+      }
+    }
+  }
+
+  p {
+    margin: 0;
+    flex-grow: 1;
+    font-family: $font-secondary;
+    font-size: 2rem;
+    line-height: 3rem;
+    color: $brand-primary;
+  }
+
+  .button-thin__icon {
+    transform: rotate(90deg);
+    background: $ghost-white;
+    border-radius: 100px;
+    border: 1px solid $brand-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    transition: background .15s ease-out, box-shadow .15s ease-out;
+
+    img {
+      height: 12px;
+      width: 12px;
+    }
+  }
+}

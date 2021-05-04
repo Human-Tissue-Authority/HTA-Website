@@ -1,0 +1,5 @@
+name: HTA - Establishment widget
+type: module
+description: Adds widget functionality to site.
+core_version_requirement: ^8.8.0 || ^9.0
+package: Custom

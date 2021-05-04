@@ -1,0 +1,78 @@
+diff --git a/node_modules/gatsby-source-drupal-menu-links/gatsby-node.js b/node_modules/gatsby-source-drupal-menu-links/gatsby-node.js
+index 8342347..a2b3720 100644
+--- a/node_modules/gatsby-source-drupal-menu-links/gatsby-node.js
++++ b/node_modules/gatsby-source-drupal-menu-links/gatsby-node.js
+@@ -1,8 +1,8 @@
+ "use strict";
+ 
+ require("es6-promise").polyfill();
+-
+ require("isomorphic-fetch");
++var uniq = require('lodash.uniq');
+ 
+ exports.sourceNodes = async ({
+   actions,
+@@ -32,10 +32,10 @@ exports.sourceNodes = async ({
+   reporter.info("Menus to fetch are " + menus.join(", "));
+ 
+   if (basicAuth.username) {
+-    headers.Authorization = `Basic ${Buffer.from(`${basicAuth.username}:${basicAuth.password}`, "utf-8").toString("base64")}`;
+-  } // Data can come from anywhere, but for now create it manually
+-
++    headers.Authorization = `Basic ${Buffer.from(basicAuth.username + ':' + basicAuth.password, "utf-8").toString("base64")}`
++  }
+ 
++  // Data can come from anywhere, but for now create it manually
+   const menuResponses = await Promise.all(menus.map(async menu => {
+     return await fetch(`${baseUrl}/${apiBase}/menu_items/${menu}`, {
+       headers
+@@ -47,11 +47,13 @@ exports.sourceNodes = async ({
+       return response.json();
+     });
+   }));
++
+   menuResponses.forEach(({
+     data: menuItems
+   }) => {
+     const map = new Map();
+-    menuItems.forEach(item => {
++
++    uniq(menuItems).forEach(item => {
+       const nodeContent = JSON.stringify(item);
+       const id = `menu-items-${item.id}`;
+       let parentId = null;
+diff --git a/node_modules/gatsby-source-drupal-menu-links/src/gatsby-node.js b/node_modules/gatsby-source-drupal-menu-links/src/gatsby-node.js
+index 63a6f83..113eeff 100644
+--- a/node_modules/gatsby-source-drupal-menu-links/src/gatsby-node.js
++++ b/node_modules/gatsby-source-drupal-menu-links/src/gatsby-node.js
+@@ -1,5 +1,6 @@
+ require("es6-promise").polyfill()
+ require("isomorphic-fetch")
++var uniq = require('lodash.uniq');
+ 
+ exports.sourceNodes = async (
+   {
+@@ -30,10 +31,7 @@ exports.sourceNodes = async (
+   reporter.info("Menus to fetch are " + menus.join(", "))
+ 
+   if (basicAuth.username) {
+-    headers.Authorization = `Basic ${Buffer.from(
+-      `${basicAuth.username}:${basicAuth.password}`,
+-      "utf-8"
+-    ).toString("base64")}`
++    headers.Authorization = `Basic ${Buffer.from(basicAuth.username + ':' + basicAuth.password, "utf-8").toString("base64")}`
+   }
+ 
+   // Data can come from anywhere, but for now create it manually
+@@ -51,9 +49,10 @@ exports.sourceNodes = async (
+       })
+     })
+   )
++
+   menuResponses.forEach(({ data: menuItems }) => {
+     const map = new Map()
+-    menuItems.forEach((item) => {
++    uniq(menuItems).forEach((item) => {
+       const nodeContent = JSON.stringify(item)
+       const id = `menu-items-${item.id}`
+       let parentId = null

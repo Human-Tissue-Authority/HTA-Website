@@ -1,0 +1,435 @@
+<?php
+/**
+ * @file
+ * Contains Main Custom module functionality.
+ */
+
+use Drupal\comment\CommentInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\Entity\Node;
+use Drupal\webform\Entity\Webform;
+use Drupal\webform\WebformSubmissionForm;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/*
+ * Implements hook_form_alter().
+ */
+function bbd_custom_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form['#webform_id']) && $form['#webform_id'] = 'subscribe_to_establishment_updat') {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if ($node instanceof \Drupal\node\NodeInterface) {
+      // You can get nid and anything else you need from the node object.
+      $nid = $node->id();
+      $form['elements']['establishment']['#default_value'] = Node::load($nid);
+    }
+
+    $form['elements']['establishment']['#access'] = FALSE;
+  }
+
+  if (isset($form['#webform_id']) && $form['#webform_id'] = 'follow_the_hta_blog') {
+    $form['elements']['submitted_to']['#access'] = FALSE;
+  }
+
+  if ($form_id == 'comment_blog_form') {
+    $form['author']['homepage']['#access'] = FALSE;
+    $form['author']['name']['#title'] = t('First Name');
+    $form['author']['name']['#access'] = TRUE;
+    $form['author']['name']['#required'] = TRUE;
+    $form['field_comment']['#weight'] = 0;
+    $form['actions']['submit']['#value'] = t('Submit');
+  }
+
+  if ($form['#id'] == 'node-article-form' || $form['#id'] == 'node-article-edit-form') {
+    $form['#attached']['library'][] = 'bbd_custom/bbd_custom.event_form';
+  }
+
+  // Add Visit node submit with redirect to frontend
+  if (strpos($form_id, '_edit_form') > 0 && strpos($form_id, 'node') === 0) {
+    $form['actions']['submit_visit'] = $form['actions']['submit'];
+
+    $form['actions']['submit_visit']['#value'] = t('Save and view');
+
+    $form['actions']['submit_visit']['#submit'][] = '_bbd_custom_visit_node';
+
+    // Attach custom library - css to fix chosen
+    $form['#attached']['library'][] = 'bbd_custom/admin';
+  }
+
+  if (isset($form['menu'])) {
+    $node = $form_state->getFormObject()->getEntity();
+    $type = $node->bundle();
+    if ($type == "page" || $type == "listing_page") {
+      $form['menu']['enabled']['#default_value'] = FALSE;
+      if (isset($form['menu']['link']['title']['#default_value']) && !empty($form['menu']['link']['title']['#default_value'])) {
+        $form['menu']['enabled']['#default_value'] = TRUE;
+      }
+      $form['menu']['enabled']['#disabled'] = FALSE;
+      $form['menu']['enabled']['#required'] = TRUE;
+    }
+  }
+
+  if (isset($form['field_choose_items']) && isset($form['field_in_this_section'])) {
+    $form['field_choose_items']['#states'] = [
+      'visible' => [
+        ':input[name="field_in_this_section"]' => ['value' => 'Manual']
+      ]
+    ];
+  }
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function bbd_custom_module_implements_alter(&$implementations, $hook) {
+  switch ($hook) {
+    case 'form_alter':
+      $group = $implementations['bbd_custom'];
+      unset($implementations['bbd_custom']);
+      $implementations['bbd_custom'] = $group;
+      break;
+  }
+}
+
+/**
+ * Custom submit handler
+ */
+function _bbd_custom_visit_node(&$form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+
+  // Get Frontend base url
+  $frontend_base_url = \Drupal::config('bbd_custom.settings')->get('frontend_url');
+
+  // Get node alias
+  $alias = $values['path'][0]['alias'];
+
+  $response = new RedirectResponse($frontend_base_url . $alias);
+  $response->send();
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function bbd_custom_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  switch ($entity->bundle()) {
+    case 'blog':
+      if ($entity->status->value == 1 && $entity->hasField('field_notification_sent') && $entity->field_notification_sent->value != 1) {
+
+        $queue = \Drupal::queue('hta_blog_email_notifications');
+        $queue->createQueue();
+
+        // Add queue item to send comment notification
+        $queue->createItem(['entity' => $entity]);
+
+      }
+      break;
+    case 'medical_school':
+      $g_api_key = \Drupal::config('bbd_custom.settings')->get('g_api_key');
+
+      if ($g_api_key && $entity->hasField('field_address') && $entity->field_address && $entity->field_address->lat && $entity->field_address->lon) {
+        $field_address_lat = $entity->field_address->lat;
+        $field_address_lng = $entity->field_address->lon;
+        $url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $field_address_lat . ','. $field_address_lng .'&sensor=true&key='.$g_api_key;
+        $client = \Drupal::httpClient();
+        $request = $client->get($url);
+        $response = $request->getBody();
+
+        $result = json_decode($response->__toString())->results;
+
+        if (isset($result[0]->formatted_address)) {
+          $entity->set('field_address_formatted', [$result[0]->formatted_address]);
+        }
+      }
+
+      break;
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function bbd_custom_node_update(Drupal\node\Entity\Node $entity) {
+  // Send notification emails to all subscribers
+  // when a new report is uploaded for an establishment (licence).
+  if ($entity->type->target_id == 'establishment' && $entity->status->value == 1) {
+    $origin_node = $entity->original;
+
+    if ($origin_node) {
+      // Gets origin value of the field_inspection_report field.
+      $origin_reports = [];
+      if ($origin_node->hasField('field_inspection_report') && $origin_reports_field = $origin_node->field_inspection_report->getValue()) {
+        foreach ($origin_reports_field as $item) {
+          $origin_reports[] = $item['target_id'];
+        }
+      }
+    }
+
+
+    //Gets updated value of the field_inspection_report field.
+    $new_reports = [];
+
+    if ($entity->hasField('field_inspection_report') && $new_reports_field = $entity->field_inspection_report->getValue()) {
+      foreach ($new_reports_field as $item) {
+        $new_reports[] = $item['target_id'];
+      }
+    }
+
+    // Compare origin and new values of the field_inspection_report field.
+    if (!$origin_reports && $new_reports) {
+      // Send notification emails.
+
+      $queue = \Drupal::queue('hta_establishments_email_notifications');
+      $queue->createQueue();
+
+      // Add queue item to send comment notification
+      $queue->createItem(['entity' => $entity]);
+    }
+    elseif ($origin_reports && $new_reports) {
+      $diff = array_diff($new_reports, $origin_reports);
+
+      if ($diff) {
+        // Send notification emails.
+        $queue = \Drupal::queue('hta_establishments_email_notifications');
+        $queue->createQueue();
+
+        // Add queue item to send comment notification
+        $queue->createItem(['entity' => $entity]);
+      }
+    }
+  }
+}
+
+/**
+ * @param $entity
+ */
+function hta_feature_establishments_notification_new_report_notify($entity) {
+  // Check to see if a notification is enabled.
+  $config = \Drupal::config('bbd_custom.hta_establishments_notification_admin_settings');
+  if ($config->get('hta_establishments_notification_report_notify') && $config->get('hta_establishments_notification_report_notify') != 1) {
+    return;
+  }
+
+  $database = \Drupal::database();
+  $wf_query = $database->select('webform_submission_data', 'data');
+  $wf_query->fields('data', ['sid']);
+  $wf_query->innerjoin('node_field_data', 'node', 'data.value = node.nid');
+  $wf_query->fields('node', ['nid', 'title']);
+  $wf_query->condition('data.name', 'establishment')
+    ->condition('data.value', $entity->id())
+    ->condition('node.type', 'establishment');
+
+  $wf_items = $wf_query->execute()->fetchAll();
+
+  if ($config->get('hta_establishments_notification_subject')) {
+    $subject = $config->get('hta_establishments_notification_subject');
+  }
+  if ($config->get('hta_establishments_notification_body')) {
+    $body = $config->get('hta_establishments_notification_body');
+  }
+
+  if (!empty($wf_items)) {
+    foreach ($wf_items as $wf_item) {
+      if ($wf_item->sid) {
+        $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($wf_item->sid);
+        $data = $webform_submission->getData();
+        $data_send = [];
+
+        $data_send['email'] = $data['confirm_email_address'];
+        $email = $data['confirm_email_address'];
+        $name = $data['first_name'];
+
+        $token = Drupal::token();
+        $subject = $token->replace($subject, ['node' => $entity]);
+        $body = $token->replace($body, ['node' => $entity]);
+        $body = str_replace('[subscriber-first-name]', $name, $body);
+
+        $data_send['subject'] = $subject;
+        $data_send['body'] = $body;
+
+        $operations[] = [
+          'send_email_notifications',
+          [
+            $data_send,
+            'details' => t('(Sending email notifications'),
+          ],
+        ];
+      }
+    }
+
+    $batch = array(
+      'title' => t('Sending email notifications ...'),
+      'operations' => $operations,
+      'finished' => 'send_email_notifications_finished',
+      'file' => drupal_get_path('module', 'bbd_custom') . '/bbd_custom.batch.inc',
+    );
+    batch_set($batch);
+
+  }
+}
+
+/**
+ * Helper function to send_email
+ */
+function _bbd_custom_send_email ($email_key, $to, $data) {
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $message = [
+    'id' => 'bbd_custom',
+    'headers' => ['Content-type' => 'text/html'],
+    'subject' => $data['subject'],
+    'to' => $to,
+    'body' => $data['body'],
+    'from' => \Drupal::config('system.site')->get('mail'),
+  ];
+
+  $result = $mailManager->getInstance(['module' => 'bbd_custom', 'key' => $email_key])->mail($message);
+
+  if (!$result) {
+    \Drupal::logger('bbd_custom')->info('There was a problem sending establishments email notifications');
+  }
+}
+
+/**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter().
+ */
+function bbd_custom_field_widget_paragraphs_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
+  /** @var \Drupal\field\Entity\FieldConfig $field_definition */
+  $field_definition = $context['items']->getFieldDefinition();
+  $paragraph_entity_reference_field_name = $field_definition->getName();
+
+  if ($paragraph_entity_reference_field_name == 'field_add_paragraph') {
+    /** @see \Drupal\paragraphs\Plugin\Field\FieldWidget\ParagraphsWidget::formElement() */
+    $widget_state = \Drupal\Core\Field\WidgetBase::getWidgetState($element['#field_parents'], $paragraph_entity_reference_field_name, $form_state);
+
+    /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
+    $paragraph_instance = $widget_state['paragraphs'][$element['#delta']]['entity'];
+    $paragraph_type = $paragraph_instance->bundle();
+
+    // Determine which paragraph type is being embedded.
+    if ($paragraph_type == 'links_section') {
+      $selector = ':input[name="field_add_paragraph[' . $element['#delta'] . '][subform][field_add_background_colour][value]"]';
+      // Dependent fields.
+      $element['subform']['field_colour']['#states'] = [
+        'visible' => [
+          $selector => ['checked' => TRUE],
+        ]
+      ];
+    }
+
+    if ($paragraph_type == 'listing') {
+      $selector = ':input[name="field_add_paragraph[' . $element['#delta'] . '][subform][field_listing]"]';
+      // Dependent fields.
+      $element['subform']['field_display_previous_meetings']['#states'] = [
+        'visible' => [
+          $selector => ['value' => 'Meetings'],
+        ]
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_pathauto_pattern_alter().
+ */
+function bbd_custom_pathauto_pattern_alter(\Drupal\pathauto\PathautoPatternInterface $pattern, array $context) {
+  // Programmatic URL Alias Patterns
+  // if "news type" = News : /news/node-title
+  // if "news type" = Event : /events/node-title
+  if ($context['bundle'] == 'article') {
+    $node = $context['data']['node'];
+    // Case Stories
+    if ($node->hasField('field_news_type') && isset($node->field_news_type->value) && $node->field_news_type->value == 'News') {
+      $pattern->setPattern('/news/[node:title]');
+    }
+    elseif ($node->hasField('field_news_type') && isset($node->field_news_type->value) && $node->field_news_type->value == 'Event') {
+      $pattern->setPattern('/events/[node:title]');
+    }
+  }
+
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ * Send email notification to HTA when new comment added
+ */
+function bbd_custom_comment_insert(CommentInterface $comment) {
+  // Blog post notifications:
+
+  if ($comment->get('field_i_would_like_to_follow_the')->getValue() && $comment->get('field_i_would_like_to_follow_the')->value == 1) {
+
+    if ($email = $comment->getAuthorEmail()) {
+      $database = \Drupal::database();
+      $wf_query = $database->select('webform_submission_data', 'data');
+      $wf_query->fields('data', ['sid']);
+      $wf_query->condition('data.name', 'email_address')
+        ->condition('data.value', $email)
+        ->condition('data.webform_id', 'follow_the_hta_blog');
+      $wf_items = $wf_query->execute()->fetchAll();
+      // Don't add user if already in subsribers
+      if (empty($wf_items)) {
+        $values = [
+          'webform_id' => 'follow_the_hta_blog',
+          'in_draft' => FALSE,
+          'langcode' => 'en',
+          'data' => [
+            'email_address' => $email,
+            'first_name' => $comment->getAuthorName(),
+            'last_name' => $comment->get('field_last_name')->value,
+            'i_would_like_to_be_notified_when_any_new_blog_posts_are_added_an' => 1,
+            'submitted_to' => $comment->getCommentedEntity()->id()
+          ],
+        ];
+
+        // Check webform is open.
+        $webform = Webform::load($values['webform_id']);
+        $is_open = WebformSubmissionForm::isOpen($webform);
+        if ($is_open === TRUE) {
+          // Validate submission.
+          $errors = WebformSubmissionForm::validateFormValues($values);
+          if (!$errors) {
+            $webform_submission = WebformSubmissionForm::submitFormValues($values);
+          }
+        }
+      }
+    }
+  }
+
+  $config = \Drupal::config('bbd_custom.hta_comments_notification_settings');
+  if (!$config->get('hta_comments_notification_settings_notify') || $config->get('hta_comments_notification_settings_notify') != 1) {
+    return;
+  }
+
+  if (!$config->get('hta_comments_notification_settings_email') || empty($config->get('hta_comments_notification_settings_email'))) {
+    return;
+  }
+
+  $queue = \Drupal::queue('hta_comments_email_notifications');
+  $queue->createQueue();
+
+  // Add queue item to send comment notification
+  $queue->createItem(['comment' => $comment]);
+}
+
+
+/**
+ * Alter Solr documents before they are sent to Solr for indexing.
+ *
+ * @param \Solarium\QueryType\Update\Query\Document\Document[] $documents
+ *   An array of \Solarium\QueryType\''pdate\Query\Document\Document objects
+ *   ready to be indexed, generated from $items array.
+ * @param \Drupal\search_api\IndexInterface $index
+ *   The search index for which items are being indexed.
+ * @param \Drupal\search_api\Item\ItemInterface[] $items
+ *   An array of items to be indexed, keyed by their item IDs.
+ */
+function bbd_custom_search_api_solr_documents_alter(&$documents, \Drupal\search_api\IndexInterface $index, array $items) {
+  foreach ($documents as $document) {
+    $fields = $document->getFields();
+
+    // Get alias using ID
+    if (isset($fields['its_nid'])) {
+      $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $fields['its_nid']);
+      if ($alias) {
+        $document->addField('ss_alias', $alias);
+      }
+    }
+  }
+}

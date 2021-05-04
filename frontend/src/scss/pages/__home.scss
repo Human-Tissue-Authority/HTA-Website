@@ -1,0 +1,136 @@
+.home {
+  .paragraph-image-gallery {
+    margin: 0;
+  }
+}
+
+.home-banner {
+  position: relative;
+
+  &__inner-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    align-items: stretch;
+  }
+}
+
+.home-banner__title {
+  padding: 35px 20px;
+
+  &:before {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 50%;
+    background: $alice-blue;
+    left: 0;
+    top: 0;
+    position: absolute;
+    z-index: -1;
+  }
+
+  h1 {
+    font-family: $font-primary;
+    color: $brand-primary;
+    font-size: 5rem;
+    line-height: 6rem;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  @include media('>=tablet') {
+    padding: 50px 35px;
+
+    h1 {
+      padding-right: 30%;
+      margin-left: 5rem;
+    }
+  }
+
+  @include media('>desktop-wide') {
+    padding: 80px 0;
+
+    h1 {
+      font-size: 8rem;
+      line-height: 8.5rem;
+    }
+  }
+}
+
+.home-banner__links {
+  background: $ghost-white;
+
+  &:after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 50%;
+    background: $ghost-white;
+    right: 0;
+    top: 0;
+    position: absolute;
+    z-index: -1;
+  }
+}
+
+.home-banner__links-wrapper {
+  padding: 10px 20px;
+
+  h2 {
+    font-family: $font-secondary;
+    font-size: 1.4rem;
+    line-height: 3rem;
+    color: $jet;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    margin-bottom: 0;
+  }
+
+  ul {
+    li {
+      display: flex;
+      align-items: center;
+
+      img {
+        margin-right: 4px;
+      }
+
+      a {
+        padding: 5px 8px;
+        cursor: pointer;
+        display: block;
+        font-family: $font-secondary;
+        font-size: 1.4rem;
+        line-height: 1.8rem;
+        color: $brand-primary;
+        transition: background .2s ease-in-out;
+
+        &:hover {
+          background: $alice-blue;
+        }
+      }
+    }
+  }
+
+  @include media('>=tablet') {
+    padding: 50px 20px 20px;
+
+    h2 {
+      margin-bottom: 10px;
+    }
+  }
+
+  @include media('>desktop-wide') {
+    padding: 80px 35px 35px;
+
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    ul li a {
+      font-size: 1.8rem;
+      line-height: 2.3rem;
+      padding: 7.5px 8px;
+    }
+  }
+}

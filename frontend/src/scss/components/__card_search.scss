@@ -1,0 +1,153 @@
+.card-search {
+  padding: 30px;
+  background: $white;
+  box-shadow: 0 15px 40px 0 rgba(78, 25, 101, 0.15);
+  height: auto;
+  display: flex;
+  flex-direction: column;
+
+  @include media(">tablet") {
+    min-height: 400px;
+    height: 100%;
+  }
+
+  &__last-updated {
+    font-family: $font-secondary;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+    color: $mid-grey;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+
+    display: flex;
+    align-items: center;
+
+    span.featured {
+      margin-left: auto;
+      padding-left: 16px;
+    }
+  }
+
+  .button-mobile-wrapper {
+    display:none;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    color: $brand-primary;
+    font-weight: 700;
+    font-size: 2.1rem;
+    line-height: 2.8rem;
+    margin: 0 0 20px;
+    display: block;
+  }
+
+  &__body {
+    font-family: $font-secondary;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    color: $jet;
+  }
+
+  .inline-tags {
+    margin-bottom: 20px;
+  }
+
+  &__footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
+    width: 100%;
+
+    p {
+      font-size: 1.4rem;
+      line-height: 2.4rem;
+      margin: 0;
+      text-align: right;
+      color: $mid-grey;
+      text-transform: capitalize;
+    }
+  }
+
+  &__node-info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+}
+
+.card-search.search-full-width {
+  @include media('>=tablet') {
+    min-height: 180px;
+  }
+  @include media('<desktop', '>=tablet') {
+    .card-search__title-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+
+      .card-search__title {
+        padding-right: 40px;
+      }
+
+      .button-mobile-wrapper {
+        display:block;
+        flex-shrink: 0;
+      }
+    }
+
+    .tags-wrapper {
+      padding-right: 170px;
+    }
+
+    .card-search__body {
+      padding-right: 170px;
+    }
+
+    .card-search__footer {
+      justify-content: flex-end;
+      .button-wrapper {
+        display: none;
+      }
+    }
+  }
+  @include media('>desktop') {
+    flex-direction: row;
+    .card-search__last-updated {
+      flex-basis: 140px;
+      flex-shrink: 0;
+      padding-right: 40px;
+      display:block;
+      span:first-of-type {
+        display: block;
+      }
+    }
+  
+    .card-search__title-wrapper {
+      flex-basis: 415px;
+      padding-right: 30px;
+    }
+    
+    .tags-wrapper {
+      flex-basis: 280px;
+      padding-right: 40px;
+    }
+  
+    .card-search__body {
+      flex-basis: 390px;
+      padding-right: 40px;
+    }
+  
+    .card-search__footer {
+      width: auto;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+  
+    .card-search__node-info {
+      display: none;
+    }
+  }
+}

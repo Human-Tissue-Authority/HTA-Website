@@ -1,0 +1,111 @@
+<?php
+
+/**
+ * @file
+ * Big Blue Door deployments, in use across multiple sites.
+ *
+ */
+
+use Drupal\Core\Database\Database;
+use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Site\Settings;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+
+/**
+ * Creates taxonomy terms.
+ *
+ * @param string $voc_name
+ *   Name of the taxonomy vocabulary.
+ * @param array $terms
+ *   List of the taxonomy terms to add.
+ *
+ * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+ * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+ * @throws \Drupal\Core\Entity\EntityStorageException
+ * @throws \Exception
+ */
+function bigbluedoor_deploy_create_terms($voc_name, array $terms) {
+  // Create a vocabulary if it doesn't exist.
+  if (!Vocabulary::load($voc_name)) {
+    $config_path = Settings::get('config_sync_directory');
+    $config_name = 'taxonomy.vocabulary.' . $voc_name;
+    $source = new FileStorage($config_path);
+    \Drupal::entityTypeManager()->getStorage('taxonomy_vocabulary')
+      ->create($source->read($config_name))
+      ->save();
+  }
+
+  // Create new taxonomy terms.
+  if (Vocabulary::load($voc_name) && $terms) {
+    // Gets existing terms.
+    $query_terms = Database::getConnection()->select('taxonomy_term_field_data', 'term');
+    $query_terms->fields('term', ['name', 'tid']);
+    $query_terms->condition('term.vid', $voc_name);
+    $ex_terms = $query_terms->execute()->fetchAllKeyed();
+
+    foreach ($terms as $term_name) {
+      if (empty($ex_terms) || !array_key_exists($term_name, $ex_terms)) {
+        $term = Term::create([
+          'name' => $term_name,
+          'vid' => $voc_name,
+          'weight' => 100,
+        ]);
+        $term->save();
+      }
+    }
+  }
+}
+
+/**
+ * Update a menu.
+ *
+ * @param string $menu_name
+ *   Machine name of the menu.
+ * @param array $links
+ *   List of the links to add.
+ */
+function bigbluedoor_deploy_update_menu($menu_name, array $links) {
+  if ($links) {
+    foreach ($links as $title => $value) {
+      $menu_link = [
+        'uri' => 'internal:/' . $value['route'],
+      ];
+
+      // Adds options.
+      if (isset($value['options']) && $value['options']) {
+        $menu_link['options'] = $value['options'];
+      }
+
+      $menu_link = MenuLinkContent::create([
+        'title' => $title,
+        'link' => $menu_link,
+        'menu_name' => $menu_name,
+        'expanded' => TRUE,
+        'weight' => $value['weight'],
+      ]);
+      $menu_link->save();
+    }
+  }
+}
+
+/**
+ * Creates default content.
+ *
+ * @param array $content
+ *   Content keyed by entity-type and UUID.
+ *
+ * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+ * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+ * @throws \Drupal\Core\Entity\EntityStorageException
+ */
+function bigbluedoor_deploy_create_content(array $content) {
+  foreach ($content as $entity_type_id => $items) {
+    $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
+    foreach ($items as $uuid => $item) {
+      $entity = $storage->create($item + ['uuid' => $uuid]);
+      $entity->save();
+    }
+  }
+}

@@ -1,0 +1,21 @@
+.last-updated {
+  text-transform: uppercase;
+  margin: 16px auto 0;
+  max-width: $desktop-wide;
+  
+  p {
+    font-size: 1.4rem;
+    font-family: $font-secondary;
+    color: $mid-grey;
+    line-height: 1.8rem;
+    margin: 0;
+  }
+
+  @include media('<=tablet') {
+    padding: 0 20px;
+  }
+
+  @include media('>desktop-wide') {
+   padding: 0;
+  }
+}

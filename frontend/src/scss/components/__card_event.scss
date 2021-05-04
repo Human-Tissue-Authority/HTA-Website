@@ -1,0 +1,62 @@
+.card-event {
+  padding: 40px 70px;
+  background: $white;
+  box-shadow: 0 15px 40px 0 rgba(78, 25, 101, 0.15);
+  color: $mid-grey;
+
+  @include media("<tablet") {
+    padding: 30px;
+  }
+
+  &__title {
+    margin-bottom: 15px;
+    @include media('>=desktop-wide') {
+      font-size: 4.5rem;
+    }
+  }
+
+  &__tags {
+    @include media(">tablet") {
+      margin-bottom: 20px;
+    }
+  }
+
+  &__body {
+    line-height: 1.5;
+  }
+
+  &__label {
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    line-height: 1.5rem;
+  }
+
+  &__info {
+    color: $brand-primary;
+    line-height: 1.5rem;
+    line-height: 3rem;
+    font-size: 2rem;
+  }
+
+  &__button-mobile {
+    margin-top: 20px;
+  }
+
+  &__is-hidden-mobile {
+    @include media(">tablet") {
+      display: block;
+    }
+    @include media("<=tablet") {
+      display: none;
+    }
+  }
+
+  &__is-visible-tablet {
+    @include media("<=tablet") {
+      display: block;
+    }
+    @include media(">tablet") {
+      display: none;
+    }
+  }
+}

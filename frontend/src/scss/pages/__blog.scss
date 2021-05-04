@@ -1,0 +1,6 @@
+.blog__body {
+  padding: 0 calc(20px + 0.75rem);
+  @include media('>tablet') {
+      padding: 0 10px;
+  }
+}

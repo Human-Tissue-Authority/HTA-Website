@@ -1,0 +1,36 @@
+.key-information {
+  padding: 10px 20px;
+  max-width: $desktop-wide;
+  margin: 0 auto 20px;
+
+  &.columns:last-child {
+    margin-bottom: 20px;
+  }
+  
+  @include media('>tablet') {
+    padding: 10px 0;
+  }
+
+  .column {
+    padding: 8px;
+  }
+
+  h2 {
+    margin-bottom: 34px;
+  }
+
+  ul {
+    background: $alice-blue;
+    padding: 12px 12px 7px;
+
+    @include media('>=tablet') {
+      padding: 12px 19px 7px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+uuid: e206706d-c1b3-4b06-90d3-64c9edf2fd67
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.simple_text.field_text
+    - paragraphs.paragraphs_type.simple_text
+  module:
+    - options
+    - text
+id: paragraph.simple_text.default
+targetEntityType: paragraph
+bundle: simple_text
+mode: default
+content:
+  field_text:
+    weight: 0
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden: {  }

@@ -1,0 +1,21 @@
+.establishment__contact {
+  padding: 42.5px 20px 22.5px;
+  max-width: $desktop-wide;
+  margin: 0 auto;
+  
+  @include media('>=tablet') {
+    padding: 62.5px 0 22.5px
+  }
+
+  p {
+    font-family: $font-secondary;
+    font-size: 2rem;
+    line-height: 3rem;
+    color: $jet;
+    margin: 0;
+  }
+
+  .button-wrapper {
+    padding-top: 20px;
+  }
+}

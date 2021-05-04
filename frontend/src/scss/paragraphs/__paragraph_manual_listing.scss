@@ -1,0 +1,15 @@
+.paragraph-manual {
+  padding: 52.5px 0
+}
+
+.manual-listing {
+  margin-top: 30px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: $alice-blue;
+
+  @include media('<tablet') {
+    margin-top: 0;
+  }
+}

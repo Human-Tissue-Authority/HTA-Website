@@ -1,0 +1,27 @@
+.tag-group {
+  padding: 22.5px 20px;
+  margin: 0 auto;
+  max-width: $desktop-wide;
+
+  &__inner-wrapper {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  &.columns:not(:last-child) {
+    margin-bottom: 0;
+  }
+  
+  @include media('>tablet') {
+    padding: 0;
+  }
+
+  .section-title {
+    margin-bottom: 20px;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

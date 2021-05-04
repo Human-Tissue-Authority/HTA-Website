@@ -1,0 +1,65 @@
+.breadcrumbs {
+  width: 100%;
+  padding: 15px 20px;
+  margin: 0 auto;
+  max-width: $desktop-wide;
+
+  @include media('>desktop-wide') {
+    padding: 15px 0;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+
+    li {
+      display: flex;
+      align-items: center;
+      font-family: $font-secondary;
+      line-height: 1.5rem;
+      font-size: 1.2rem;
+
+      &:after {
+        @include triangle(right, 4px, 3px, $brand-primary);
+        display: block;
+        margin-right: 10px;
+
+        @include media(">=desktop") {
+          margin-right: 15px;
+        }
+      }
+
+      &:last-child {
+        &:after {
+          display: none;
+        }
+      }
+
+      @include media(">=desktop") {
+        font-size: 1.4rem;
+        line-height: 1.8rem;
+      }
+
+      @include media(">=desktop-wide") {
+        font-size: 1.8rem;
+        line-height: 2.3rem;
+      }
+    }
+
+    a {
+      display: block;
+      text-decoration: underline;
+      padding: 5px 10px 5px 0;
+      color: $jet;
+      transition: opacity .2s ease-out;
+
+      &:hover {
+        opacity: .7;
+      }
+
+      @include media(">=desktop") {
+        padding-right: 15px;
+      }
+    }
+  }
+}

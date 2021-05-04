@@ -1,0 +1,122 @@
+.notification-banner {
+  width: 100%;
+  background: red;
+  position: fixed;
+  top: 58px;
+  left: 0;
+  z-index: 99;
+  background-color: $dark-blue;
+  box-shadow: 0 10px 10px 0 rgba(0, 0, 0, .2);
+
+  @include media('>=tablet') {
+    top: 63px;
+  }
+
+  @include media('>=desktop-wide') {
+    top: 85px;
+  }
+
+  &--dismissed {
+    bottom: 0;
+    top: auto;
+    background: none;
+    pointer-events: none;
+
+    .notification-banner__wrapper {
+      padding: 0 20px;
+
+      @include media('>desktop-wide') {
+        padding: 0;
+      }
+    }
+
+    .notification-banner__read-more {
+      background: $dark-blue;
+      cursor: pointer;
+      padding: 0;
+      transition: background .2s ease-out;
+      padding: 10px 20px;
+      text-align: center;
+      color: $ghost-white;
+      font-family: $font-secondary;
+      font-size: 1.6rem;
+      line-height: 2.4rem;
+      margin-left: auto;
+      pointer-events: all;
+
+      @include media('<tablet') {
+        font-size: 1.4rem;
+        line-height: 2rem;
+      }
+
+      &:focus,
+      &:hover {
+        background: $alice-blue;
+        color: $jet;
+      }
+    }
+  }
+}
+
+.notification-banner__wrapper {
+  max-width: $desktop-wide;
+  margin: 0 auto;
+  padding: 40px 20px 20px;
+
+  @include media('>=tablet') {
+    padding: 40px 20px;
+  }
+
+  @include media('>desktop-wide') {
+    padding: 40px 0;
+  }
+}
+
+.notification-banner__title {
+  font-family: $font-primary;
+  font-weight: 600;
+  font-size: 2.4rem;
+  line-height: 3.2rem;
+  color: $white;
+  margin: 0;
+  
+  @include media('>=tablet') {
+    font-size: 3.8rem;
+    line-height: 4.6rem;
+  }
+}
+
+.notification-banner__message 
+  p {
+  margin: 0;
+  color: $white;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+  
+  @include media('>=tablet') {
+    font-size: 2.4rem;
+    line-height: 3.6rem;
+  }
+  
+  a {
+    color: $white;
+    text-decoration: underline;
+  &:hover {
+    text-decoration: none;
+    }
+  }
+}
+
+.notification-banner__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  border: 1px solid $dark-blue;
+  cursor: pointer;
+  
+  &:focus {
+    border-radius: 3px;
+    border: 1px solid white;
+  }
+}

@@ -1,0 +1,113 @@
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+
+  .pagination {
+    border-radius: 100px;
+    background: $ghost-white;
+    display: flex;
+    align-items: center;
+    padding: 1px 1px 1px 20px;
+    
+    @include media('<tablet') {
+      padding: 1px 1px 1px 10px;
+    }
+
+    .break,
+    &__item {
+      font-family: $font-secondary;
+      color: $brand-primary;
+      font-size: 1.6rem;
+      
+      @include media('<tablet') {
+        font-size: 1.4rem;
+      }
+    }
+
+    &__item--page {
+      a {
+        cursor: pointer;
+        padding: 10px;
+
+        @include media('<tablet') {
+          padding: 10px 5px;
+        }
+      }
+    }
+
+    .break {
+      padding: 0 10px;
+
+      @include media('<tablet') {
+        padding: 0 5px;
+      }
+    }
+
+    &__item--prev,
+    &__item--next {
+      .pagination__link {
+        display: block;
+        border: 1px solid $brand-primary;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: all .2s ease-out;
+        user-select: none;
+
+        &:focus,
+        &:hover {
+          outline: none;
+          background: $ghost-white;
+          box-shadow: 0 2px 15px 0 rgba(78,25,101,0.5);
+        }
+
+        &:active {
+          background: $brand-primary;
+        }
+
+        .pagination-button-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 19.5px 17.5px;
+          
+          @include media('<tablet') {
+            padding: 9.5px 7.5px;
+          }
+
+          img {
+            pointer-events: none;
+            user-select: none;
+          }
+        }
+      }
+
+      &.disabled {
+        opacity: .3;
+        pointer-events: none;
+      }
+    }
+
+    &__item--prev {
+      order: 1;
+      margin-left: 10px;
+      
+      @include media('<tablet') {
+        margin-left: 5px;
+      }
+
+      img {
+        transform: rotate(180deg);
+      }
+    }
+
+    &__item--next {
+      order: 2;
+      margin-left: 17px;
+
+      @include media('<tablet') {
+        margin-left: 10px;
+      }
+    }
+  }
+}
