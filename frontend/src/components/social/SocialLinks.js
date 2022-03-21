@@ -64,18 +64,18 @@ const SocialLink = props => {
   return (
     <li>
       <a
+        style={{ 'appearance': 'button','height': '40px', overflow: 'auto' }}
         className={linkItem.type}
         href={linkItem.link}
         target="_blank"
         rel="noreferrer"
+        title={`${linkItem.type} social media icon`}
         onMouseEnter={() => setActive(true)}
         onMouseLeave={() => setActive(false)}
       >
-        {animation.map(({ item, key, props }) => item ?
-          <animated.img key={key} style={props} src={linkItem.imgHover} alt={`${linkItem.type} social media icon`} /> :
-          <animated.img key={key} style={props} src={linkItem.img} alt={`${linkItem.type} social media icon`} />
-        )}
-        <img src={linkItem.img} aria-hidden style={{ opacity: 0, visibility: 'hidden' }} alt="" />
+        <span  style={{ 'background': "url(" + linkItem.img+") no-repeat",'width': '100%', height: '100%', display: 'block' }}>
+        <img src={linkItem.img} aria-hidden style={{ opacity: 0, visibility: 'hidden' }} alt={`${linkItem.type} social media icon`} />
+        </span>
       </a>
     </li>
   )

@@ -140,16 +140,16 @@ export function contactDataAsLink(contactObj, contacts = [], index) {
 } 
 
 export function parseContent(html) {
-  let htmlString = ''
+  let htmlString = html ?? '';
+  const template = document.createElement('template');
 
-  if (html && html.length > 0) {
-    var template = document.createElement('template');
+  if (html && html.length > 0 && Object.isExtensible(template)) {
     template.innerHTML = html.trim()
     const htmlMounted = template.content
   
     // parse tables - wraps tables in div elements
     htmlMounted.querySelectorAll('table').forEach(function(table) {
-      var wrapper = document.createElement('div')
+      const wrapper = document.createElement('div')
       wrapper.setAttribute('class', 'table-outer-wrapper')
       wrapper.setAttribute('tabindex', '0')
       wrapper.setAttribute('aria-label', 'table')
@@ -170,7 +170,7 @@ export function parseContent(html) {
     const container = document.createElement('div')
     container.appendChild(htmlMounted)
     htmlString = container.innerHTML
-  
-    return htmlString
   }
+
+  return htmlString
 }

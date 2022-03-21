@@ -8,6 +8,7 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 
 import ArrowPurple from "../images/arrow-purple.svg"
+import ConditionalWrapper from "../components/helpers/ConditionalWrapper"
 
 const IndexPage = ({ data }) => {
   const homeData = data.allNodeHomepage.nodes[0]
@@ -25,15 +26,25 @@ const IndexPage = ({ data }) => {
     <Layout classes="home">
       <SEO title="Home" />
 
-      <animated.section style={animation} className="home-banner">
+      <ConditionalWrapper
+        condition={typeof document !== 'undefined'}
+        wrapper={children => (
+          <animated.section style={animation} className="home-banner">{children}</animated.section>
+        )}
+        elseWrapper={children => <section className="home-banner">{children}</section>}
+      >
         <div className="home-banner__inner-wrapper columns">
           <div className="home-banner__title column is-8" style={{ backgroundImage: `url(${HPImage})`, backgroundSize: "cover"}}>
             {TPTitle}
+            <h2 className="home-banner__strapline">{homeData.field_strapline}</h2>
+            <div className="home-banner__cta">
+              <a href={homeData.field_url.url}>{homeData.field_url.title}</a>
+            </div>
           </div>
 
           <div className="home-banner__links column is-4">
             <div className="home-banner__links-wrapper">
-              <h2 className="home-banner__links-title">I would like to...</h2>
+              <h2 className="home-banner__links-title">POPULAR PAGES</h2>
               <ul>
                 {homeData.relationships.field_i_would_like_to_.map(item => (
                   <li>
@@ -47,7 +58,7 @@ const IndexPage = ({ data }) => {
             </div>
           </div>
         </div>
-      </animated.section>
+      </ConditionalWrapper>
 
       {paragraphs}
     </Layout>
@@ -61,6 +72,11 @@ export const query = graphql`
     allNodeHomepage {
       nodes {
         title
+        field_strapline
+        field_url {
+          url
+          title
+        }
         relationships {
           field_image {
             relationships {

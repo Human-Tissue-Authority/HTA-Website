@@ -21,7 +21,7 @@ const ParagraphSimpleText = ({ node, isFullWidth }) => {
       paragraphTitle={node.title}
     >
       {node.title && (
-        <h2 className={`h section-title column ${columnClasses}`}>{node.title}</h2>
+        <h2 className={`h h--2 column ${columnClasses}`}>{node.title}</h2>
       )}
 
       <div className={`column ${columnClasses}`} dangerouslySetInnerHTML={{ __html: parseContent(node.text.processed) }} />

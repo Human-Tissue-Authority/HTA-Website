@@ -121,10 +121,10 @@ const ListingMedicalSchools = () => {
 
   const createFilterQuery = () => {
     let filterValue = '';
-    const searchFilterTrimmed = searchFilterVal.trim()
+    const searchFilterTrimmed = searchFilterVal.trim().substring(0, 2)
 
     if (searchFilterTrimmed) {
-      filterValue += `&fq=tm_X3b_en_postcodes:*${searchFilterTrimmed}*`
+      filterValue += `&fq=sm_postcodes:*${searchFilterTrimmed.toUpperCase()}*`
     }
 
     return filterValue
@@ -155,7 +155,7 @@ const ListingMedicalSchools = () => {
             id: doc.its_nid,
             url: doc.ss_url_alias,
             name: doc.ss_title,
-            postcodes: doc?.tm_X3b_en_postcodes?.join(','),
+            postcodes: doc?.sm_postcodes?.join(', '),
             phone: doc.ss_field_contact_telephone,
             contactName: doc.ss_field_contact_name
           }
@@ -277,7 +277,7 @@ const ListingMedicalSchools = () => {
                 Name
               </button>
 
-              <div className="sort sort--postcodes column is-4-mobile is-2">
+              <div className="sort sort--postcodes column is-4-mobile is-4">
                 Postcodes covered
               </div>
 
@@ -305,6 +305,7 @@ const ListingMedicalSchools = () => {
             classes="medical-school-results"
             setListingHeight={setListingHeight}
             columns="12"
+            noscriptMessage
           />
         )}
       </div>

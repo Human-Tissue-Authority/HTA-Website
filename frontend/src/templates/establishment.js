@@ -27,7 +27,7 @@ const Establishment = ({ data }) => {
       value: nodeEstablishment.licenceNumber
     },
     {
-      label: 'Licenced premises',
+      label: 'Licensed premises',
       value: nodeEstablishment.licencedPremises
     },
     {
@@ -76,7 +76,7 @@ const Establishment = ({ data }) => {
         <RelatedLicences items={relatedLicencesArr} />
       )}
 
-      <TagGroup title="Licenced activities" tags={nodeEstablishment.relationships.licencedActivities} />
+      <TagGroup title="Licensed activities" tags={nodeEstablishment.relationships.licencedActivities} />
 
       {inspectionReportsCleaned && inspectionReportsCleaned.length > 0 && (
         <FileDownloadGroup title="Inspection reports" files={inspectionReportsCleaned} />

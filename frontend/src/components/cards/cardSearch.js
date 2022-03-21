@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'gatsby'
-
-import InlineTags from '../content/inlineTags'
 import Button from '../misc/button'
 import { truncateToNearestWord } from '../../utils/utils'
 import dayjs from 'dayjs'
@@ -13,8 +11,9 @@ const CardSearch = props => {
     lastUpdated,
     title,
     link,
+    fileLink,
     body,
-    tags,
+    summary,
     audience,
     contentType,
     newsType,
@@ -23,10 +22,8 @@ const CardSearch = props => {
     fullWidthClass
   } = props
 
-  const [text, setText] = useState(null)
-  const [cardTags, setCardTags] = useState([])
+  const [text, setText] = useState(summary)
   const [type, setType] = useState(null)
-
 
   useEffect(() => {
     switch (contentType) {
@@ -45,31 +42,38 @@ const CardSearch = props => {
           setType('News or event')
         }
 
-        if (body) {
+        if (summary) {
+          setText(summary)
+        } else if (body) {
           setText(body.join(' '))
         }
 
         break
       default:
-        if (body) {
+        if (summary) {
+          setText(summary)
+        } else if (body) {
           setText(body.join(' '))
         }
 
         setType(contentType)
     }
-
-    // set card tags
-    const cleanedTags = tags.filter(tag => tag)
-
-    if (cleanedTags.length > 0) {
-      // flatten multi-dimensional array
-      const tagsArray = [].concat.apply([], cleanedTags)
-      setCardTags(tagsArray)
-    }
   }, [])
 
+  const determineLink = () => {
+    if (type === 'foi' && fileLink) {
+      return fileLink?.length > 0 ? process.env.API_ROOT + fileLink[0] : '404'
+    }
+
+    return link || '/404'
+  }
+
   return (
-    <div className={`card card-search ${isFullWidth ? fullWidthClass : ''}`}>
+    <Link
+      className={`card card-search ${isFullWidth ? fullWidthClass : ''}`}
+      to={determineLink()}
+      aria-label={title}
+    >
       <p className="card-search__last-updated">
         <span>Updated on&nbsp;</span>
         {dayjs(lastUpdated).format('D MMM, YYYY')}
@@ -77,17 +81,16 @@ const CardSearch = props => {
       </p>
 
       <div className="card-search__title-wrapper">
-        <h3 className="card-search__title">
+        <h2 className="card-search__title">
           {title}
-        </h3>
+        </h2>
 
         {isFullWidth && (
           <div className="button-mobile-wrapper">
             <Button
               text={"View page"}
-              ariaText={`View ${title}`}
-              link={link || '/404'}
               showArrow
+              fake
             />
           </div>
         )}
@@ -95,16 +98,11 @@ const CardSearch = props => {
 
       {text && <p className="card-search__body">{truncateToNearestWord(text, 160)}</p>}
 
-      <div className='tags-wrapper'>
-        {cardTags.length > 0 && <InlineTags tags={cardTags} />}
-      </div>
-
       <div className="card-search__footer">
         <Button
-          text={"View page"}
-          ariaText={`View ${title}`}
-          link={link || '/404'}
+          text={type === 'foi' && fileLink && fileLink.length ? 'View PDF' : 'View page'}
           showArrow
+          fake
         />
 
         <div className="card-search__node-info">
@@ -112,7 +110,7 @@ const CardSearch = props => {
           {type && <p className="card-search__type">{type}</p>}
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

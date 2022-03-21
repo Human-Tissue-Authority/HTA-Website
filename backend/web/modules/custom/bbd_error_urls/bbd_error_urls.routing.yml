@@ -1,0 +1,7 @@
+bbd_error_urls.page:
+  path: '/bbd-error-urls/list'
+  defaults:
+    _title: "Top 'page not found' errors"
+    _controller: '\Drupal\bbd_error_urls\Controller\BbdErrorUrlsController::tableList'
+  requirements:
+    _permission: 'access content'

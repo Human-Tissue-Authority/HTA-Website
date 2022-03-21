@@ -6,6 +6,7 @@ import { animated, useSpring, config } from 'react-spring'
 
 import CrossWhite from '../../images/cross-white.svg'
 import { fetchAuthed, parseContent } from '../../utils/utils'
+import { useHasMounted } from '../../utils/hooks'
 
 const NotificationBanner = () => {
   const [bannerOpen, setBannerOpen] = useState(false)
@@ -117,6 +118,13 @@ const NotificationBanner = () => {
         }
       })
   }, [])
+
+  // ensure component has mounted / prevents window does not exist error during build
+  const hasMounted = useHasMounted();
+
+  if (!hasMounted) {
+    return null
+  }
 
   return (
     <>

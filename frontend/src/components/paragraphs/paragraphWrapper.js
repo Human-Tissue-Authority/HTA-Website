@@ -1,6 +1,7 @@
 import React from "react"
 import VisibilitySensor from "react-visibility-sensor"
 import { animated, useSpring, config } from "react-spring"
+import ConditionalWrapper from "../helpers/ConditionalWrapper"
 
 const ParagraphWrapper = (props) => {
   const { classes, animationStyle, show, setShow, children, paragraphTitle } = props
@@ -41,18 +42,33 @@ const ParagraphWrapper = (props) => {
   }
 
   return (
-    <VisibilitySensor onChange={checkVisibility} minTopValue={100} partialVisibility>
-      <animated.div
-        style={animation}
-        className={`paragraph ${classes || ''}`}
-        id={paragraphTitle ? paragraphTitle.toLowerCase().split(' ').join('-') : false}
-        data-title={paragraphTitle}
-      >
-        {children}
-      </animated.div>
-    </VisibilitySensor>
+    <ConditionalWrapper
+      condition={typeof document !== 'undefined'}
+      wrapper={children => (
+        <VisibilitySensor onChange={checkVisibility} minTopValue={100} partialVisibility>
+          <animated.div
+            style={animation}
+            className={`paragraph ${classes || ''}`}
+            id={paragraphTitle ? paragraphTitle.toLowerCase().split(' ').join('-') : false}
+            data-title={paragraphTitle}
+          >
+            {children}
+          </animated.div>
+        </VisibilitySensor>
+      )}
+      elseWrapper={children => (
+        <div
+          className={`paragraph ${classes || ''}`}
+          id={paragraphTitle ? paragraphTitle.toLowerCase().split(' ').join('-') : false}
+          data-title={paragraphTitle}
+        >
+          {children}
+        </div>
+      )}
+    >
+      {children}
+    </ConditionalWrapper>
   )
 }
 
 export default ParagraphWrapper
-

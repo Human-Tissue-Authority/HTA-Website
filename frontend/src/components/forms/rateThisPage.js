@@ -60,9 +60,9 @@ const RateThisPage = props => {
   }
 
   return (
-    <div className={`rtp ${feedbackSent ? 'rtp--disabled' : ''}`}>
+    <div className={`rtp ${feedbackSent ? 'rtp--disabled' : ''}`} role="form">
       <div className="rtp__inner-wrapper">
-        <h3 className="h h--3 rtp__title">How helpful was this page?</h3>
+        <h2 className="h h--3 rtp__title">How helpful was this page?</h2>
         <p className="rtp__help-text">Your feedback helps us improve the website and the information on it. Give this page a star rating by clicking in the stars below.</p>
 
         <form onChange={e => setRating(e.target.value)} onSubmit={handleSendFeedback}>
@@ -80,7 +80,7 @@ const RateThisPage = props => {
                     value={i + 1}
                     className={`${i + 1 <= rating ? 'rtp__input--active' : ''}`}
                     onMouseEnter={() => setRating(i + 1)}
-                    aria-label={`Rating: ${STATUS[rating - 1]}`} 
+                    aria-label={`Rating: ${STATUS[i]}`}
                   />
                   <label htmlFor={`rating__${i + 1}`} className={`rtp__radio ${i + 1 <= rating ? 'rtp__radio--active' : ''}`}>
                     <svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">

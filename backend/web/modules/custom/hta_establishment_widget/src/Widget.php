@@ -18,6 +18,8 @@ class Widget implements ContainerAwareInterface {
 
   public function embed() {
     $config = \Drupal::config('hta_establishment_widget.admin_settings');
+    // Never cache this page, as it needs to be live (and also dependent on the REFERER header).
+    \Drupal::service('page_cache_kill_switch')->trigger();
 
     $request = \Drupal::request();
     $path = $request->getPathInfo();
@@ -57,7 +59,7 @@ class Widget implements ContainerAwareInterface {
       }
     }
 
-    if (isset($node) &&  $site_url_match && $node->status == 1) {
+    if (isset($node) && $site_url_match && $node->status == 1) {
       $establishment = $node->field_establishment->target_id;
 
       $licence_node = Node::load($establishment);
@@ -65,11 +67,12 @@ class Widget implements ContainerAwareInterface {
       if ($licence_node && $licence_node instanceof NodeInterface) {
         $licence_link = $licence_node->toUrl()->toString();
 
-        if ($licence_node->hasField('field_hta_licence_status') && !$licence_node->get('field_hta_licence_status')->isEmpty()) {
+        if ($licence_node->hasField('field_hta_licence_status') && !$licence_node->get('field_hta_licence_status')
+            ->isEmpty()) {
           $hta_licence_status = $licence_node->field_hta_licence_status->value;
 
-          if ($hta_licence_status && (strtolower($hta_licence_status) == 'licence granted' || strtolower($hta_licence_status) == 'licence suspended')
-            && $licence_node->hasField('field_main_licence_number') && !$licence_node->get('field_main_licence_number')->isEmpty()) {
+          if ($hta_licence_status && (strtolower($hta_licence_status) == 'licence granted' || strtolower($hta_licence_status) == 'licence suspended') && $licence_node->hasField('field_main_licence_number') && !$licence_node->get('field_main_licence_number')
+              ->isEmpty()) {
             $licence_id = $licence_node->field_main_licence_number->value;
 
             $licence_image = [
@@ -80,7 +83,7 @@ class Widget implements ContainerAwareInterface {
               ]),
               '#attributes' => [
                 'class' => [
-                  'hta-licenced-image'
+                  'hta-licenced-image',
                 ],
               ],
             ];
@@ -89,7 +92,8 @@ class Widget implements ContainerAwareInterface {
               $term = Term::load($node->field_referenced_sector->target_id);
 
               if (isset($term) && $term->id()) {
-                if ($term->hasField('field_image') && $term->get('field_image') && $term->get('field_image')->getValue()) {
+                if ($term->hasField('field_image') && $term->get('field_image') && $term->get('field_image')
+                    ->getValue()) {
                   $image_id = $term->get('field_image')->target_id;
                   $media_object = Media::load($image_id);
                   if ($media_object && $media_object->hasField('field_media_image')) {
@@ -110,8 +114,7 @@ class Widget implements ContainerAwareInterface {
             }
 
             if (!$image_path) {
-              $module_path = drupal_get_path('module', 'hta_establishment_widget');
-              $image_path = $module_path . '/images/hta_establishment_widget.png';
+              $image_path = 'https://www.hta.gov.uk/static/hta_establishment_widget.png';
             }
 
             $licence_image['#uri'] = $image_path;
@@ -127,8 +130,11 @@ class Widget implements ContainerAwareInterface {
               'image' => [
                 '#type' => 'link',
                 '#title' => $licence_image,
-                '#url' => Url::fromUri($frontend_base_url . $licence_link . '/'),
-              ]
+                '#url' => Url::fromUri(rtrim($frontend_base_url, '/') . $licence_link),
+                '#attributes' => [
+                  'target' => '_top',
+                ],
+              ],
             ];
 
             $js = "

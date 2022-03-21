@@ -20,6 +20,14 @@
     margin-top: 25px;
   }
 
+  .field {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+      width: 100%;
+    }
+  }
+
 }
 
 .follow-blog__inner-wrapper {
@@ -50,11 +58,9 @@
     font-family: $font-secondary;
     color: $brand-primary;
     padding-bottom: 2px;
-  
+
     &:hover {
       text-decoration: underline;
     }
   }
 }
-
-  

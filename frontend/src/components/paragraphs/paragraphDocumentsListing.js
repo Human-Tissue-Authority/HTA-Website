@@ -9,7 +9,7 @@ const ParagraphDocumentsListing = ({ node }) => {
   const body = (node.field_description && node.field_description.processed) ? node.field_description.processed : '';
 
   const nodeAttachments = node.relationships.field_document.map(item => {
-    if (item.relationships) {
+    if (item.relationships && item.relationships.field_media_file) {
       const url = process.env.API_ROOT + item.relationships.field_media_file.uri.url
       const label = item.relationships.field_media_file.filename
 
@@ -33,7 +33,7 @@ const ParagraphDocumentsListing = ({ node }) => {
       <div className={`paragraph-promotional-blocks__inner-wrapper cms cms-component columns`}>
         <div className={`column is-offset-1 is-6`}>
           {node.field_title && (
-            <h2 className="h section-title column is-12">{node.field_title}</h2>
+            <h2 className="h h--2 column is-12">{node.field_title}</h2>
           )}
           <div  className="column is-12" dangerouslySetInnerHTML={{ __html: parseContent(body) }} />
         </div>

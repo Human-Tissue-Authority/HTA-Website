@@ -49,8 +49,6 @@ const SubMenu = props => {
     !menuChanging ? [0.2, 0.5] : [0, 0.2] 
   )
 
-  const handleParentLink = useCallback(node => node && node.focus(), [handleParentLink])
-
   useEffect(() => {
     const parentLink = document.querySelector('.header-submenu__parent-link')
     
@@ -89,10 +87,9 @@ const SubMenu = props => {
                   <Link
                     className="header-submenu__parent-link"
                     to={data.url}
-                    ref={handleParentLink}
                     onKeyDown={e => handleParentLinkTab(e)}
                   >
-                    <img src={ArrowWhite} role="presentation" />
+                    <img src={ArrowWhite} role="presentation" alt="" />
                     {data.title}
                   </Link>
                 </animated.div>

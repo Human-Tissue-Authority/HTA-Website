@@ -6,7 +6,7 @@ import ArrowWhite from '../../images/arrow-white.svg'
 import ArrowPurple from '../../images/arrow-purple.svg'
 
 const Button = props => {
-  const { text, ariaText, link, showArrow, clickMethod } = props
+  const { text, ariaText, link, showArrow, clickMethod, fake } = props
   const [active, setActive] = useState(false)
 
   const animation = useTransition(active, null, {
@@ -16,6 +16,27 @@ const Button = props => {
     enter: { opacity: 1, position: 'static' },
     leave: { opacity: 0, position: 'absolute' },
   })
+
+  if (fake) {
+    return (
+      <div className="button-wrapper">
+        <div
+          className="button button--fake"
+          onMouseDown={() => setActive(true)}
+          onMouseUp={() => setActive(false)}
+          onMouseLeave={() => setActive(false)}
+        >
+          {typeof document !== 'undefined' ? animation.map(({ item, key, props }) => showArrow && item ?
+            <animated.img key={key} style={props} src={ArrowWhite} aria-hidden role="presentation" alt="" /> :
+            <animated.img key={key} style={props} src={ArrowPurple} aria-hidden role="presentation" alt="" />
+          ) : (
+            <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
+          )}
+          {text}
+        </div>
+      </div>
+    )
+  }
   
   if (link) {
     return (
@@ -28,9 +49,11 @@ const Button = props => {
           onMouseUp={() => setActive(false)}
           onMouseLeave={() => setActive(false)}
         >
-          {animation.map(({ item, key, props }) => showArrow && item ?
+          {typeof document !== 'undefined' ? animation.map(({ item, key, props }) => showArrow && item ?
             <animated.img key={key} style={props} src={ArrowWhite} aria-hidden role="presentation" alt="" /> :
             <animated.img key={key} style={props} src={ArrowPurple} aria-hidden role="presentation" alt="" />
+            ) : (
+            <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
           )}
           {text}
         </Link>
@@ -48,9 +71,11 @@ const Button = props => {
       onMouseUp={() => setActive(false)}
       onMouseLeave={() => setActive(false)}
     >
-      {showArrow && animation.map(({ item, key, props }) => showArrow && item ?
+      {typeof document !== 'undefined' ? showArrow && animation.map(({ item, key, props }) => showArrow && item ?
         <animated.img key={key} style={props} src={ArrowWhite} aria-hidden role="presentation" alt="" /> :
         <animated.img key={key} style={props} src={ArrowPurple} aria-hidden role="presentation" alt="" />
+      ) : (
+        <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
       )}
       {text}
     </button>

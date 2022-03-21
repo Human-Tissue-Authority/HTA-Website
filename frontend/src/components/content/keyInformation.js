@@ -1,6 +1,7 @@
 import React from 'react'
 import { animated, useSpring, useTransition, config } from 'react-spring'
 import { contactDataAsLink } from '../../utils/utils'
+import ConditionalWrapper from '../helpers/ConditionalWrapper'
 
 const KeyInformation = props => {
   const { items, title, wide } = props
@@ -22,9 +23,21 @@ const KeyInformation = props => {
 	})
 	
   return (
-    <animated.div
-      style={animationBlock}
-      className="section key-information columns"
+    <ConditionalWrapper
+      condition={typeof document !== 'undefined'}
+      wrapper={children => (
+        <animated.div
+          style={animationBlock}
+          className="section key-information columns"
+        >
+          {children}
+        </animated.div>
+      )}
+      elseWrapper={children => (
+        <div className="section key-information columns">
+          {children}
+        </div>
+      )}
     >
       <div className={`key-information__inner-wrapper column ${wide ? 'is-9' : 'is-6'} is-offset-1`}>
 
@@ -35,7 +48,7 @@ const KeyInformation = props => {
         )}
 
         <ul className="columns is-multiline">
-          {animationItems.map(({ item, key, props }) => {
+          {items.map(item => {
             if (item.value && item.value.length > 0) {
               let widthClass = 'is-12'
 
@@ -46,20 +59,20 @@ const KeyInformation = props => {
               }
 
               return (
-                <animated.li className={`column ${widthClass}`} style={props} key={key}>
+                <li className={`column ${widthClass}`} key={item.label}>
                   <p className="small-label">{item.label}</p>
                   {item.value instanceof Array ? item.value.map((value, i) => (
 										item.type === 'contact' ? contactDataAsLink(value, item.value) : <p key={value} className="small-content">{value}</p>
                   )) : (
                     <p className="small-content">{item.value}</p>
                   )}
-                </animated.li>
+                </li>
               )
             }
           })}
         </ul>
       </div>
-    </animated.div>
+    </ConditionalWrapper>
   )
 }
 

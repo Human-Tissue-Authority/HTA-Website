@@ -10,6 +10,7 @@
 
   &__title {
     margin-bottom: 15px;
+    margin-top: 0;
     @include media('>=desktop-wide') {
       font-size: 4.5rem;
     }
@@ -43,6 +44,8 @@
   }
 
   &__is-hidden-mobile {
+    margin-top: 20px;
+
     @include media(">tablet") {
       display: block;
     }

@@ -90,11 +90,11 @@ const WebformContact = props => {
     if (recaptchaResponse.success) {
       try {
         const response = await fetch(SUBMISSION_ENDPOINT, options)
-  
+
         if (response.ok) {
           // submission successful
           const data = await response.json()
-  
+
           if (typeof data.error !== 'undefined') {
             // Error returned from Drupal while trying to process the request.
             actions.setStatus({
@@ -121,7 +121,7 @@ const WebformContact = props => {
           message: e.message,
         })
       }
-  
+
       actions.setSubmitting(false)
     } else {
       actions.setSubmitting(false)
@@ -184,11 +184,13 @@ const WebformContact = props => {
                     <legend>
                       <span className="accessibility">Contact us: your information</span>
                     </legend>
-
+                    <p id="formInstructions">Fields marked with an asterisk (*) are required.</p>
                     <div className="field field--contact-as">
                       <label>I wish to contact the HTA in my capacity as a...</label>
                       <button
                         type="button"
+                        role="checkbox"
+                        aria-checked={`webform-contact__contact-as-button ${contactAs === 'Professional' ? 'true': 'false'}`}
                         className={`webform-contact__contact-as-button ${contactAs === 'Professional' ? 'webform-contact__contact-as-button--active': ''}`}
                         onClick={() => setContactAs('Professional')}
                       >
@@ -196,6 +198,8 @@ const WebformContact = props => {
                       </button>
 
                       <button
+                        role="checkbox"
+                        aria-checked={`webform-contact__contact-as-button ${contactAs !== 'Professional' ? 'true': 'false'}`}
                         type="button"
                         className={`webform-contact__contact-as-button ${contactAs !== 'Professional' ? 'webform-contact__contact-as-button--active': ''}`}
                         onClick={() => setContactAs('Member of the public / other')}
@@ -207,13 +211,23 @@ const WebformContact = props => {
                     <div className={`field field--name ${errors.name ? 'field--invalid' : ''}`}>
                       <label htmlFor="name" aria-label="Name (required)">Name*</label>
                       <Field id="name" type="text" name="name" autoComplete="name" />
-                      <ErrorMessage name="name" component="span" />
+                      <ErrorMessage
+                        name="name"
+                        component="span"
+                        aria-live={errors?.name ? "polite" : null}
+                        role={errors?.name ? "alert" : null}
+                      />
                     </div>
 
                     <div className={`field field--email ${errors.email ? 'field--invalid' : ''}`}>
                       <label htmlFor="email" aria-label="Email address (required)">Email address*</label>
                       <Field id="email" type="email" name="email" autoComplete="email" />
-                      <ErrorMessage name="email" component="span" />
+                      <ErrorMessage
+                        name="email"
+                        component="span"
+                        aria-live={errors?.email ? "polite" : null}
+                        role={errors?.email ? "alert" : null}
+                      />
                     </div>
 
                     {contactAs === 'Professional' && (
@@ -221,13 +235,23 @@ const WebformContact = props => {
                         <div className={`field field--your_organisation ${errors.your_organisation ? 'field--invalid' : ''}`}>
                           <label htmlFor="your_organisation">Organisation</label>
                           <Field id="your_organisation" type="text" name="your_organisation" autoComplete="organization" />
-                          <ErrorMessage name="your_organisation" component="span" />
+                          <ErrorMessage
+                            name="your_organisation"
+                            component="span"
+                            aria-live={errors?.your_organisation ? "polite" : null}
+                            role={errors?.your_organisation ? "alert" : null}
+                          />
                         </div>
 
                         <div className={`field field--your_department ${errors.your_department ? 'field--invalid' : ''}`}>
                           <label htmlFor="your_department">Department</label>
                           <Field id="your_department" type="text" name="your_department" />
-                          <ErrorMessage name="your_department" component="span" />
+                          <ErrorMessage
+                            name="your_department"
+                            component="span"
+                            aria-live={errors?.your_department ? "polite" : null}
+                            role={errors?.your_department ? "alert" : null}
+                          />
                         </div>
                       </>
                     )}
@@ -240,7 +264,7 @@ const WebformContact = props => {
 
                     <div className={`field field--nature_of_your_enquiry ${errors.nature_of_your_enquiry ? 'field--invalid' : ''}`}>
                       <label htmlFor="nature_of_your_enquiry" aria-label="Nature of enquiry (required)">Nature of enquiry*</label>
-                      <Field as="select" name="nature_of_your_enquiry" id="nature_of_your_enquiry">
+                      <Field as="select" name="nature_of_your_enquiry" id="nature_of_your_enquiry" aria-required="true">
                         <option value="General enquiry">General enquiry</option>
                         <option value="Body donation enquiry">Body donation enquiry</option>
                         <option value="Make a change to my licence">Make a change to my licence</option>
@@ -251,13 +275,23 @@ const WebformContact = props => {
                         <option value="HTA careers">HTA careers</option>
                       </Field>
                       <div className="select-arrow" />
-                      <ErrorMessage name="nature_of_your_enquiry" component="span" />
+                      <ErrorMessage
+                        name="nature_of_your_enquiry"
+                        component="span"
+                        aria-live={errors?.nature_of_your_enquiry ? "polite" : null}
+                        role={errors?.nature_of_your_enquiry ? "alert" : null}
+                      />
                     </div>
 
                     <div className={`field field--message ${errors.message ? 'field--invalid' : ''}`}>
                       <label htmlFor="message" aria-label="Enquiry details (required)">Enquiry details*</label>
                       <Field id="message" as="textarea" name="message" />
-                      <ErrorMessage name="message" component="span" />
+                      <ErrorMessage
+                        name="message"
+                        component="span"
+                        aria-live={errors?.message ? "polite" : null}
+                        role={errors?.message ? "alert" : null}
+                      />
                     </div>
                   </fieldset>
 
@@ -265,6 +299,7 @@ const WebformContact = props => {
                     sitekey={process.env.RECAPTCHA_SITE_KEY}
                     onChange={handleRecaptcha}
                     className="field--recaptcha"
+                    theme="dark"
                   />
 
                   <SubmitButton

@@ -26,7 +26,7 @@ const ParagraphButtons = ({ node }) => {
         classes="section cms cms-component paragraph-buttons columns"
       >
         <div className="paragraph-buttons__wrapper column is-6 is-offset-1">
-          {animationButtons.map(({ item, key, props }) => item.title && item.url && (
+          {typeof document !== 'undefined' ? animationButtons.map(({ item, key, props }) => item.title && item.url && (
             <animated.div style={props} key={key}>
               <Button
                 text={item.title}
@@ -35,6 +35,15 @@ const ParagraphButtons = ({ node }) => {
                 showArrow
               />
             </animated.div>
+          )) : BtnLinks.map(item => (
+            <div key={item.url}>
+              <Button
+                text={item.title}
+                ariaText={item.title}
+                link={item.url}
+                showArrow
+              />
+            </div>
           ))}
         </div>
       </ParagraphWrapper>

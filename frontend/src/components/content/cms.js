@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { animated, useSpring, config } from 'react-spring'
 import { parseContent } from '../../utils/utils'
+import ConditionalWrapper from '../helpers/ConditionalWrapper'
 
 const CMS = props => {
   const { content, wide, sectionOverlayRef } = props
@@ -20,12 +21,24 @@ const CMS = props => {
   })
 
   return (
-    <animated.div
-      className="cms cms-component columns"
-      style={animation}
+    <ConditionalWrapper
+      condition={typeof document !== 'undefined'}
+      wrapper={children => (
+        <animated.div
+          className="cms cms-component columns"
+          style={animation}
+        >
+          {children}
+        </animated.div>
+      )}
+      elseWrapper={children => (
+        <div className="cms cms-component columns">
+          {children}
+        </div>
+      )}
     >
       <div className={`cms-col column ${wide ? 'is-9' : 'is-6'} is-offset-1`} dangerouslySetInnerHTML={{ __html: parseContent(content) }} style={{minHeight: contentHeight}} />
-    </animated.div>
+    </ConditionalWrapper>
   )
 }
 

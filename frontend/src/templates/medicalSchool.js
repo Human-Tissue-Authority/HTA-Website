@@ -15,6 +15,7 @@ import GoogleMap from "../components/content/googleMap"
 import {animated, config, useSpring} from "react-spring"
 import ArrowPurple from "../images/arrow-purple.svg"
 import MedicalSchoolInformation from "../components/content/medicalSchoolInformation"
+import ConditionalWrapper from "../components/helpers/ConditionalWrapper"
 
 const MedicalSchool = ({ data }) => {
   const { nodeMedicalSchool } = data
@@ -64,9 +65,12 @@ const MedicalSchool = ({ data }) => {
         address={nodeMedicalSchool.field_address_formatted}
         areas_covered={areasCovered}
         licence_number={license_number}
-        website={nodeMedicalSchool.field_website_address.url}/>
+        website={nodeMedicalSchool.field_website_address.url}
+      />
 
-      <GoogleMap lat={nodeMedicalSchool.field_address.lat} long={nodeMedicalSchool.field_address.lon} />
+      {typeof document !== 'undefined' && (
+        <GoogleMap lat={nodeMedicalSchool.field_address.lat} long={nodeMedicalSchool.field_address.lon} />
+      )}
 
       <CMS content={nodeMedicalSchool.body?.processed} />
 
@@ -74,9 +78,21 @@ const MedicalSchool = ({ data }) => {
 
       <div className="section--overlay">
         <div className="section--overlay--wrapper columns is-multiline">
-          <animated.div
-            style={animationAside}
-            className="in-this-section column is-4"
+          <ConditionalWrapper
+            condition={typeof document !== 'undefined'}
+            wrapper={children => (
+              <animated.div
+                style={animationAside}
+                className="in-this-section column is-4"
+              >
+                {children}
+              </animated.div>
+            )}
+            elseWrapper={children => (
+              <div className="in-this-section column is-4">
+                {children}
+              </div>
+            )}
           >
             <div className="in-this-section__inner-wrapper">
               <Link to="/medical-schools">
@@ -84,11 +100,9 @@ const MedicalSchool = ({ data }) => {
                 Back to medical schools
               </Link>
             </div>
-
-          </animated.div>
+          </ConditionalWrapper>
         </div>
       </div>
-
     </Layout>
   )
 }

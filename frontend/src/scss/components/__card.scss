@@ -1,0 +1,22 @@
+.card {
+  display: block;
+  transition: all .2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.015) translateY(-5px);
+    box-shadow: 0 30px 60px 0 rgba(78, 25, 101, 0.15) !important;
+
+    .button--fake {
+      background: #cdd3e6;
+      box-shadow: 0 2px 15px 0 rgba(78, 25, 101, 0.5);
+    }
+  }
+
+  &:active {
+    .button--fake {
+      background: #250334;
+      border-color: #250334;
+      color: white;
+    }
+  }
+}

@@ -57,11 +57,13 @@ const Blog = props => {
 
       <BlogComments nid={nodeBlog.drupal_internal__nid} comments={nodeBlog.relationships?.comment__blog}/>
 
-      <div className="section--overlay">
-        <div className="section--overlay--wrapper columns is-multiline">
-          <FollowBlog nid={nodeBlog.drupal_internal__nid} />
+      {typeof document !== 'undefined' && (
+        <div className="section--overlay">
+          <div className="section--overlay--wrapper columns is-multiline">
+            <FollowBlog nid={nodeBlog.drupal_internal__nid} />
+          </div>
         </div>
-      </div>
+      )}
     </Layout>
   )
 }

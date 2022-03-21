@@ -2,7 +2,6 @@
   background-color: #FFFFFF;
   box-shadow: 0 15px 40px 0 rgba(78,25,101,0.15);
   padding: 20px 40px;
-  transform: translateY(-40px);
   
   display: flex;
   flex-direction: column;
@@ -49,6 +48,7 @@
   line-height: 1.25em;
   padding-bottom: 20px;
   display: block;
+  margin-top: 0;
 }
 
 .card-meeting__info-wrapper {

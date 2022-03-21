@@ -2,6 +2,7 @@ import React from "react"
 import dayjs from "dayjs"
 import AddComment from "../forms/addComment"
 import { animated, useSpring, config } from "react-spring"
+import ConditionalWrapper from "../helpers/ConditionalWrapper"
 
 const BlogComments = ({ nid, comments = [] }) => {
   const animationComments = useSpring({
@@ -11,7 +12,19 @@ const BlogComments = ({ nid, comments = [] }) => {
   })
 
   return (
-    <animated.section className="comments" style={animationComments}>
+    <ConditionalWrapper
+      condition={typeof document !== 'undefined'}
+      wrapper={children => (
+        <animated.section className="comments" style={animationComments}>
+          {children}
+        </animated.section>
+      )}
+      elseWrapper={children => (
+        <section className="comments">
+          {children}
+        </section>
+      )}
+    >
       <div className="comments__list">
         <div className="columns is-multiline">
 
@@ -35,8 +48,11 @@ const BlogComments = ({ nid, comments = [] }) => {
         </ul>
         </div>
       </div>
-      <AddComment nid={nid} comments={comments} />
-    </animated.section>
+
+      {typeof document !== 'undefined' && (
+        <AddComment nid={nid} comments={comments} />
+      )}
+    </ConditionalWrapper>
   )
 }
 

@@ -1,11 +1,10 @@
 import React from "react"
-import { Link } from 'gatsby'
-import InlineTags from "../content/inlineTags"
+import { Link } from "gatsby"
 import Button from "../misc/button"
-import { contactDataAsLink, truncateToNearestWord } from "../../utils/utils"
+import { truncateToNearestWord } from "../../utils/utils"
 import dayjs from "dayjs"
 
-const CardEvent = ({ title, body, venue, date, contact, link, tags, summary }) => {
+const CardEvent = ({ title, body, venue, date, contact, link, summary }) => {
   const timeFormatted = dayjs(date).format('h:mm a')
   const dateFormatted = dayjs(date).format('D MMM YYYY')
 
@@ -14,7 +13,7 @@ const CardEvent = ({ title, body, venue, date, contact, link, tags, summary }) =
 
     if (summary) {
       textToRender = summary
-    } else if (body) {
+    } else if (body && body[0]) {
       textToRender = body[0].toString()
     }
 
@@ -23,15 +22,17 @@ const CardEvent = ({ title, body, venue, date, contact, link, tags, summary }) =
     )
   }
 
-
   return (
-    <div className="card-event">
+    <Link
+      className="card card-event"
+      aria-label={title}
+      to={link || '/404'}
+    >
       <div className="columns">
         <div className="column is-6">
-          <h3 className="card-event__title">{title}</h3>
-          {tags && <InlineTags tags={tags} classes={'card-event__tags'}/>}
+          <h2 className="card-event__title">{title}</h2>
           <div className="card-event__is-hidden-mobile">
-           <Button ariaText={`View event: ${title}`} text='Read more' link={link} showArrow/>
+           <Button text='Read more' showArrow fake />
           </div>
         </div>
         <div className="column is-6">
@@ -67,17 +68,11 @@ const CardEvent = ({ title, body, venue, date, contact, link, tags, summary }) =
               <div className='card-event__label'>
                 Contact
               </div>
-              <div className="card-event__info">
-                {contact.map((item, i) => contactDataAsLink(item, contact, i))}
-              </div>
             </div>
-          </div>
-          <div className="card-event__is-visible-tablet card-event__button-mobile mt-2">
-            <Button ariaText={`View event: ${title}`} text='Read more' link={link} classes={'is-hidden'} showArrow/>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

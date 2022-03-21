@@ -24,7 +24,8 @@ const ContentListing = props => {
     classes,
     setListingHeight,
     cardClasses,
-    noResultsMessage
+    noResultsMessage,
+    noscriptMessage
   } = props
 
   const animatedCards = useTransition(items, item => item?.its_nid || item?.id, {
@@ -72,7 +73,9 @@ const ContentListing = props => {
             lastUpdated={item.ds_changed}
             title={item.ss_title}
             link={item.ss_alias}
+            fileLink={item.sm_url_1}
             body={item.tm_X3b_en_body}
+            summary={item.ss_summary}
             tags={[item.sm_tags, item.sm_sector_tags]}
             audience={item.sm_audience}
             newsType={item.ss_field_news_type}
@@ -98,6 +101,7 @@ const ContentListing = props => {
             type={item.type}
             date={item.date}
             title={item.title}
+            summary={item.summary}
             link={item.link}
             image={item.image}
           />
@@ -155,7 +159,8 @@ const ContentListing = props => {
             title={item.title}
             link={item.link}
             body={[item.body]}
-            tags={[...item.sector, ...item.tags]}
+            sector={item.sector}
+            tags={item.tags}
             summary={item.summary}
             audience={item.audience}
             date={item.date}
@@ -180,7 +185,7 @@ const ContentListing = props => {
   return (
     <div ref={listingRef} className={`content-listing ${classes || ''}`}>
       <div className="content-listing__wrapper columns is-multiline is-variable is-4">
-        {animatedCards.map(({ item, key, props}, index) => item && (
+        {typeof document !== 'undefined' ? animatedCards.map(({ item, key, props}, index) => item && (
           <animated.div
             key={key}
             style={props}
@@ -188,9 +193,16 @@ const ContentListing = props => {
           >
             {getCard(item, index)}
           </animated.div>
+        )) : items && items.map((item, index) => (
+          <div
+            key={item?.its_nid || item?.id}
+            className={getClassNames(index)}
+          >
+            {getCard(item, index)}
+          </div>
         ))}
 
-        {total > itemsPerPage && (
+        {typeof document !== 'undefined' && total > itemsPerPage && (
           <Pagination
             itemsPerPage={itemsPerPage}
             totalItems={total}
@@ -199,7 +211,25 @@ const ContentListing = props => {
           />
         )}
         {items.length < 1 && !loading && (
-          <div className="no-results">{noResultsMessage || 'Sorry, no results match your search criteria.'}</div>
+          <div className="no-results">
+            {noResultsMessage || 'Sorry, no results match your search criteria.'}
+
+            {noscriptMessage && (
+              <noscript>
+                <br />
+                <br />
+                You are seeing this message because you have JavaScript disabled or because your browser does not support it. Our website requires JavaScript to be enabled in order to fully function.
+                <br />
+                <br />
+                Find out more about enabling <a href="https://www.enable-javascript.com" target="_blank">JavaScript</a>.
+                <br />
+                <br />
+                You can contact the HTA for the information you are seeking:
+                <br />
+                you can email us at <a href="mailto:enquiries@hta.gov.uk">enquiries@hta.gov.uk</a> or call us between the hours of 9am - 5pm Monday Friday on <a href="tel:020 7269 1900">020 7269 1900</a>
+              </noscript>
+            )}
+          </div>
         )}
       </div>
     </div>

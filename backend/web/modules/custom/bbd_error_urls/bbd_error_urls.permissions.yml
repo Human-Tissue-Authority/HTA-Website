@@ -1,0 +1,4 @@
+administer bbd_error_urls configuration:
+  title: 'Administer bbd_error_urls configuration'
+  description: 'Optional description.'
+  restrict access: true

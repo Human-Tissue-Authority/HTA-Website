@@ -305,6 +305,7 @@ const ListingMeetings = ({ displayPrevious }) => {
             setListingHeight={setListingHeight}
             columns="12"
             columnsResponsive="12"
+            noscriptMessage
           />
         )}
       </section>

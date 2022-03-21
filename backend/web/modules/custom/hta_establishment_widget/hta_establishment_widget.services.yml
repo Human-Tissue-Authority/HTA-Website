@@ -4,6 +4,10 @@ services:
     tags:
       - { name: event_subscriber }
   hta_establishment_widget.commands:
-    class: Drupal\hta_establishment_widget\Commands\HtaEstablishmentCustomCommands
+    class: Drupal\hta_establishment_widget\Commands\BBDCustomCommands
     tags:
       - { name: drush.command }
+  remove_x_frame_options_subscriber:
+    class: Drupal\hta_establishment_widget\EventSubscriber\RemoveXFrameOptionsSubscriber
+    tags:
+      - { name: event_subscriber }

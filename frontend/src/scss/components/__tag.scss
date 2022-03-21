@@ -1,6 +1,6 @@
 .tag {
   font-family: $font-secondary;
-  color: $mid-grey;
+  color: $brand-primary;
   font-size: 1.4rem;
   line-height: 1.8rem;
   text-align: center;
@@ -8,9 +8,9 @@
   border-radius: 100px;
   margin-right: 20px;
   margin-bottom: 20px;
-  background-color: #F4F4F4;
+  background-color: none;
   display: block;
-  border: 1px solid #f4f4f4;
+  border: 1px solid $brand-primary;
 
   &--link {
     cursor: pointer;
@@ -26,8 +26,8 @@
   }
 
   &--active {
-    background: $ghost-white;
-    border-color: $ghost-white;
+    background: $queen-pink;
+    border-color: $brand-primary;
     color: $brand-primary;
   }
 }

@@ -14,14 +14,21 @@ const Accordion = ({ summary, details, classes = 'accordion', onExpand, expand, 
     onExpand(e, summary)
   } 
 
+  const handleKeyExpand = e => {
+    // If Enter key is pressed
+    if (e.keyCode === 13) {
+      onExpand(e, summary)
+    }
+  }
+
   return (
     <div className={`accordion-wrapper ${classes}${isActive ? ' expanded' : ''}`}>
       <div className={`${classes}__summary`} onClick={handleExpand}>
         {summary}
 
         {!hideArrow && !arrow && (
-          <div className={`accordion__arrow-wrapper`} onClick={handleExpand}>
-            <animated.img src={ArrowWhite} role="presentation" style={animation} className={`accordion__arrow`}/>
+          <div className={`accordion__arrow-wrapper`} tabindex='0' onClick={handleExpand} onKeyDown={handleKeyExpand}>
+            <animated.img src={ArrowWhite} role="presentation" style={animation} className={`accordion__arrow`} alt="" />
           </div>
         )}
         

@@ -8,20 +8,32 @@ export function fetchSearchResults(options) {
   const filters = options.queryFilters || ''
   const sort = options.querySort || ''
 
-  const fields = 'ss_title,ds_changed,ds_created,tm_X3b_en_body,sm_tags,sm_audience,ss_type,ss_alias,its_nid,sm_sector_tags,ss_field_news_type'
+  const fields = 'ss_title,ds_changed,ds_created,tm_X3b_en_body,ss_summary,sm_tags,sm_audience,ss_type,ss_alias,its_nid,sm_sector_tags,ss_field_news_type,sm_url_1'
   const baseQuery = `/select?wt=json&rows=${itemsPerPage}&start=${offset}&q=tm_X3b_en_field_search_all:${keywords}&fl=${fields}&fq=ss_type:(blog establishment foi medical_school meeting article page vacancy)`
 
   return fetchAuthed(process.env.SOLR_ROOT + baseQuery + filters + sort)
 }
 
 export function fetchEstablishments(options) {
+  const createKeywordSearch = (keyword) => {
+    const queries = [
+      `tm_X3b_en_field_search_all:%22${keyword}*%22`,
+      `tm_X3b_en_field_search_all:%22${keyword}%22`,
+      `tm_X3b_en_field_search_all:${keyword}*`,
+      `tm_X3b_en_field_search_all:${keyword}`,
+    ];
+
+    return `(${queries.join('%20OR%20')})`
+  }
+
+  const keywordSearch = options.keyword ? `&fq=${createKeywordSearch(options.keyword)}` : ''
   const itemsPerPage = options.itemsPerPage || 20
   const offset = options.offset || 0
   const filters = options.queryFilters || ''
   const sort = options.querySort || '&sort=ss_field_main_licence_number asc'
 
   const fields = 'ss_alias,ss_title,ss_field_main_licence_number,sm_sector_tags,bs_field_satellites_are_linked_to_a,ss_field_hta_licence_status,its_nid'
-  const baseQuery = `/select?wt=json&rows=${itemsPerPage}&start=${offset}&q=*:*&fl=${fields}&fq=ss_type:establishment&fq=bs_status:true`
+  const baseQuery = `/select?wt=json&rows=${itemsPerPage}&start=${offset}&q=*:*&fl=${fields}&fq=ss_type:establishment&fq=bs_status:true${keywordSearch}`
 
   return fetchAuthed(process.env.SOLR_ROOT + baseQuery + filters + sort)
 }
@@ -75,13 +87,12 @@ export function fetchFoi(options) {
 export function fetchBlogPosts(options) {
   const itemsPerPage = options.itemsPerPage || 20
   const offset = options.offset || 0
-  const filters = options.queryCategories || ''
   const sort = '&sort=ds_created desc'
 
   const fields = 'ss_title,its_nid,ds_created,sm_tags,ss_alias,sm_audience,tm_X3b_en_body'
   const baseQuery = `/select?wt=json&rows=${itemsPerPage}&start=${offset}&q=*:*&fl=${fields}&fq=ss_type:blog&fq=bs_status:true`
 
-  return fetchAuthed(process.env.SOLR_ROOT + baseQuery + filters + sort)
+  return fetchAuthed(process.env.SOLR_ROOT + baseQuery + sort)
 }
 
 export function fetchMedicalSchools(options) {
@@ -90,7 +101,7 @@ export function fetchMedicalSchools(options) {
   const filters = options.queryFilters || ''
   const sort = options.querySort || '&sort=ss_title asc'
 
-  const fields = 'ss_title,ss_field_contact_name,ss_field_contact_telephone,its_nid,tm_X3b_en_postcodes,ss_url_alias'
+  const fields = 'ss_title,ss_field_contact_name,ss_field_contact_telephone,its_nid,sm_postcodes,ss_url_alias'
   const baseQuery = `/select?wt=json&rows=${itemsPerPage}&start=${offset}&q=*:*&fl=${fields}&fq=ss_type:medical_school&fq=bs_status:true`
 
   return fetchAuthed(process.env.SOLR_ROOT + baseQuery + filters + sort)

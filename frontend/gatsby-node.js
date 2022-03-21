@@ -156,6 +156,7 @@ exports.createPages = async ({ graphql, actions }) => {
             }
             redirect_redirect {
               uri
+              url
             }
             status_code
           }
@@ -192,7 +193,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const updatedRedirects = await updatePaths(data)
 
-  blogs.edges.map(({node, previous, next}) =>
+  blogs.edges.map(({node, previous, next}) => {
     createPage({
       path: ensureTrailingSlash(node),
       component: path.resolve(`./src/templates/blog.js`),
@@ -200,12 +201,12 @@ exports.createPages = async ({ graphql, actions }) => {
         BlogId: node.id,
         NodeId: `${node.drupal_internal__nid}`,
         next,
-        previous 
+        previous
       },
     })
-  )
+  })
 
-  establishments.nodes.map(data =>
+  establishments.nodes.map(data => {
     createPage({
       path: ensureTrailingSlash(data),
       component: path.resolve(`./src/templates/establishment.js`),
@@ -213,9 +214,9 @@ exports.createPages = async ({ graphql, actions }) => {
         EstablishmentId: data.id,
       },
     })
-  )
+  })
 
-  medicalSchools.nodes.map(data =>
+  medicalSchools.nodes.map(data => {
     createPage({
       path: ensureTrailingSlash(data),
       component: path.resolve(`./src/templates/medicalSchool.js`),
@@ -223,9 +224,9 @@ exports.createPages = async ({ graphql, actions }) => {
         MedicalSchoolId: data.id,
       },
     })
-  )
+  })
 
-  meetings.nodes.map(data =>
+  meetings.nodes.map(data => {
     createPage({
       path: ensureTrailingSlash(data),
       component: path.resolve(`./src/templates/meeting.js`),
@@ -233,12 +234,10 @@ exports.createPages = async ({ graphql, actions }) => {
         MeetingId: data.id,
       },
     })
-  )
-  
-  news.edges.map(({ node, previous, next }) => {
-    console.log('news path: ', node.path.alias);
+  })
 
-    return createPage({
+  news.edges.map(({ node, previous, next }) => {
+    createPage({
       path: ensureTrailingSlash(node),
       component: path.resolve(`./src/templates/news.js`),
       context: {
@@ -249,8 +248,8 @@ exports.createPages = async ({ graphql, actions }) => {
       },
     })
   })
-  
-  events.edges.map(({ node, previous, next }) =>
+
+  events.edges.map(({ node, previous, next }) => {
     createPage({
       path: ensureTrailingSlash(node),
       component: path.resolve(`./src/templates/events.js`),
@@ -261,9 +260,9 @@ exports.createPages = async ({ graphql, actions }) => {
         previous
       },
     })
-  )
+  })
 
-  pages.nodes.map(data =>
+  pages.nodes.map(data => {
     createPage({
       path: ensureTrailingSlash(data),
       component: path.resolve(`./src/templates/page.js`),
@@ -272,9 +271,9 @@ exports.createPages = async ({ graphql, actions }) => {
         NodeId: `${data.drupal_internal__nid}`
       },
     })
-  )
+  })
 
-  vacancies.edges.map(({ node, previous, next }) =>
+  vacancies.edges.map(({ node, previous, next }) => {
     createPage({
       path: ensureTrailingSlash(node),
       component: path.resolve(`./src/templates/vacancy.js`),
@@ -285,13 +284,13 @@ exports.createPages = async ({ graphql, actions }) => {
         previous
       },
     })
-  )
+  })
 
   updatedRedirects.edges.map(redirect => {
     if (redirect.node.redirect_source && redirect.node.redirect_source.path) {
       createRedirect({
         fromPath: `/${redirect.node.redirect_source.path}`,
-        toPath: redirect.node.redirect_redirect.uri.replace('internal:', ''),
+        toPath: redirect.node.redirect_redirect.url,
         statusCode: redirect.node.status_code,
         redirectInBrowser: true,
         isPermanent: true
@@ -299,4 +298,3 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   })
 }
-

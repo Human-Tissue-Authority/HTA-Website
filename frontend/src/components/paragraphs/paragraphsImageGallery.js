@@ -8,6 +8,7 @@ import Button from "../misc/button"
 import ParagraphWrapper from "./paragraphWrapper"
 
 import ArrowPurple from "../../images/arrow-purple.svg"
+import { useHasMounted } from "../../utils/hooks"
 
 const ParagraphImageGallery = ({ node, isFullWidth }) => {
   const [show, setShow] = useState(false)
@@ -62,6 +63,13 @@ const ParagraphImageGallery = ({ node, isFullWidth }) => {
         return prevImageIndex
       })
     }
+  }
+
+  // ensure component has mounted / prevents window does not exist error during build	
+  const hasMounted = useHasMounted();
+
+  if (!hasMounted) {
+    return null
   }
 
   return (

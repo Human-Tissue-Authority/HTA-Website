@@ -1,6 +1,9 @@
 services:
-  bbd_custom_commands.commands:
-    class: Drupal\bbd_custom\Commands\BBDCustomCommands
+  bbd_custom.route_subscriber:
+    class: Drupal\bbd_custom\Routing\RouteSubscriber
     tags:
-      - { name: drush.command }
-
+      - { name: event_subscriber }
+  bbd_custom.access_checker:
+    class: Drupal\bbd_custom\Access\AccessCheck
+    tags:
+      - { name: access_check, applies_to: _session_limit_access_check }

@@ -14,7 +14,8 @@ const ContentListingTable = props => {
     cardType,
     classes,
     setListingHeight,
-    cardClasses
+    cardClasses,
+    noscriptMessage
   } = props
   
   const animatedCards = useTransition(items, item => item?.its_nid || item?.id, {
@@ -94,6 +95,22 @@ const ContentListingTable = props => {
         ) : (
           <div className="content-listing__no-results">
             Sorry, no results match your search criteria.
+
+            {noscriptMessage && (
+              <noscript>
+                <br />
+                <br />
+                You are seeing this message because you have JavaScript disabled or because your browser does not support it. Our website requires JavaScript to be enabled in order to fully function.
+                <br />
+                <br />
+                Find out more about enabling <a href="https://www.enable-javascript.com" target="_blank">JavaScript</a>.
+                <br />
+                <br />
+                You can contact the HTA for the information you are seeking:
+                <br />
+                you can email us at <a href="mailto:enquiries@hta.gov.uk">enquiries@hta.gov.uk</a> or call us between the hours of 9am - 5pm Monday Friday on <a href="tel:020 7269 1900">020 7269 1900</a>
+              </noscript>
+            )}
           </div>
         )}
       </div>

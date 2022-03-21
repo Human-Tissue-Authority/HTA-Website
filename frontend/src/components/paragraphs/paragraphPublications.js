@@ -1,58 +1,56 @@
 import React, { useEffect, useState, useRef } from "react"
 import { graphql } from "gatsby"
 import ParagraphWrapper from "./paragraphWrapper"
-import ContentListing from "../views/contentListing"
 import { extension } from 'mime-types'
+import ContentListing from "../views/contentListing"
+import NoJsContentListing from "../views/noJsContentListing"
 
-const ITEMS_PER_PAGE = 12
+const ITEMS_PER_PAGE = 20
 
-const ParagraphPublications = ({ node, isFullWidth }) => {
+const ParagraphPublications = ({ node }) => {
   const [show, setShow] = useState(false)
   const { field_document_item: listingItems } = node.relationships
 
   // functionality
   const [loading, setLoading] = useState(true)
-  const [items, setItems] = useState(null)
+  // const [items, setItems] = useState(null)
   const [currentItems, setCurrentItems] = useState([])
   const [currentPage, setCurrentPage] = useState(0)
   const [listingHeight, setListingHeight] = useState('auto')
   const listingRef = useRef(null)
 
-  useEffect(() => {
-    // format document items
-    if (listingItems && listingItems?.length > 0) {
-      const formattedItems = listingItems.map(item => {
-        const itemType = item.__typename
-        const documentImage = item.relationships?.field_image?.relationships?.field_media_image?.localFile?.childImageSharp.fluid.src
+  const items = listingItems.map(item => {
+    const itemType = item.__typename
+    const documentImage = item.relationships?.field_image?.relationships?.field_media_image?.localFile?.childImageSharp.fluid.src
 
-        if (itemType === 'paragraph__image_and_cta') {
-          return {
-            itemType,
-            id: item.id,
-            type: 'Link',
-            date: item.created,
-            title: item.field_cta?.title,
-            link: item.field_cta?.url,
-            image: documentImage
-          }
-        } else {
-          const documentData = item.relationships?.field_document_single
+    if (itemType === 'paragraph__image_and_cta') {
+      return {
+        itemType,
+        id: item.id,
+        type: 'Link',
+        date: item.created,
+        title: item.field_cta?.title,
+        link: item.field_cta?.url,
+        image: documentImage
+      }
+    } else {
+      const documentData = item.relationships?.field_document_single
 
-          return {
-            itemType,
-            id: item.id,
-            type: documentData?.relationships?.field_media_file?.filemime ? extension(documentData.relationships.field_media_file.filemime) : 'Document',
-            date: documentData?.changed,
-            title: documentData?.name,
-            link:  process.env.API_ROOT + documentData?.relationships?.field_media_file?.uri?.url,
-            image: documentImage,
-          }
-        }
-      })
-
-      setItems(formattedItems)
-      setCurrentItems(formattedItems.slice(0, ITEMS_PER_PAGE))
+      return {
+        itemType,
+        id: item.id,
+        type: documentData?.relationships?.field_media_file?.filemime ? extension(documentData.relationships.field_media_file.filemime) : 'Document',
+        date: item?.created,
+        title: documentData?.name,
+        summary: item?.field_document_summary,
+        link:  process.env.API_ROOT + documentData?.relationships?.field_media_file?.uri?.url,
+        image: documentImage,
+      }
     }
+  })
+
+  useEffect(() => {
+    setCurrentItems(items.slice(0, ITEMS_PER_PAGE))
   }, [])
 
   useEffect(() => {
@@ -93,7 +91,7 @@ const ParagraphPublications = ({ node, isFullWidth }) => {
           {node.field_title && (
             <div className="paragraph-publications__title column is-12">
               <div className="paragraph-publications__title-wrapper columns">
-                <h2 className="h section-title column is-5 is-offset-1">{node.field_title}</h2>
+                <h2 className="h h--2 column is-5 is-offset-1">{node.field_title}</h2>
               </div>
             </div>
           )}
@@ -111,6 +109,15 @@ const ParagraphPublications = ({ node, isFullWidth }) => {
                 setListingHeight={setListingHeight}
                 columns={3}
                 cardClasses="is-4-desktop"
+              />
+            )}
+
+            {typeof document === 'undefined' && (
+              <NoJsContentListing
+                items={items}
+                itemsPerPage={ITEMS_PER_PAGE}
+                cardType="publication"
+                classes="search-results"
               />
             )}
           </div>
@@ -154,6 +161,7 @@ export const fragment = graphql`
         ... on paragraph__document {
           id
           created
+          field_document_summary
           relationships {
             field_image {
               relationships {
@@ -174,6 +182,7 @@ export const fragment = graphql`
               relationships {
                 field_media_file {
                   filemime
+                  changed
                   uri {
                     url
                     value

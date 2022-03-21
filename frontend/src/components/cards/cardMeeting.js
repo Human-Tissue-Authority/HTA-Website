@@ -13,17 +13,20 @@ const CardMeeting = props => {
   } = props
 
   return (
-    <div className="card card-meeting">
+    <Link
+      className="card card-meeting"
+      aria-label={title}
+      to={link || '/404/'}
+    >
       <div className="card-meeting__title-wrapper">
-        <h3 className="card-meeting__title">
+        <h2 className="card-meeting__title">
           {title}
-        </h3>
+        </h2>
 
         <Button
           text={`Read more`}
-          ariaText={`View ${title}`}
-          link={link || '/404/'}
           showArrow
+          fake
         />
       </div>
 
@@ -43,7 +46,7 @@ const CardMeeting = props => {
           <p className="card-meeting__timestamp">{dayjs(timestamp).format('D MMMM YYYY')}</p>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

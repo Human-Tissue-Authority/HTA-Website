@@ -12,7 +12,7 @@ const MailchimpSignup = () => (
         id="mce-EMAIL"
         placeholder="Email address"
         className="newsletter__email"
-        aria-label="newsletter email address"
+        aria-label="Email address"
         autoComplete="email"
       />
       <fieldset className="user__type">

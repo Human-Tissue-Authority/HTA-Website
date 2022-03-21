@@ -47,14 +47,13 @@ const Footer = () => {
                   </Link>
                 </li>
               ))}
-              {/* Temporarily disable cookies link
               <li>
                 <Link className="optanon-show-settings"
                   to={'#'}
                 >
                   Cookie Settings
                 </Link>
-              </li> */}
+              </li>
             </ul>
           </nav>
         </div>

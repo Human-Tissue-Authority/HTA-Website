@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from "react"
-import { createPortal } from "react-dom"
+import React, { useState } from "react"
 import { useStaticQuery, graphql, Link } from "gatsby"
+import { animated, useTransition, config } from 'react-spring'
 
 import Logo from "../../images/logo.svg"
 import SearchIcon from "../../images/search.svg"
+import CrossWhiteIcon from "../../images/cross-white.svg"
 import MobileNav from "../navigation/mobileNav"
-import Search from "../navigation/search"
 import SubMenu from "../navigation/subMenu"
-import { useHasMounted } from "../../utils/hooks"
+import Search from "../navigation/search"
 
 import ChevronDownWhite from '../../images/chevron-down--white.svg'
 
-const Header = ({ forceSearchOpen }) => {
+const Header = () => {
   const data = useStaticQuery(graphql`
     {
       allMenuItems(filter: {menu_name: {eq: "main"}, parent: {id: {eq: null}}}, sort: {order: DESC, fields: weight}) {
@@ -50,51 +50,45 @@ const Header = ({ forceSearchOpen }) => {
   // desktop submenu functionality
   const [activeMenuItem, setActiveMenuItem] = useState(null)
   const [subMenuOpen, setSubMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [menuChanging, setMenuChanging] = useState(true)
-
-  const activeMenuItemRef = useRef(null)
-  const subMenuOpenRef = useRef(false)
 
   const closeSubmenu = () => {
     setSubMenuOpen(false)
-    subMenuOpenRef.current = false
     setMenuChanging(true)
   }
 
   const setActiveSubmenu = (e, parentMenuItem) => {
     if (e) e.preventDefault()
 
+    // close search if open
+    if (searchOpen) setSearchOpen(false)
+
     // close submenu
-    if ((activeMenuItem && activeMenuItem === parentMenuItem && e.type !== 'mouseenter') && subMenuOpen) {
+    if ((activeMenuItem && activeMenuItem === parentMenuItem) && subMenuOpen) {
       closeSubmenu()
     } else if (activeMenuItem && activeMenuItem !== parentMenuItem && subMenuOpen) {
       setMenuChanging(true)
 
       setTimeout(() => {
         setActiveMenuItem(parentMenuItem)
-        activeMenuItemRef.current = parentMenuItem
         setMenuChanging(false)
       }, 500)
     } else {
       setMenuChanging(false)
       setSubMenuOpen(true)
-      subMenuOpenRef.current = true
       setActiveMenuItem(parentMenuItem)
-      activeMenuItemRef.current = parentMenuItem
     }
   }
 
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [headerEl, setHeaderEl] = useState(null)
-
-  useEffect(() => {
-    if (headerEl && forceSearchOpen) setSearchOpen(forceSearchOpen)
-  }, [headerEl])
-
-  const openSearch = () => {
-    setSearchOpen(true)
-    setSubMenuOpen(false)
-    setMenuChanging(true)
+  const toggleSearch = () => {
+    if (searchOpen) {
+      setSearchOpen(false)
+    } else {
+      setSearchOpen(true)
+      setSubMenuOpen(false)
+      setMenuChanging(true)
+    }
   }
 
   const navMouseHoverStateHandler = (e, isEnter) => {
@@ -136,36 +130,23 @@ const Header = ({ forceSearchOpen }) => {
     }
   }
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (subMenuOpenRef.current) {
-        setTimeout(() => {
-          if (!e.target.closest('.header__nav') && !e.target.closest('.header-submenu__menu')) {
-            closeSubmenu()
-          }
-        }, 100)
-      }
-    }
-    
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, []);
-
-  // ensure component has mounted / prevents window does not exist error during build	
-  const hasMounted = useHasMounted();	
-
-  if (!hasMounted) {	
-    return null	
-  }
+  // search toggle
+  const searchToggleAnimation = useTransition(searchOpen, null, {
+    from: { position: 'absolute', opacity: 0 },
+    config: config.stiff,
+    unique: true,
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+  })
 
   return (
-    <header className="header" ref={el => setHeaderEl(el)}>
+    <header className="header">
       <div className="header__container">
         <Link to="/" className="header__logo">
           <img src={Logo} alt="Human Tissue Authority Homepage" />
         </Link>
-        
-        <nav aria-label="header-nav" className="header__nav">
+
+        <nav aria-label="Main navigation" className="header__nav">
           <ul className="header__main-nav">
             {data.allMenuItems.nodes.map(menuItem => {
               if (menuItem.title === 'Home') {
@@ -175,7 +156,7 @@ const Header = ({ forceSearchOpen }) => {
                     className={subMenuOpen ? 'inactive-parent-menu-item' : ''}
                   >
                     <Link
-                      onMouseEnter={e => (navMouseHoverStateHandler(e, true), closeSubmenu())}
+                      onMouseEnter={e => (navMouseHoverStateHandler(e, true))}
                       onMouseLeave={e => navMouseHoverStateHandler(e)}
                       to="/"
                     >
@@ -190,7 +171,7 @@ const Header = ({ forceSearchOpen }) => {
                     className={subMenuOpen ? 'inactive-parent-menu-item' : ''}
                   >
                     <Link
-                      onMouseEnter={e => (navMouseHoverStateHandler(e, true), closeSubmenu())}
+                      onMouseEnter={e => (navMouseHoverStateHandler(e, true))}
                       onMouseLeave={e => navMouseHoverStateHandler(e)}
                       to="/make-an-enquiry"
                     >
@@ -208,7 +189,7 @@ const Header = ({ forceSearchOpen }) => {
                       activeClassName="link-active"
                       to={menuItem.url}
                       onClick={e => setActiveSubmenu(e, menuItem)}
-                      onMouseEnter={e => (navMouseHoverStateHandler(e, true), setActiveSubmenu(e, menuItem))}
+                      onMouseEnter={e => (navMouseHoverStateHandler(e, true))}
                       onMouseLeave={e => navMouseHoverStateHandler(e)}
                       partiallyActive
                       className="link-dropdown"
@@ -222,19 +203,24 @@ const Header = ({ forceSearchOpen }) => {
             })}
           </ul>
         </nav>
-        
+
         <a href="https://portal.hta.gov.uk/" className="header__portal-link" target="_blank">
           Portal login
         </a>
 
-        <button
-          type="button"
-          className="header__search-button"
-          aria-label="Search"
-          onClick={() => openSearch()}
-        >
-          <img src={SearchIcon} alt="Toggle search" />
-        </button>
+        <div className={`header__search-button-wrapper ${searchOpen ? 'header__search-button-wrapper--open' : '' }`}>
+          <button
+            type="button"
+            className="header__search-button"
+            aria-label="Search"
+            onClick={() => toggleSearch()}
+          >
+            {searchToggleAnimation.map(({ item, key, props }) => item ?
+              <animated.img key={key} style={props} src={CrossWhiteIcon} alt="Close search" /> :
+              <animated.img key={key} style={props} src={SearchIcon} alt="Open search" />
+            )}
+          </button>
+        </div>
 
         <button
           className={`header__menu-button hamburger hamburger--slider ${mobileNavOpen ? 'is-active' : ''}`}
@@ -244,7 +230,7 @@ const Header = ({ forceSearchOpen }) => {
           onKeyDown={e => handleTab(e)}
         >
           <span className="hamburger-box">
-            <span className="hamburger-inner" />
+          <label className="hamburger-inner">Menu</label>
           </span>
         </button>
 
@@ -256,7 +242,7 @@ const Header = ({ forceSearchOpen }) => {
           setOpenMethod={setSubMenuOpen}
           setMenuChangingMethod={setMenuChanging}
         />
-        
+
         <Search
           open={searchOpen}
           setOpenMethod={setSearchOpen}

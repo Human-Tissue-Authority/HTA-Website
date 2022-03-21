@@ -60,19 +60,18 @@
           position: absolute;
           right: 0;
           top: 0;
+          font-size: 1.4rem;
 
           img {
             position: absolute;
             z-index: 1;
-            right: 93px;
+            right: 9.3em;
             top: 20px;
           }
         }
 
         .button {
-          position: absolute;
-          right: 0;
-          top: 0;
+          position: static;
           cursor: pointer;
           box-sizing: border-box;
           height: 35px;
@@ -196,7 +195,7 @@
         background: #602E76;
       }
     }
-    
+
     .optanon-show-settings-left, .optanon-show-settings-right, .optanon-show-settings-middle {
       background: none !important;
       height: auto !important;
@@ -320,12 +319,24 @@
             padding: 0 125px 0 20px;
           }
 
+          .button__wrapper {
+            font-size: 1.6rem;
+
+            img {
+              right: auto;
+              left: 15px;
+            }
+          }
+
           .button {
             height: 46px;
-            width: 125px;
+            width: auto;
+            min-width: 125px;
             border-radius: 23px;
             font-size: 1.6rem;
             display: block;
+            padding: 0 3.375rem;
+            white-space: nowrap;
           }
 
           .user__type {

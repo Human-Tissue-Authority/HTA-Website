@@ -12,14 +12,24 @@ const LastUpdated = props => {
   })
 
   return (
-    <animated.div
-      style={animation}
-      className="last-updated columns"
-    >
-      <p className={`column ${wide ? 'is--9' : 'is-6'} is-offset-1`}>
-        {published ? 'Published' : 'Last updated'} on {timestamp}
-      </p>
-    </animated.div>
+    <>
+      {typeof document !== 'undefined' ? (
+        <animated.div
+          style={animation}
+          className="last-updated columns"
+        >
+          <p className={`column ${wide ? 'is--9' : 'is-6'} is-offset-1`}>
+            {published ? 'Published' : 'Last updated'} on {timestamp}
+          </p>
+        </animated.div>
+      ) : (
+        <div className="last-updated columns">
+          <p className={`column ${wide ? 'is--9' : 'is-6'} is-offset-1`}>
+            {published ? 'Published' : 'Last updated'} on {timestamp}
+          </p>
+        </div>
+      )}
+    </>
   )
 }
 

@@ -20,12 +20,21 @@ const SubmissionModal = props => {
       >
         <FocusTrap focusTrapOptions={{ allowOutsideClick: true }}>
           <div className="submission-modal" role="dialog" tabIndex="-1" aria-labelledby="submission-modal__message">
-            <div className="submission-modal__title">
+            <div
+              className="submission-modal__title"
+              aria-live={!successMessage ? "polite" : null}
+              role={!successMessage ? "status" : null}
+            >
               <h2 className="h2">{successTitle || 'Form submission successful'}</h2>
             </div>
 
             {successMessage && (
-              <div className="submission-modal__message" id="submission-modal__message">
+              <div
+                className="submission-modal__message"
+                id="submission-modal__message"
+                aria-live="polite"
+                role="status"
+              >
                 <p>{successMessage}</p>
               </div>
             )}
@@ -39,7 +48,7 @@ const SubmissionModal = props => {
               />
             </div>
 
-            <button type="button" className="submission-modal__close-button" onClick={buttonAction}> 
+            <button type="button" className="submission-modal__close-button" onClick={buttonAction}>
               <img src={CrossWhite} alt="Close form submission modal popup" />
             </button>
           </div>

@@ -2,32 +2,34 @@ import React, { useState, useEffect, useRef } from 'react'
 import { window } from 'browser-monads'
 import { parseUrl, parse, stringify } from 'query-string'
 import { navigate } from '@reach/router'
-import { fetchnewss, fetchNews, fetchFoi } from '../../utils/views'
+import { fetchFoi } from '../../utils/views'
 import { getPaginationOffset } from '../../utils/utils'
 import ContentListing from './contentListing'
-import Select from 'react-select'
 import { graphql, useStaticQuery } from 'gatsby'
-import dayjs from 'dayjs'
+import { useMediaQuery } from 'react-responsive'
+import TermsFilter from '../misc/termsFilter'
+import FilterArrow from '../../images/filter-arrow.svg'
+import ResetButton from '../misc/resetButton'
 
-const ITEMS_PER_PAGE = 9
+const ITEMS_PER_PAGE = 15
 
 const ListingFoi = () => {
   // fetch filter terms
   const data = useStaticQuery(graphql`
     {
-      allTaxonomyTermAudience: allTaxonomyTermAudience {
+      audienceTerms: allTaxonomyTermAudience {
         nodes {
           id
           name
         }
       }
-      allTaxonomyTermSector: allTaxonomyTermSector {
+      sectorTerms: allTaxonomyTermSector {
         nodes {
           name
           id
         }
       }
-      allTaxonomyTermTags: allTaxonomyTermTags {
+      tagsTerms: allTaxonomyTermTags {
         nodes {
           name
           id
@@ -35,6 +37,8 @@ const ListingFoi = () => {
       }
     }
   `)
+
+  const isMobile = useMediaQuery({ query: '(max-width: 767px)' })
   
   // listing state
   const [baseUrl, setBaseUrl] = useState(null)
@@ -48,16 +52,49 @@ const ListingFoi = () => {
   const [listingHeight, setListingHeight] = useState('auto')
   const listingRef = useRef(null)
 
-  //selected filter audience
-  const [selectedAudience, setSelectedAudience] = useState([])
-  //selected filter sectors
-  const [selectedSectors, setSelectedSectors] = useState([])
-  //selected filter tags
-  const [selectedTags, setSelectedTags] = useState([])
+  const [audienceFilterOpen, setAudienceFilterOpen] = useState(false)
+  const [audienceFilterVal, setAudienceFilterVal] = useState([])
 
-  const handleChangeAudience = audience => setSelectedAudience(audience)
-  const handleChangeSectors = sectors => setSelectedSectors(sectors)
-  const handleChangeTags = tags => setSelectedTags(tags)
+  const [tagsFilterOpen, setTagsFilterOpen] = useState(false)
+  const [tagsFilterVal, setTagsFilterVal] = useState([])
+
+  const [sectorFilterOpen, setSectorFilterOpen] = useState(false)
+  const [sectorFilterVal, setSectorFilterVal] = useState([])
+
+  // close any open filters before opening new filter
+  const expandFilter = (setMethod, openState) => {
+    // if the filter already open just close it
+    if (openState) {
+      setMethod(false)
+    } else {
+      setAudienceFilterOpen(false)
+      setTagsFilterOpen(false)
+      setSectorFilterOpen(false)
+      setMethod(true)
+    }
+  }
+
+  // reset filters
+  const resetFilters = () => {
+    navigate(baseUrl)
+
+    const listingScrollPos = listingRef?.current?.offsetTop - 100
+
+    window.scrollTo({
+      top: listingScrollPos,
+      behavior: 'smooth'
+    })
+
+    // close all filters
+    setAudienceFilterOpen(false)
+    setTagsFilterOpen(false)
+    setSectorFilterOpen(false)
+
+    // reset all filter values
+    setAudienceFilterVal([])
+    setTagsFilterVal([])
+    setSectorFilterVal([])
+  }
 
   useEffect(() => {
     const currentUrl = window.location.href
@@ -77,59 +114,22 @@ const ListingFoi = () => {
         setCurrentPage(parseInt(page) - 1)
       }
 
-      if (audience) {
-        const audienceSlugs = audience.split(',')
-        handleChangeAudience(parseOptions(audienceSlugs, 'toLabel'))
-      }
-
-      if (sector) {
-        const sectorSlugs = sector.split(',')
-        handleChangeSectors(parseOptions(sectorSlugs, 'toLabel'))
-      }
-
-      if (tags) {
-        const tagsList = tags.split(',')
-        handleChangeTags(parseOptions(tagsList, 'toLabel'))
-      }
+      if (audience) setAudienceFilterVal(audience.split(','))
+      if (tags) setTagsFilterVal(tags.split(','))
+      if (sector) setSectorFilterVal(sector.split(','))
     }
+
     setReady(true)
   }, [])
 
-  const getOptions = data => parseOptions(data.map(term => term.name), 'toSlug')
-
-  const parseOptions = (data, parseType) => data.map(item => {
-    //get select input object with parsed label or slug
-    let value = item
-    let label = item
-    if (parseType ==='toLabel') {
-      label = item.replace(/[_]/g, ' ').split('')
-      label[0] = label[0].toUpperCase()
-      label = label.join('')
-      value = item
-    }
-    if (parseType === 'toSlug') {
-      value = item.toLowerCase()
-      label = item
-    }
-    return {
-      value,
-      label
-    }
-  })
-
   const silentlyPushUrlParams = (pageNumber = currentPage) => {
-    const getSlugStrings = data => data && data.length > 0 ? data.map(item => item.value).join() : ''
-
-    //get parsed params from state
-    const selectedAudienceParams = getSlugStrings(selectedAudience)
-    const selectedSectorsParams = getSlugStrings(selectedSectors)
-    const selectedTagsParams = getSlugStrings(selectedTags)
+    const joinFilterValues = values => values.length > 0 ? values.join(',') : ''
 
     const stringifiedParams = stringify({
       page: pageNumber > 0 ? pageNumber + 1 : '',
-      audience: selectedAudienceParams,
-      tags: selectedTagsParams,
-      sector: selectedSectorsParams,
+      audience: joinFilterValues(audienceFilterVal),
+      tags: joinFilterValues(tagsFilterVal),
+      sector: joinFilterValues(sectorFilterVal),
     }, {
       skipEmptyString: true,
       skipNull: true,
@@ -142,22 +142,18 @@ const ListingFoi = () => {
 
   // filters functionality  
   const createFilterQuery = () => {
-    const getSolrNames = param => param.map(cat => `"${cat.label}"`).join(' ')
     let filterValue = '';
 
-    if (selectedAudience && selectedAudience.length > 0) {
-      const audienceParsed = getSolrNames(selectedAudience)
-      filterValue += `&fq=sm_audience:(${audienceParsed})`
+    if (audienceFilterVal.length > 0) {
+      filterValue += `&fq=sm_audience:("${audienceFilterVal.join('" OR "')}")`
     }
 
-    if (selectedSectors && selectedSectors.length > 0) {
-      const sectorsParsed = getSolrNames(selectedSectors)
-      filterValue += `&fq=sm_sector_tags:(${sectorsParsed})`
+    if (tagsFilterVal.length > 0) {
+      filterValue += `&fq=sm_tags:("${tagsFilterVal.join('" OR "')}")`
     }
 
-    if (selectedTags && selectedTags.length > 0) {
-      const tagsParsed = getSolrNames(selectedTags)
-      filterValue += `&fq=sm_tags:(${tagsParsed})`
+    if (sectorFilterVal.length > 0) {
+      filterValue += `&fq=sm_sector_tags:("${sectorFilterVal.join('" OR "')}")`
     }
 
     return filterValue
@@ -235,60 +231,92 @@ const ListingFoi = () => {
       requestResults(0)
       silentlyPushUrlParams(0)
     }
-  }, [selectedAudience, selectedSectors, selectedTags])
+  }, [audienceFilterVal, tagsFilterVal, sectorFilterVal])
 
   return (
     <>
       <div ref={listingRef} style={{ opacity: 0, visibility: 'hidden', pointernewss: 'none' }} />
-      <div id="article-listing" className="article-listing" style={{ minHeight: listingHeight }}>
-        <div className="article-listing-controls">
-          <div className="article-listing-controls__wrapper">
-            <div className="article-listing-controls__filter article-listing-controls__filter--search">
-              <div
-                className={`article-listing-controls__filter-button`}
+      <div id="foi-listing" className="listing listing-foi" style={{ minHeight: listingHeight }}>
+        <div className="listing-controls">
+          {/* Filter expand toggles */}
+          <div className="listing-controls__wrapper">
+            <div className="listing-controls__filter">
+              <button
+                type="button"
+                className={`listing-controls__filter-button ${audienceFilterOpen ? 'listing-controls__filter-button--active' : ''}`}
+                onClick={() => expandFilter(setAudienceFilterOpen, audienceFilterOpen)}
               >
-                <Select
-                  options={getOptions(data.allTaxonomyTermAudience.nodes)}
-                  className="article-listing-filter"
-                  classNamePrefix="article-listing-filter"
-                  placeholder="Audience"
-                  aria-label="Select audience"
-                  autoFocus={true}
-                  onChange={handleChangeAudience}
-                  isSearchable={false}
-                  value={selectedAudience}
-                  isMulti
-                />
+                <img src={FilterArrow} role="presentation" aria-hidden alt="" />
+                Audience
+              </button>
 
-                <Select
-                  options={getOptions(data.allTaxonomyTermSector.nodes)}
-                  className="article-listing-filter medium-filter"
-                  classNamePrefix="article-listing-filter"
-                  placeholder="Sector"
-                  aria-label="Select sector"
-                  autoFocus={true}
-                  onChange={handleChangeSectors}
-                  isSearchable={false}
-                  value={selectedSectors}
-                  isMulti
-                />
+              {isMobile && audienceFilterOpen && <TermsFilter terms={data.audienceTerms.nodes} openState={audienceFilterOpen} filterVal={audienceFilterVal} setMethod={setAudienceFilterVal} /> }
+            </div>
 
-                <Select
-                  options={getOptions(data.allTaxonomyTermTags.nodes)}
-                  className="article-listing-filter small-filter"
-                  classNamePrefix="article-listing-filter"
-                  placeholder="Select tags"
-                  aria-label="tags"
-                  autoFocus={true}
-                  onChange={handleChangeTags}
-                  isSearchable={false}
-                  value={selectedTags}
-                  isMulti
-                />
-              </div>
+            <div className="listing-controls__filter">
+              <button
+                type="button"
+                className={`listing-controls__filter-button ${tagsFilterOpen ? 'listing-controls__filter-button--active' : ''}`}
+                onClick={() => expandFilter(setTagsFilterOpen, tagsFilterOpen)}
+              >
+                <img src={FilterArrow} role="presentation" aria-hidden alt="" />
+                Tags
+              </button>
+
+              {isMobile && tagsFilterOpen && <TermsFilter terms={data.tagsTerms.nodes} openState={tagsFilterOpen} filterVal={tagsFilterVal} setMethod={setTagsFilterVal} /> }
+            </div>
+
+            <div className="listing-controls__filter">
+              <button
+                type="button"
+                className={`listing-controls__filter-button ${sectorFilterOpen ? 'listing-controls__filter-button--active' : ''}`}
+                onClick={() => expandFilter(setSectorFilterOpen, sectorFilterOpen)}
+              >
+                <img src={FilterArrow} role="presentation" aria-hidden alt="" />
+                Sector
+              </button>
+
+              {isMobile && sectorFilterOpen && <TermsFilter terms={data.sectorTerms.nodes} openState={sectorFilterOpen} filterVal={sectorFilterVal} setMethod={setSectorFilterVal} /> }
+            </div>
+
+            <div className="listing-controls__reset">
+              <ResetButton clickMethod={resetFilters} icon text="Reset filters" />
             </div>
           </div>
+
+          {/* Filter inputs for tablet+ */}
+          {!isMobile && (
+            <>
+              {audienceFilterOpen && (
+                <TermsFilter
+                  terms={data.audienceTerms.nodes}
+                  openState={audienceFilterOpen}
+                  filterVal={audienceFilterVal}
+                  setMethod={setAudienceFilterVal}
+                />
+              )}
+
+              {tagsFilterOpen && (
+                <TermsFilter
+                  terms={data.tagsTerms.nodes}
+                  openState={tagsFilterOpen}
+                  filterVal={tagsFilterVal}
+                  setMethod={setTagsFilterVal}
+                />
+              )}
+
+              {sectorFilterOpen && (
+                <TermsFilter
+                  terms={data.sectorTerms.nodes}
+                  openState={sectorFilterOpen}
+                  filterVal={sectorFilterVal}
+                  setMethod={setSectorFilterVal}
+                />
+              )}
+            </>
+          )}
         </div>
+
         {results && !loading && (
           <ContentListing
             items={results}
@@ -303,6 +331,7 @@ const ListingFoi = () => {
             setListingHeight={setListingHeight}
             columns="4"
             columnsResponsive="12"
+            noscriptMessage
           />
         )}
       </div>

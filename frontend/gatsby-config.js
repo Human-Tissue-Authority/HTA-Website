@@ -18,6 +18,7 @@ module.exports = {
     `gatsby-plugin-react-helmet`,
     {
       resolve: "gatsby-source-drupal",
+      concurrentFileRequests: 50,
       options: {
         baseUrl: API_ROOT,
         basicAuth: {
@@ -64,6 +65,6 @@ module.exports = {
           ]
         }
       }
-    }
+    },
   ],
 }

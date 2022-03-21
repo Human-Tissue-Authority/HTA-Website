@@ -21,14 +21,18 @@ const CardCurrentVacancy = ({ createdDate, title, link, closingDate, body, summa
   }
 
   return (
-    <div className="card card-current-vacancy">
+    <Link
+      className="card card-current-vacancy"
+      aria-label={title}
+      to={link || "/404/"}
+    >
       <p className="card-current-vacancy__date">
         {dayjs(createdDate).format("D MMM, YYYY")}
       </p>
 
-      <h3 className="card-current-vacancy__title">
+      <h2 className="card-current-vacancy__title">
         {title}
-      </h3>
+      </h2>
 
       {renderText()}
 
@@ -41,11 +45,10 @@ const CardCurrentVacancy = ({ createdDate, title, link, closingDate, body, summa
       <div className="card-current-vacancy__custom_button_wrapper"></div>
         <Button
           text="Read more"
-          ariaText={`View ${title}`}
-          link={link || "/404/"}
           showArrow
+          fake
         />
-    </div>
+    </Link>
   )
 }
 

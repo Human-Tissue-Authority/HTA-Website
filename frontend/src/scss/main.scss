@@ -1,7 +1,6 @@
 // 00 : Abstractions
 @import 'abstractions/_include_media';
 @import 'abstractions/_mixins';
-@import 'abstractions/hamburgers/hamburgers.scss';
 @import 'bulma/sass/utilities/_all.sass';
 @import 'bulma/sass/grid/columns.sass';
 
@@ -21,6 +20,7 @@
 @import 'base/_print';
 
 // 03 : Components
+@import 'components/_card';
 @import 'components/_layout';
 @import 'components/_breadcrumbs';
 @import 'components/_cookie_banner';
@@ -53,6 +53,8 @@
 @import 'components/_pagination';
 @import 'components/_notification_banner';
 @import 'components/_card_publication';
+@import 'components/_listing_general';
+@import 'components/_listing_foi';
 @import 'components/_listing_establishments';
 @import 'components/_card_establishment';
 @import 'components/_listing_medical_schools';

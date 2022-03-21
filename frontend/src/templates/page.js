@@ -24,9 +24,15 @@ const Page = ({ data }) => {
       <SEO title={`${nodePage.title}`} />
 
       <Breadcrumbs alias={nodePage.path.alias} currentTitle={nodePage.title} />
-      {nodePage.display_last_updated && <LastUpdated timestamp={nodePage.changed} />}
-      <Title title={nodePage.title} />
-      <CMS content={nodePage.body?.processed} sectionOverlayRef={sectionOverlayRef}/>
+      {nodePage.display_last_updated && (
+        <LastUpdated timestamp={nodePage.changed} wide={nodePage.in_this_section == 'None'} />
+      )}
+      <Title title={nodePage.title} wide={nodePage.in_this_section == 'None'} />
+      <CMS
+        content={nodePage.body?.processed}
+        sectionOverlayRef={sectionOverlayRef}
+        wide={nodePage.in_this_section == 'None'}
+      />
 
       {nodePage.display_anchor_links && (
         <AnchorLinks />

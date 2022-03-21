@@ -78,19 +78,15 @@ function SEO({ description, meta, title }) {
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-35528076-4', 'auto');
+        ga('create', 'UA-35528076-2', 'auto');
         ga('send', 'pageview');
         `}
       </script>
-      {/* Temporarily disabled
-      
-      <script
-        type="text/javascript"
-        charset="UTF-8"
-        src="https://cdn.cookielaw.org/langswitch/8040a0ea-a8f5-424f-b196-440e359db1df.js"
-      />
 
-      <script type="text/javascript">{`function OptanonWrapper() { }`}</script> */}
+      <script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js"  type="text/javascript" charset="UTF-8" data-domain-script="6c5edcc3-48bc-48d8-863f-67ea146f7c89" ></script>
+      <script type="text/javascript">
+        {`function OptanonWrapper() { }`}
+      </script>
     </Helmet>
   )
 }

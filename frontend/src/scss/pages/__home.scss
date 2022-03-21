@@ -55,6 +55,38 @@
       line-height: 8.5rem;
     }
   }
+
+  .home-banner__strapline {
+    font-family: $font-primary;
+    color: $white;
+    font-size: 2.8rem;
+
+    @include media('>=tablet') {
+      padding-right: 30%;
+      margin-left: 5rem;
+      font-size: 3.5rem;
+    }
+
+    @include media('>desktop-wide') {
+      font-size: 4rem;
+    }
+  }
+
+  .home-banner__cta {
+    a {
+      color: $white;
+      font-family: $font-secondary;
+      text-decoration: underline;
+      display: inline-block;
+      font-size: 1.8rem;
+      line-height: 2.3rem;
+
+      @include media('>=tablet') {
+        padding-right: 30%;
+        margin-left: 5rem;
+      }
+    }
+  }
 }
 
 .home-banner__links {

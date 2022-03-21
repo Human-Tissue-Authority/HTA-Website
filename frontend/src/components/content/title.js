@@ -12,14 +12,26 @@ const Title = props => {
   })
 
   return (
-    <animated.div
-      style={animation}
-      className="title page__title columns"
-    >
-      <h1 className={`${wide ? 'is-9' : 'is-6'} column is-offset-1`}>
-        {title}
-      </h1>
-    </animated.div>
+    <>
+      {typeof document !== 'undefined' ? (
+        <animated.div
+          style={animation}
+          className="title page__title columns"
+        >
+          <h1 className={`${wide ? 'is-9' : 'is-6'} column is-offset-1`}>
+            {title}
+          </h1>
+        </animated.div>
+      ) : (
+        <div
+          className="title page__title columns"
+        >
+          <h1 className={`${wide ? 'is-9' : 'is-6'} column is-offset-1`}>
+            {title}
+          </h1>
+        </div>
+      )}
+    </>
   )
 }
 

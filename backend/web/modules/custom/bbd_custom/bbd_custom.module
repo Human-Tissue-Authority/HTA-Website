@@ -4,6 +4,8 @@
  * Contains Main Custom module functionality.
  */
 
+use Drupal\advancedqueue\Entity\Queue;
+use Drupal\advancedqueue\Job;
 use Drupal\comment\CommentInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
@@ -111,17 +113,6 @@ function _bbd_custom_visit_node(&$form, FormStateInterface $form_state) {
  */
 function bbd_custom_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
   switch ($entity->bundle()) {
-    case 'blog':
-      if ($entity->status->value == 1 && $entity->hasField('field_notification_sent') && $entity->field_notification_sent->value != 1) {
-
-        $queue = \Drupal::queue('hta_blog_email_notifications');
-        $queue->createQueue();
-
-        // Add queue item to send comment notification
-        $queue->createItem(['entity' => $entity]);
-
-      }
-      break;
     case 'medical_school':
       $g_api_key = \Drupal::config('bbd_custom.settings')->get('g_api_key');
 
@@ -164,7 +155,7 @@ function bbd_custom_node_update(Drupal\node\Entity\Node $entity) {
     }
 
 
-    //Gets updated value of the field_inspection_report field.
+    // Gets updated value of the field_inspection_report field.
     $new_reports = [];
 
     if ($entity->hasField('field_inspection_report') && $new_reports_field = $entity->field_inspection_report->getValue()) {
@@ -177,23 +168,57 @@ function bbd_custom_node_update(Drupal\node\Entity\Node $entity) {
     if (!$origin_reports && $new_reports) {
       // Send notification emails.
 
-      $queue = \Drupal::queue('hta_establishments_email_notifications');
-      $queue->createQueue();
+      $payload = [
+        'entity_id' => $entity->id()
+      ];
 
-      // Add queue item to send comment notification
-      $queue->createItem(['entity' => $entity]);
+      $job = Job::create('establishments_email_notifications', $payload);
+      $queue = Queue::load('establishments_email_notifications');
+      $queue->enqueueJob($job);
     }
     elseif ($origin_reports && $new_reports) {
       $diff = array_diff($new_reports, $origin_reports);
 
       if ($diff) {
         // Send notification emails.
-        $queue = \Drupal::queue('hta_establishments_email_notifications');
-        $queue->createQueue();
+        $payload = [
+          'entity_id' => $entity->id()
+        ];
 
-        // Add queue item to send comment notification
-        $queue->createItem(['entity' => $entity]);
+        $job = Job::create('establishments_email_notifications', $payload);
+        $queue = Queue::load('establishments_email_notifications');
+        $queue->enqueueJob($job);
       }
+    }
+  }
+
+  if ($entity->type->target_id == 'blog' && $entity->status->value == 1) {
+    if ($entity->status->value == 1 && $entity->hasField('field_notification_sent') && $entity->field_notification_sent->value != 1) {
+      $payload = [
+        'entity_id' => $entity->id()
+      ];
+
+      $job = Job::create('blog_email_notifications', $payload);
+      $queue = Queue::load('blog_email_notifications');
+      $queue->enqueueJob($job);
+    }
+  }
+
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function bbd_custom_node_insert(Drupal\node\Entity\Node $entity) {
+   if ($entity->type->target_id == 'blog' && $entity->status->value == 1) {
+    if ($entity->status->value == 1 && $entity->hasField('field_notification_sent') && $entity->field_notification_sent->value != 1) {
+      $payload = [
+        'entity_id' => $entity->id()
+      ];
+
+      $job = Job::create('blog_email_notifications', $payload);
+      $queue = Queue::load('blog_email_notifications');
+      $queue->enqueueJob($job);
     }
   }
 }
@@ -245,24 +270,17 @@ function hta_feature_establishments_notification_new_report_notify($entity) {
         $data_send['subject'] = $subject;
         $data_send['body'] = $body;
 
-        $operations[] = [
-          'send_email_notifications',
-          [
-            $data_send,
-            'details' => t('(Sending email notifications'),
-          ],
+        $payload = [
+          'type' => 'establishments_email_notifications',
+          'to' => $email,
+          'data' => $data_send
         ];
+
+        $job = Job::create('send_email', $payload);
+        $queue = Queue::load('send_email');
+        $queue->enqueueJob($job);
       }
     }
-
-    $batch = array(
-      'title' => t('Sending email notifications ...'),
-      'operations' => $operations,
-      'finished' => 'send_email_notifications_finished',
-      'file' => drupal_get_path('module', 'bbd_custom') . '/bbd_custom.batch.inc',
-    );
-    batch_set($batch);
-
   }
 }
 
@@ -401,11 +419,14 @@ function bbd_custom_comment_insert(CommentInterface $comment) {
     return;
   }
 
-  $queue = \Drupal::queue('hta_comments_email_notifications');
-  $queue->createQueue();
+  // Comment Email Notifications
+  $payload = [
+    'comment_id' => $comment->id()
+  ];
 
-  // Add queue item to send comment notification
-  $queue->createItem(['comment' => $comment]);
+  $job = Job::create('comment_email_notifications', $payload);
+  $queue = Queue::load('comment_email_notifications');
+  $queue->enqueueJob($job);
 }
 
 

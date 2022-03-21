@@ -10,6 +10,7 @@ import { verifyRecaptcha } from '../../utils/utils'
 import ArrowPurple from '../../images/arrow-purple.svg'
 import SubmitButton from './elements/submitButton'
 import SubmissionModal from './elements/submissionModal'
+import ConditionalWrapper from '../helpers/ConditionalWrapper'
 
 const MIN_HEIGHT_FORM = 800
 
@@ -33,7 +34,7 @@ const FollowBlog = forwardRef((props, ref) => {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       })
-      	
+
       const payload = {
         first_name: values.first_name,
         last_name: values.field_last_name,
@@ -64,11 +65,11 @@ const FollowBlog = forwardRef((props, ref) => {
       if (recaptchaResponse.success) {
         try {
           const response = await fetch(SUBMISSION_ENDPOINT, options)
-  
+
           if (response.ok) {
             // submission successful
             const data = await response.json()
-  
+
             if (typeof data.error !== 'undefined') {
               // Error returned from Drupal while trying to process the request.
               actions.setStatus({
@@ -118,9 +119,21 @@ const FollowBlog = forwardRef((props, ref) => {
 
   return (
     <>
-      <animated.div
-        style={animationAside}
-        className={`follow-blog column is-${column || 4}`}
+      <ConditionalWrapper
+        condition={typeof document !== 'undefined'}
+        wrapper={children => (
+          <animated.div
+            style={animationAside}
+            className={`follow-blog column is-${column || 4}`}
+          >
+            {children}
+          </animated.div>
+        )}
+        elseWrapper={children => (
+          <div className={`follow-blog column is-${column || 4}`}>
+            {children}
+          </div>
+        )}
       >
         <div className="follow-blog__inner-wrapper" ref={ref} style={{minHeight: MIN_HEIGHT_FORM + 'px'}}>
           {showBackButton && (
@@ -175,39 +188,65 @@ const FollowBlog = forwardRef((props, ref) => {
 
                 <fieldset>
                   <legend><span className="accessibility">Follow the HTA Blog</span></legend>
+                  <p id="formInstructions">Fields marked with an asterisk (*) are required.</p>
 
                   <div className={`field field--field-component ${errors.first_name ? 'field--invalid' : ''}`}>
                     <label htmlFor="first_name_follow" aria-label="First name (required)">First name*</label>
-                    <Field id="first_name_follow" type="text" name="first_name" autoComplete="given-name" />
-                    <ErrorMessage name="first_name" component="span" />
+                    <Field id="first_name_follow" type="text" name="first_name" autoComplete="given-name" aria-required="true" />
+                    <ErrorMessage
+                      name="first_name"
+                      component="span"
+                      aria-live={errors?.first_name ? "polite" : null}
+                      role={errors?.first_name ? "alert" : null}
+                    />
                   </div>
 
                   <div className={`field field--field-last_name ${errors.field_last_name ? 'field--invalid' : ''}`}>
                     <label htmlFor="field_last_name_follow" aria-label="Last name (required)">Last name*</label>
-                    <Field id="field_last_name_follow" type="text" name="field_last_name" autoComplete="family-name" />
-                    <ErrorMessage name="field_last_name" component="span" />
+                    <Field id="field_last_name_follow" type="text" name="field_last_name" autoComplete="family-name" aria-required="true" />
+                    <ErrorMessage
+                      name="field_last_name"
+                      component="span"
+                      aria-live={errors?.field_last_name ? "polite" : null}
+                      role={errors?.field_last_name ? "alert" : null}
+                    />
                   </div>
 
                   <div className={`field field--email-address ${errors.email_address ? 'field--invalid' : ''}`}>
                     <label htmlFor="email_address_follow" aria-label="Email address (required)">Email address*</label>
-                    <Field id="email_address_follow" type="email" name="email_address" autoComplete="email" />
-                    <ErrorMessage name="email_address" component="span" />
+                    <Field id="email_address_follow" type="email" name="email_address" autoComplete="email" aria-required="true" />
+                    <ErrorMessage
+                      name="email_address"
+                      component="span"
+                      aria-live={errors?.email_address ? "polite" : null}
+                      role={errors?.email_address ? "alert" : null}
+                    />
                   </div>
 
                   <div className={`field field--confirm-email_address ${errors.confirm_email_address ? 'field--invalid' : ''}`}>
                     <label htmlFor="confirm_email_address_follow" aria-label="Confirm email address (required)">Confirm address*</label>
-                    <Field id="confirm_email_address_follow" type="email" name="confirm_email_address" />
-                    <ErrorMessage name="confirm_email_address" component="span" />
+                    <Field id="confirm_email_address_follow" type="email" name="confirm_email_address" aria-required="true" />
+                    <ErrorMessage
+                      name="confirm_email_address"
+                      component="span"
+                      aria-live={errors?.confirm_email_address ? "polite" : null}
+                      role={errors?.confirm_email_address ? "alert" : null}
+                    />
                   </div>
-                  
+
                   <div className={`field field--consent ${errors.field_i_would_like_to_follow_the ? 'field--invalid' : ''}`}>
                     <div className="field__inner-wrapper">
-                      <Field id="consent_follow" type="checkbox" name="field_i_would_like_to_follow_the" />
+                      <Field id="consent_follow" type="checkbox" name="field_i_would_like_to_follow_the" aria-required="true" />
                       <label htmlFor="consent_follow">
                         I would like to be notified when any new blog posts are published and I can confirm that I have read the <Link to="/privacy-notice">privacy policy</Link>.*
                       </label>
                     </div>
-                    <ErrorMessage name="field_i_would_like_to_follow_the" component="span" />
+                    <ErrorMessage
+                      name="field_i_would_like_to_follow_the"
+                      component="span"
+                      aria-live={errors?.field_i_would_like_to_follow_the ? "polite" : null}
+                      role={errors?.field_i_would_like_to_follow_the ? "alert" : null}
+                    />
                   </div>
                 </fieldset>
 
@@ -215,6 +254,7 @@ const FollowBlog = forwardRef((props, ref) => {
                   sitekey={process.env.RECAPTCHA_SITE_KEY}
                   onChange={handleRecaptcha}
                   className="field--recaptcha"
+                  theme="dark"
                 />
 
                 <SubmitButton
@@ -229,10 +269,10 @@ const FollowBlog = forwardRef((props, ref) => {
             )}
           </Formik>
         </div>
-      </animated.div>
+      </ConditionalWrapper>
 
       {/* Submission Successful Modal Portal */}
-      {showModal && createPortal(
+      {typeof document !== 'undefined' && showModal && createPortal(
         <SubmissionModal
           successTitle="Thank you for following."
           successMessage="Thank you for following the Human Tissue Authority blog."

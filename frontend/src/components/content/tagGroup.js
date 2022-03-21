@@ -1,7 +1,7 @@
 import React from 'react'
 import { animated, useSpring, useTransition, config } from 'react-spring'
+import ConditionalWrapper from '../helpers/ConditionalWrapper'
 import Tag from './tag'
-
 
 const TagGroup = props => {
   const { tags, title, wide } = props
@@ -23,9 +23,21 @@ const TagGroup = props => {
   })
 
   return (
-    <animated.div
-      style={animationBlock}
-      className="section tag-group columns"
+    <ConditionalWrapper
+      condition={typeof document !== 'undefined'}
+      wrapper={children => (
+        <animated.div
+          style={animationBlock}
+          className="section tag-group columns"
+        >
+          {children}
+        </animated.div>
+      )}
+      elseWrapper={children => (
+        <div className="section tag-group columns">
+          {children}
+        </div>
+      )}
     >
       <div className={`tag-group__inner-wrapper column ${wide ? 'is-9' : 'is-6'} is-offset-1`}>
         {title && (
@@ -35,14 +47,18 @@ const TagGroup = props => {
         )}
         
         <ul>
-          {animationTags.map(({ item, key, props }) => (
+          {typeof document !== 'undefined' ? animationTags.map(({ item, key, props }) => (
             <animated.li style={props} key={key}>
               <Tag data={item} />
             </animated.li>
+          )) : tags.map(item => (
+            <li key={item.label}>
+              <Tag data={item} />
+            </li>
           ))}
         </ul>
       </div>
-    </animated.div>
+    </ConditionalWrapper>
   )
 }
 

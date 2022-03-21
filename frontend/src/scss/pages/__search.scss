@@ -14,7 +14,7 @@
     padding: 15px 0;
   }
 
-  strong,
+  input,
   h1 {
     font-family: $font-primary;
     font-size: 5rem;
@@ -28,7 +28,8 @@
     }
   }
 
-  strong {
+  input {
+    padding: 0;
     color: $jet;
   }
 

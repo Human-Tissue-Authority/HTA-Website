@@ -12,6 +12,14 @@
     padding: 50px;
   }
 
+  .field {
+    textarea,
+    select,
+    input:not([type="checkbox"]):not([type="radio"]) {
+      width: 100%;
+    }
+  }
+
   .field--message {
     margin-bottom: 35px;
 
@@ -25,7 +33,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  
+
   @include media('>=desktop') {
     flex-direction: row;
   }

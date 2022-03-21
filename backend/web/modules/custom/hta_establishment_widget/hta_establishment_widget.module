@@ -28,7 +28,7 @@ function hta_establishment_widget_node_view(array &$build, EntityInterface $node
     $frontend_base_url = \Drupal::config('bbd_custom.settings')->get('frontend_url');
     $form['hta_establishment_widget_embed_code'] = array(
       '#type' => 'textfield',
-      '#value' => '<iframe frameborder="0" height="150" width="300" src="' . $frontend_base_url . 'establishments/widget/' . $node->id() . '/"></iframe>',
+      '#value' => '<iframe frameborder="0" height="150" width="300" src="' . $frontend_base_url . 'establishments/widget-embed/' . $node->id() . '"></iframe>',
       '#attributes' => [
         'class' => [
           'embed-code'

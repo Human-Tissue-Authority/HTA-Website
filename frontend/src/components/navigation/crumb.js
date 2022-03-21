@@ -1,18 +1,27 @@
 import React from 'react'
 import { animated } from 'react-spring'
 import { Link } from 'gatsby'
+import ConditionalWrapper from '../helpers/ConditionalWrapper'
 
 const Crumb = props => {
   const { label, link, animation } = props
 
-  if (!link && label) {
-    return <animated.li style={animation} className="crumb crumb__last">{label}</animated.li>
-  }
-
   return (
-    <animated.li style={animation} className="crumb">
-      <Link to={link}>{label}</Link>
-    </animated.li>
+    <ConditionalWrapper
+      condition={animation}
+      wrapper={children => (
+        <animated.li style={animation} className={`crumb ${!link && 'crumb__last'}`}>{children}</animated.li>
+      )}
+      elseWrapper={children => (
+        <li className={`crumb ${!link && 'crumb__last'}`}>{children}</li>
+      )}
+    >
+      {link ? (
+        <Link to={link}>{label}</Link>
+      ) : (
+        <>{label}</>
+      )}
+    </ConditionalWrapper>
   )
 }
 

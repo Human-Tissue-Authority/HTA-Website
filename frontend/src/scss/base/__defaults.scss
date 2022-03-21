@@ -29,6 +29,10 @@ a {
   &:hover {
     text-decoration: none;
   }
+
+  &:focus-visible {
+    outline-style: auto;
+  }
 }
 
 button {

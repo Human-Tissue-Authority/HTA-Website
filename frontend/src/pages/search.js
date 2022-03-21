@@ -3,7 +3,6 @@ import { window } from 'browser-monads'
 import { parseUrl, stringify } from 'query-string'
 import { navigate } from '@reach/router'
 import CountUp from 'react-countup'
-import Select from 'react-select'
 
 import { fetchSearchResults } from "../utils/views"
 import { cleanString, getPaginationOffset } from "../utils/utils"
@@ -13,6 +12,7 @@ import Breadcrumbs from "../components/navigation/breadcrumbs"
 import SEO from "../components/seo"
 import ContentListing from "../components/views/contentListing"
 import ResetButton from "../components/misc/resetButton"
+import Select from "../components/forms/elements/select"
 import { useHasMounted } from "../utils/hooks"
 
 import grid from '../images/grid.svg'
@@ -28,11 +28,11 @@ const CONTENT_TYPE_OPTIONS = [
   { value: 'vacancy', label: 'Vacancies' }
 ]
 
-const ITEMS_PER_PAGE = 9
+const ITEMS_PER_PAGE = 15
 
 const Search = ({ location }) => {
   const locationState = location.state?.keywords
-  
+
   // search functionality
   const [baseUrl, setBaseUrl] = useState(null)
   const [keywords, setKeywords] = useState(null)
@@ -45,9 +45,10 @@ const Search = ({ location }) => {
   const [sortBy, setSortBy] = useState('relevance')
   const [selectedType, setSelectedType] = useState(null)
   const [listingHeight, setListingHeight] = useState('auto')
-  const [cardType, setCardType] = useState('search')
+  const [cardType, setCardType] = useState('search-full-width')
   const listingRef = useRef(null)
-  
+  const [searchQuery, setSearchQuery] = useState('')
+
   const handleChangeCardType = value => {
     if (value !== cardType) {
       requestResults()
@@ -70,16 +71,16 @@ const Search = ({ location }) => {
         setOffset(paginationOffset)
         setCurrentPage(parseInt(page) - 1)
       }
-  
+
       if (sort) setSortBy(sort)
 
       if (type) {
-        // get content type filter option from constant 
+        // get content type filter option from constant
         const [ typeOption ] = CONTENT_TYPE_OPTIONS.filter(option => option.value === type)
 
         setSelectedType(typeOption)
       }
-      
+
       if (keywords) {
         setKeywords(cleanString(keywords))
       } else {
@@ -90,9 +91,9 @@ const Search = ({ location }) => {
 
   const createSortByQuery = () => {
     let sortByValue;
-  
+
     switch (sortBy) {
-      case 'title': 
+      case 'title':
         sortByValue = '&sort=sort_X3b_en_title asc'
         break
       case 'date':
@@ -102,10 +103,10 @@ const Search = ({ location }) => {
 
     return sortByValue
   }
-  
+
   const createFilterQuery = () => {
     let filterValue;
-      
+
     if (selectedType) {
       filterValue = `&fq=ss_type:(${selectedType.value})`
     }
@@ -131,7 +132,7 @@ const Search = ({ location }) => {
   const requestResults = offsetVal => {
     if (keywords && keywords.length > 0) {
       setLoading(true)
-      
+
       const sortByQuery = createSortByQuery()
       const filterQuery = createFilterQuery()
       const requestOffset = Number.isInteger(offsetVal) ? offsetVal : offset
@@ -154,8 +155,8 @@ const Search = ({ location }) => {
       .catch(error => console.log({ error }))
     }
   }
-  
-  // initial page load request || new request is keyword changes
+
+  // initial page load request || new request if keyword changes
   useEffect(() => {
     if (!initialLoad && keywords && keywords.length > 0) {
       requestResults()
@@ -199,25 +200,45 @@ const Search = ({ location }) => {
     setSortBy('relevance')
   }
 
-  // ensure component has mounted / prevents window does not exist error during build	
+  // handle search page search
+  const fireSearch = e => {
+    e.preventDefault()
+
+    const searchWords = cleanString(searchQuery)
+
+    if (searchWords && searchWords.length > 0) {
+      setKeywords(searchWords);
+    }
+  }
+
+  // ensure component has mounted / prevents window does not exist error during build
   const hasMounted = useHasMounted()
 
-  if (!hasMounted) {	
-    return null	
+  if (!hasMounted) {
+    return null
   }
 
   return (
     <Layout classes="search-page" forceSearchOpen>
       <SEO title="Search" />
       <Breadcrumbs alias="/search" currentTitle="Search" />
-      
+
       <div className="search__header columns">
         <div className="search__header-wrapper column is-8 is-offset-1">
           {keywords ? (
-            <>
+            <div key={keywords}>
               <h1 className="h">Search results for</h1>
-              <strong>{keywords}</strong>
-            </>
+              <h3 className="visuallyhidden">Search</h3>
+              <form className="search__form" onSubmit={fireSearch}>
+                <input
+                  aria-label="Search"
+                  ref={input => input && input.focus()}
+                  type="text"
+                  defaultValue={keywords}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </form>
+            </div>
           ) : (
             <h1 className="h">Search the Human Tissue Authority</h1>
           )}
@@ -261,7 +282,7 @@ const Search = ({ location }) => {
                 />
               </div>
             </div>
-            
+
             <div className="search-controls__additional-controls">
               <ResetButton clickMethod={resetControls} icon text="Reset filters" />
             </div>

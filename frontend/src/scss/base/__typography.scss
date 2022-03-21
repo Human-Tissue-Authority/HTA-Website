@@ -66,8 +66,9 @@ p {
 
   li {
     margin-bottom: 20px;
-    display: flex;
+    padding-left: 20px;
     justify-content: flex-start;
+    position: relative;
 
     &:last-child {
       margin-bottom: 0;
@@ -80,16 +81,14 @@ p {
     font-weight: bold;
     display: block;
     font-size: 2.8rem;
-    margin-right: 10px;
-    margin-top: 12px;
     line-height: 0;
+    position: absolute;
+    left: 0;
+    top: 10px;
 
     @include media('>=tablet') {
-      margin-top: 12px;
-    }
-
-    @include media('>=desktop') {
-      margin-right: 16px;
+      margin-top: 10px;
+      top: 0;
     }
   }
 }

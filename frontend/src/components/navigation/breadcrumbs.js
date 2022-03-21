@@ -21,8 +21,10 @@ const Breadcrumbs = props => {
     <div className="breadcrumbs columns">
       <nav aria-label="Breadcrumb" className={`breadcrumbs__inner-wrapper column ${wide ? 'is-9' : 'is-7'}`}>
         <ul>
-          {animation.map(({ item, key, props }) => (
+          {typeof document !== 'undefined' ? animation.map(({ item, key, props }) => (
             <Crumb key={key} link={item.path} label={item.label} animation={props} />
+          )) : aliasArr.map(item => (
+            <Crumb key={item.label} link={item.path} label={item.label} />
           ))}
         </ul>
       </nav>

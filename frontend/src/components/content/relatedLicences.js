@@ -1,6 +1,7 @@
 import { Link } from 'gatsby'
 import React, { useState, useEffect } from 'react'
 import { animated, useSpring, config } from 'react-spring'
+import ConditionalWrapper from '../helpers/ConditionalWrapper'
 
 const RelatedLicences = props => {
   const { items, wide } = props
@@ -28,9 +29,21 @@ const RelatedLicences = props => {
   }, [])
 
   return (
-    <animated.section
-      style={animation}
-      className="section related-licences columns"
+    <ConditionalWrapper
+      condition={typeof document !== 'undefined'}
+      wrapper={children => (
+        <animated.section
+          style={animation}
+          className="section related-licences columns"
+        >
+          {children}
+        </animated.section>
+      )}
+      elseWrapper={children => (
+        <section className="section related-licences columns">
+          {children}
+        </section>
+      )}
     >
       <div className={`related-licences__inner-wrapper column ${wide ? 'is-9' : 'is-6'} is-offset-1`}>
         <h2 className="h related-licences__title section-title">Related Licences</h2>
@@ -55,7 +68,8 @@ const RelatedLicences = props => {
           </div>
         </div>
       </div>
-    </animated.section>
+    </ConditionalWrapper>
+
   )
 }
 

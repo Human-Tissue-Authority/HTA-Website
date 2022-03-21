@@ -1,15 +1,13 @@
 import React from 'react'
 import { Link } from 'gatsby'
-import InlineTags from '../content/inlineTags'
 import Button from '../misc/button'
 import { truncateToNearestWord } from '../../utils/utils'
 import dayjs from 'dayjs'
 
 const CardNews = props => {
-  const {tags, body, index, summary} = props
+  const { body, index, summary } = props
   const isFirstItem = index === 0
-  const tagsList = tags[0].concat(tags[1])
-  
+
   const renderText = () => {
     let textToRender
 
@@ -26,39 +24,40 @@ const CardNews = props => {
 
   if (isFirstItem) {
     return (
-      <CardFullWidth {...props} renderText={renderText} tagsList={tagsList}/>
+      <CardFullWidth {...props} renderText={renderText} />
     )
   } else {
     return (
-      <Card {...props} renderText={renderText} tagsList={tagsList}/>
+      <Card {...props} renderText={renderText} />
     )
   }
 }
 
-const Card = ({date, title, link, audience, renderText, tagsList}) => {
+const Card = ({ date, title, link, audience, renderText }) => {
   return (
-    <div className={`card card-news is-gapless is-multiline`}>
+    <Link
+      className={`card card-news is-gapless is-multiline`}
+      aria-label={title}
+      to={link || '/404'}
+    >
       <div className=''>
         <p className="card-news__date">
           {dayjs(date).format('D MMM, YYYY')}
         </p>
 
-        <h3 className="card-news__title">
+        <h2 className="card-news__title">
           {title}
-        </h3>
+        </h2>
       </div>
 
       {renderText()}
-
-      {tagsList && <InlineTags tags={tagsList} />}
 
       <div className="card-news__footer">
         <div className="card-news__button-custom-wrapper is-hidden-dekstop">
           <Button
             text={"Find out more"}
-            ariaText={`View ${title}`}
-            link={link || '/404'}
             showArrow
+            fake
           />
         </div>
         <div className="card-news__node-info">
@@ -67,13 +66,17 @@ const Card = ({date, title, link, audience, renderText, tagsList}) => {
           ))}
         </div>
       </div>
-  </div>
+  </Link>
   )
 }
 
-const CardFullWidth = ({date, title, link, audience, renderText, tagsList}) => {
+const CardFullWidth = ({ date, title, link, audience, renderText }) => {
   return (
-    <div className='card card-news big columns is-gapless is-multiline'>
+    <Link
+      className="card card-news big columns is-gapless is-multiline"
+      aria-label={title}
+      to={link || '/404'}
+    >
       <div className='column is-half is-full-mobile'>
         <p className="card-news__date">
           {dayjs(date).format('D MMM, YYYY')}
@@ -85,9 +88,8 @@ const CardFullWidth = ({date, title, link, audience, renderText, tagsList}) => {
         <div className="card-news__button-custom-wrapper is-hidden-mobile">
             <Button
               text={"Find out more"}
-              ariaText={`View ${title}`}
-              link={link || '/404'}
               showArrow
+              fake
             />
           </div>
       </div>
@@ -95,15 +97,12 @@ const CardFullWidth = ({date, title, link, audience, renderText, tagsList}) => {
 
         {renderText()}
 
-        {tagsList && <InlineTags tags={tagsList} />}
-
         <div className="card-news__footer">
           <div className="card-news__button-custom-wrapper is-hidden-desktop">
             <Button
               text={"Find out more"}
-              ariaText={`View ${title}`}
-              link={link || '/404'}
               showArrow
+              fake
             />
           </div>
           <div className="card-news__node-info">
@@ -113,7 +112,7 @@ const CardFullWidth = ({date, title, link, audience, renderText, tagsList}) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

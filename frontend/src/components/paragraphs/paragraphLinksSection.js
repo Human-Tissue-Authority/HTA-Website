@@ -35,20 +35,43 @@ const ParagraphLinksSection = ({ node, isFullWidth }) => {
 
           <div className="column is-12">
             <ul className="columns is-multiline is-4 is-variable">
-              {animationLinks.map(({ item, key, props }) => {
-                if (item && item.path) {
-                  return (
-                    <animated.li style={props} key={key} className={`column ${node.width === 'Wide' ? 'is-6 is-4-widescreen' : 'is-12 is-6-widescreen'}`}>
-                      <img src={ArrowPurple} role="presentation" alt="" />
-                      <Link to={item.path?.alias || '/'}>
-                        {item.title }
-                      </Link>
-                    </animated.li>
-                  )
-                }
+              {typeof document !== 'undefined' ? (
+                <>
+                  {animationLinks.map(({ item, key, props }) => {
+                    if (item && item.path) {
+                      return (
+                        <animated.li style={props} key={key} className={`column ${node.width === 'Wide' ? 'is-6 is-4-widescreen' : 'is-12 is-6-widescreen'}`}>
+                          <img src={ArrowPurple} role="presentation" alt="" />
+                          <Link to={item.path?.alias || '/'}>
+                            {item.title }
+                          </Link>
+                        </animated.li>
+                      )
+                    }
 
-                return null
-              })}
+                    return null
+                  })}
+                </>
+              ) : (
+                <>
+                  {links.map(item => {
+                    if (item && item.path) {
+                      return (
+                        <li
+                          className={`column ${node.width === 'Wide' ? 'is-6 is-4-widescreen' : 'is-12 is-6-widescreen'}`}
+                        >
+                          <img src={ArrowPurple} role="presentation" alt="" />
+                          <Link to={item.path?.alias || '/'}>
+                            {item.title }
+                          </Link>
+                        </li>
+                      )
+                    }
+
+                    return null
+                  })}
+                </>
+              )}
             </ul>
           </div>
         </div>

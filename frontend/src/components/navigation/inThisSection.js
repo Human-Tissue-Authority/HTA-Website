@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'gatsby'
 import { animated, useSpring, config } from 'react-spring'
 import ArrowPurple from '../../images/arrow-purple.svg'
+import ConditionalWrapper from '../helpers/ConditionalWrapper'
 
 const InThisSection = props => {
   const { type, data, currentPageAlias } = props
@@ -39,12 +40,7 @@ const InThisSection = props => {
 
       if (parent && parent?.children) {
         menuComponent = parent.children.map(item => (
-          <li key={item.title}>
-            <Link to={item.url}>
-              <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
-              {item.title}
-            </Link>
-          </li>
+          <MenuItem item={item} />
         ))
       }
 
@@ -52,12 +48,7 @@ const InThisSection = props => {
     case `All child pages`:
       if (nodesData?.children?.length > 0) {
         menuComponent = nodesData.children.map(item => (
-          <li key={item.title}>
-            <Link to={item.url}>
-              <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
-              {item.title}
-            </Link>
-          </li>
+          <MenuItem item={item} />
         ))
       }
 
@@ -69,12 +60,7 @@ const InThisSection = props => {
 
         if (peersOnly.length > 0) {
           menuComponent = peersOnly.map(item => (
-            <li key={item.title}>
-              <Link to={item.url}>
-                <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
-                {item.title}
-              </Link>
-            </li>
+            <MenuItem item={item} />
           ))
         }
       }
@@ -98,12 +84,7 @@ const InThisSection = props => {
                 {peersLinks.map(item => {
                   if (item.id !== nodesData.id) {
                     return (
-                      <li key={item.title}>
-                        <Link to={item.url}>
-                          <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
-                          {item.title}
-                        </Link>
-                      </li>
+                      <MenuItem item={item} />
                     )
                   } else {
                     return (
@@ -116,12 +97,7 @@ const InThisSection = props => {
                         {childLinks.length > 0 && (
                           <ul>
                             {childLinks.map(childLink => (
-                              <li key={childLink.title}>
-                                <Link to={childLink.url}>
-                                  <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
-                                  {childLink.title}
-                                </Link>
-                              </li>
+                              <MenuItem item={childLink} />
                             ))}
                           </ul>
                         )}
@@ -139,12 +115,7 @@ const InThisSection = props => {
     case `Manual`:
       if (nodesData && nodesData?.length > 0) {
         menuComponent = nodesData.map(item => (
-          <li key={item.title}>
-            <Link to={item.url}>
-              <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
-              {item.title}
-            </Link>
-          </li>
+          <MenuItem item={item} />
         ))
       }
       break
@@ -153,31 +124,69 @@ const InThisSection = props => {
   return (
     <>
       {componentData && (
-        <animated.div
-          style={animationAside}
-          className="in-this-section__no-padding column is-4"
+        <ConditionalWrapper
+          condition={typeof document !== 'undefined'}
+          wrapper={children => (
+            <animated.div
+              style={animationAside}
+              className="in-this-section__no-padding column is-4"
+            >
+              {children}
+            </animated.div>
+          )}
+          elseWrapper={children => (
+            <div className="in-this-section__no-padding column is-4">{children}</div>
+          )}
         >
           {componentData}
-        </animated.div>
+        </ConditionalWrapper>
       )}
 
       {nodesData && menuComponent && (
-        <animated.div
-          style={animationAside}
-          className="in-this-section column is-4"
+        <ConditionalWrapper
+          condition={typeof document !== 'undefined'}
+          wrapper={children => (
+            <animated.div
+              style={animationAside}
+              className="in-this-section column is-4"
+            >
+              {children}
+            </animated.div>
+          )}
+          elseWrapper={children => (
+            <div className="in-this-section column is-4">
+              {children}
+            </div>
+          )}
         >
-        <div className="in-this-section__inner-wrapper">
-          <h2 className="in-this-section__title">
-            In this section
-          </h2>
-          <ul className="in-this-section__links">
-            {menuComponent}
-          </ul>
-        </div>  
-      </animated.div>
+          <div className="in-this-section__inner-wrapper">
+            <h2 className="in-this-section__title">
+              In this section
+            </h2>
+            <ul className="in-this-section__links">
+              {menuComponent}
+            </ul>
+          </div>
+        </ConditionalWrapper>
       )}
     </>
   )
 }
 
 export default InThisSection
+
+const MenuItem = props => {
+  const { item } = props
+
+  // return nothing if item is a 'do-not-delete' node
+  if (item.url.includes('do-not-delete')) return <></>
+
+  return (
+    <li key={item.title}>
+      <Link to={item.url}>
+        <img src={ArrowPurple} aria-hidden role="presentation" alt="" />
+        {item.title}
+      </Link>
+    </li>
+  )
+}

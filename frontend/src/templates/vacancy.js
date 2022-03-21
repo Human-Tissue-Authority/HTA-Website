@@ -51,15 +51,15 @@ const Vacancy = props => {
       <SEO title={`${nodeVacancy.title} | Vacancy`} />
       <Breadcrumbs alias={nodeVacancy.path.alias} currentTitle={nodeVacancy.title} />
 
-      <Title title={nodeVacancy.title} />
+      <Title title={nodeVacancy.title} wide={nodeVacancy.in_this_section == 'None'} />
 
-      <TagGroup tags={nodeVacancy.relationships.field_tags} />
+      <TagGroup tags={nodeVacancy.relationships.field_tags} wide={nodeVacancy.in_this_section == 'None'} />
 
       <div className="vacancy--info">
-        <KeyInformation items={vacancyInformation}/>
+        <KeyInformation items={vacancyInformation} wide={nodeVacancy.in_this_section == 'None'} />
       </div>
 
-      <CMS content={nodeVacancy.body?.processed} />
+      <CMS content={nodeVacancy.body?.processed} wide={nodeVacancy.in_this_section == 'None'} />
 
       {nodeAttachmentsCleaned && nodeAttachmentsCleaned.length > 0 && (
         <FileDownloadGroup files={nodeAttachmentsCleaned} wide/>

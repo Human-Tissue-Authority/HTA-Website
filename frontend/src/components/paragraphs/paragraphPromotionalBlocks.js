@@ -32,27 +32,46 @@ const ParagraphPromotionalBlocks = ({ node, isFullWidth }) => {
       <div className={`paragraph-promotional-blocks__inner-wrapper column ${columnClasses}`}>
         <div className="paragraph-promotional-blocks__blocks columns is-multiline is-variable is-5">
           {node.title && (
-            <h2 className="h section-title column is-12">{node.title}</h2>
+            <h2 className="h h--2 column is-12">{node.title}</h2>
           )}
 
           {node.text && (
             <div className="cms column is-12" dangerouslySetInnerHTML={{ __html: parseContent(node.text.processed) }} />
           )}
 
-          {animationBlocks.map(({ item, key, props}) => item && (
-            <animated.div
-              key={key}
-              style={props}
-              className={`column ${node.width === 'Wide' ? 'is-12 is-4-widescreen' : 'is-12 is-6-desktop'}`}
-            >
-              <PromotionalBlock
-                title={item.field_title}
-                summary={item.field_summary}
-                linkText={item.field_cta?.title}
-                linkUrl={item.field_cta?.url}
-              />
-            </animated.div>
-          ))}
+          {typeof document !== 'undefined' ? (
+            <>
+              {animationBlocks.map(({ item, key, props}) => item && (
+                <animated.div
+                  key={key}
+                  style={props}
+                  className={`column ${node.width === 'Wide' ? 'is-12 is-4-widescreen' : 'is-12 is-6-desktop'}`}
+                >
+                  <PromotionalBlock
+                    title={item.field_title}
+                    summary={item.field_summary}
+                    linkText={item.field_cta?.title}
+                    linkUrl={item.field_cta?.url}
+                  />
+                </animated.div>
+              ))}
+            </>
+          ) : (
+            <>
+              {blocks.map(item => (
+                <div
+                  className={`column ${node.width === 'Wide' ? 'is-12 is-4-widescreen' : 'is-12 is-6-desktop'}`}
+                >
+                  <PromotionalBlock
+                    title={item.field_title}
+                    summary={item.field_summary}
+                    linkText={item.field_cta?.title}
+                    linkUrl={item.field_cta?.url}
+                  />
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     </ParagraphWrapper>

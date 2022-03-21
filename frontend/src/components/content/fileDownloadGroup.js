@@ -1,5 +1,6 @@
 import React from 'react'
 import { animated, useSpring, useTransition, config } from 'react-spring'
+import ConditionalWrapper from '../helpers/ConditionalWrapper'
 import ButtonThin from '../misc/buttonThin'
 
 const FileDownloadGroup = props => {
@@ -22,9 +23,21 @@ const FileDownloadGroup = props => {
   })
 
   return (
-    <animated.section
-      style={animationBlock}
-      className="section file-download-group columns" 
+    <ConditionalWrapper
+      condition={typeof document !== 'undefined'}
+      wrapper={children => (
+        <animated.section
+          style={animationBlock}
+          className="section file-download-group columns"
+        >
+          {children}
+        </animated.section>
+      )}
+      elseWrapper={children => (
+        <section className="section file-download-group columns">
+          {children}
+        </section>
+      )}
     >
       <div className={`file-download-group__inner-wrapper column is-6 is-offset-1`}>
         {title && (
@@ -34,14 +47,18 @@ const FileDownloadGroup = props => {
         )}
 
         <ul className={`columns is-multiline ${wide ? ' ' : 'is-6'} is-6 is-variable`}>
-          {animationFiles.map(({ item, key, props }) => (
+          {typeof document !== 'undefined' ? animationFiles.map(({ item, key, props }) => (
             <animated.li style={props} key={key} className={`column ${wide ? 'is-12' : 'is-6'}`}>
               <ButtonThin ariaLabelText={`Download ${item.label}`} text={item.label} link={item.url} />
             </animated.li>
+          )) : files.map(item => (
+            <li key={item.label} className={`column ${wide ? 'is-12' : 'is-6'}`}>
+              <ButtonThin ariaLabelText={`Download ${item.label}`} text={item.label} link={item.url} />
+            </li>
           ))}
         </ul>
       </div>
-    </animated.section>
+    </ConditionalWrapper>
   )
 }
 

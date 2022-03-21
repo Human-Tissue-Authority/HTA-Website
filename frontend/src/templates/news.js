@@ -37,16 +37,18 @@ const News = props => {
   return (
     <Layout classes="paginated" withSectionOverlay={!!nodeArticle.in_this_section}>
       <SEO title={`${nodeArticle.title} | Events`} />
-      <Breadcrumbs alias={nodeArticle.path.alias} currentTitle={nodeArticle.title} />
-      <LastUpdated timestamp={nodeArticle.created} published />
 
-      <Title title={nodeArticle.title} />
-      <TagGroup tags={nodeArticle.relationships.field_tags} />
+      <Breadcrumbs alias={'/about-hta/news'} currentTitle={nodeArticle.title} />
+      <LastUpdated timestamp={nodeArticle.created} published wide={nodeArticle.in_this_section == 'None'} />
 
-      <CMS content={nodeArticle.body?.processed} />
+
+      <Title title={nodeArticle.title} wide={nodeArticle.in_this_section == 'None'} />
+      <TagGroup tags={nodeArticle.relationships.field_tags} wide={nodeArticle.in_this_section == 'None'} />
+
+      <CMS content={nodeArticle.body?.processed} wide={nodeArticle.in_this_section == 'None'} />
 
       {nodeAttachmentsCleaned && nodeAttachmentsCleaned.length > 0 && (
-        <FileDownloadGroup files={nodeAttachmentsCleaned} wide/>
+        <FileDownloadGroup files={nodeAttachmentsCleaned} wide />
       )}
 
       {paragraphs}

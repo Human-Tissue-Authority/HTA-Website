@@ -116,6 +116,7 @@ const ListingCurrentVacancies = () => {
             setListingHeight={setListingHeight}
             columns="4"
             noResultsMessage={'No current vacancies'}
+            noscriptMessage
           />
         )}
       </section>

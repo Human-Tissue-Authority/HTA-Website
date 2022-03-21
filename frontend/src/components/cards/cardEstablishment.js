@@ -12,8 +12,8 @@ const CardEstablishment = props => {
   } = props
 
   return (
-    <Link to={url} aria-label={`View ${licensedPremises}`} className="card card-establishment">
-      <h3 className="visuallyhidden">{licensedPremises}</h3>
+    <Link to={url} aria-label={licensedPremises} className="card card-establishment">
+      <h2 className="visuallyhidden">{licensedPremises}</h2>
       <div className="columns">
         <div className="column is-2 is-3-mobile card-establishment__licence-number">{licenceNumber}</div>
         <div className="column is-4 is-6-mobile card-establishment__licensed-premises">{licensedPremises}</div>

@@ -1,0 +1,6 @@
+name: BBD Error URL List
+type: module
+description: List all error urls with counter
+package: Custom
+core: 8.x
+core_version_requirement: ^8 || ^9

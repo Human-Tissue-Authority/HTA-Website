@@ -7,13 +7,7 @@ const SearchFilter = props => {
 
   // focus menu when tabbing backwards from parent link
   const handleTabOut = e => {
-    const keyCode = e.keyCode || e.which;   
-
-    if (keyCode === 9) {
-      e.preventDefault()
-      document.querySelector(tabTarget).focus()
-      setOpenMethod(false)
-    }
+    const keyCode = e.keyCode || e.which;
   }
 
   return (
@@ -30,7 +24,6 @@ const SearchFilter = props => {
           onChange={e => setMethod(e.target.value)}
           value={filterVal}
           aria-label={ariaText || 'Search'}
-          autoFocus 
           onKeyDown={e => handleTabOut(e)}
         />
 

@@ -18,13 +18,15 @@ const ButtonThin = props => {
 
   return (
     <div className="button-thin">
-      <a href={link} ariaLabel={ariaLabelText} target="_blank" onMouseDown={() => setActive(true)} onMouseUp={() => setActive(false)} onMouseLeave={() => setActive(false)}>
+      <a href={link} ariaLabel={ariaLabelText} target="_blank" onMouseDown={() => setActive(true)} onMouseLeave={() => setActive(false)}>
         <p>{text}</p>
   
         <div className="button-thin__icon">
-          {animation.map(({ item, key, props }) => item ?
-            <animated.img key={key} style={props} src={ArrowWhite} role="presentation" /> :
-            <animated.img key={key} style={props} src={ArrowPurple} role="presentation" />
+          {typeof document !== 'undefined' ? animation.map(({ item, key, props }) => item ?
+            <animated.img key={key} style={props} src={ArrowWhite} role="presentation" alt="" /> :
+            <animated.img key={key} style={props} src={ArrowPurple} role="presentation" alt="" />
+          ) : (
+            <img src={ArrowPurple} role="presentation" alt="" />
           )}
         </div>
       </a>

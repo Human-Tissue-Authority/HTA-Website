@@ -2,8 +2,9 @@ import React, { useEffect, useState, useRef } from "react"
 import { graphql } from "gatsby"
 import ParagraphWrapper from "./paragraphWrapper"
 import ContentListing from "../views/contentListing"
+import NoJsContentListing from "../views/noJsContentListing"
 
-const ITEMS_PER_PAGE = 9
+const ITEMS_PER_PAGE = 15
 
 const ParagraphManualListing = ({ node, isFullWidth }) => {
   const [show, setShow] = useState(false)
@@ -11,47 +12,45 @@ const ParagraphManualListing = ({ node, isFullWidth }) => {
 
   // functionality
   const [loading, setLoading] = useState(true)
-  const [items, setItems] = useState(null)
   const [currentItems, setCurrentItems] = useState([])
   const [currentPage, setCurrentPage] = useState(0)
   const [listingHeight, setListingHeight] = useState('auto')
   const listingRef = useRef(null)
 
-  useEffect(() => {
-    if (listingItems && listingItems.length > 0) {
-      // format items
-      const formattedItems = listingItems.map(item => {
+  const getBody = nodeBody => {
+    if (nodeBody.summary) {
+      return nodeBody.summary
+    } else if (nodeBody.processed) {
+      const bodyContainer = document.createElement('div')
+      bodyContainer.innerHTML = nodeBody.processed.trim()
 
-        if (item?.relationships?.field_node_item?.id) {
-          const itemData = item.relationships?.field_node_item
-
-          const generalTags = itemData.relationships?.field_tags?.map(tag => tag.name) || []
-          const sectorTags = itemData.relationships?.field_sector?.map(tag => tag.name) || []
-          const audience = itemData.relationships?.field_audience?.map(tag => tag.name) || null
-  
-          const bodyContainer = document.createElement('div')
-          bodyContainer.innerHTML = itemData?.body?.processed.trim()
-  
-          const tags = [...generalTags, ...sectorTags]
-
-          return {
-            id: itemData.id,
-            title: itemData.title,
-            link: itemData.path?.alias,
-            changed: itemData.changed,
-            body: itemData.body ? bodyContainer?.innerText : '',
-            tags,
-            type: itemData.type,
-            newsType: itemData.field_news_type,
-            audience,
-            featured: item.featured
-          }
-        }
-      })
-
-      setItems(formattedItems)
-      setCurrentItems(formattedItems.slice(0, ITEMS_PER_PAGE))
+      return bodyContainer?.innerText
     }
+
+    return undefined
+  }
+
+  const items = listingItems.map(item => {
+    if (item?.relationships?.field_node_item?.id) {
+      const itemData = item.relationships?.field_node_item
+      const audience = itemData.relationships?.field_audience?.map(tag => tag.name) || null
+
+      return {
+        id: itemData.id,
+        title: itemData.title,
+        link: itemData.path?.alias,
+        changed: itemData.changed,
+        body: typeof document !== 'undefined' && itemData.body ? getBody(itemData.body) : '',
+        type: itemData.type,
+        newsType: itemData.field_news_type,
+        audience,
+        featured: item.featured
+      }
+    }
+  })
+
+  useEffect(() => {
+    setCurrentItems(items.slice(0, ITEMS_PER_PAGE))
   }, [])
 
   useEffect(() => {
@@ -102,6 +101,15 @@ const ParagraphManualListing = ({ node, isFullWidth }) => {
                 setListingHeight={setListingHeight}
               />
             )}
+
+            {typeof document === 'undefined' && (
+              <NoJsContentListing
+                items={items}
+                itemsPerPage={ITEMS_PER_PAGE}
+                cardType="general"
+                classes="search-results"
+              />
+            )}
           </div>
         </ParagraphWrapper>
       )}
@@ -126,6 +134,7 @@ export const fragment = graphql`
                 title
                 body {
                   processed
+                  summary
                 }
                 changed
                 field_news_type
@@ -134,9 +143,6 @@ export const fragment = graphql`
                 }
                 relationships {
                   field_sector {
-                    name
-                  }
-                  field_tags {
                     name
                   }
                   field_audience {
@@ -149,15 +155,13 @@ export const fragment = graphql`
                 title
                 body {
                   processed
+                  summary
                 }
                 changed
                 path {
                   alias
                 }
                 relationships {
-                  field_tags {
-                    name
-                  }
                   field_audience {
                     name
                   }
@@ -182,9 +186,6 @@ export const fragment = graphql`
                   field_sector {
                     name
                   }
-                  field_tags {
-                    name
-                  }
                   field_audience {
                     name
                   }
@@ -195,6 +196,7 @@ export const fragment = graphql`
                 title
                 body {
                   processed
+                  summary
                 }
                 changed
                 path {
@@ -202,9 +204,6 @@ export const fragment = graphql`
                 }
                 relationships {
                   field_sector {
-                    name
-                  }
-                  field_tags {
                     name
                   }
                   field_audience {
@@ -217,15 +216,13 @@ export const fragment = graphql`
                 title
                 body {
                   processed
+                  summary
                 }
                 changed
                 path {
                   alias
                 }
                 relationships {
-                  field_tags {
-                    name
-                  }
                   field_audience {
                     name
                   }
@@ -236,6 +233,7 @@ export const fragment = graphql`
                 title
                 body {
                   processed
+                  summary
                 }
                 changed
                 path {

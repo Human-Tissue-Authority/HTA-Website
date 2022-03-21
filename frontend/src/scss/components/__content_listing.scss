@@ -27,5 +27,14 @@
     font-size: 2rem;
     line-height: 2.5rem;
     text-align: center;
+
+    a {
+      text-decoration: underline;
+
+      &:focus,
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 }

@@ -1,0 +1,6 @@
+services:
+  bbd_error_urls.event_subscriber:
+    class: Drupal\bbd_error_urls\EventSubscriber\BbdErrorUrlsSubscriber
+    arguments: ['@messenger']
+    tags:
+      - { name: event_subscriber }

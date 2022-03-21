@@ -10,31 +10,10 @@ import { fetchBlogPosts } from '../../utils/views'
 import { getPaginationOffset } from '../../utils/utils'
 
 import ContentListing from './contentListing'
-import ResetButton from '../misc/resetButton'
-import FilterArrow from '../../images/filter-arrow.svg'
-import TermsFilter from '../misc/termsFilter'
 
-const ITEMS_PER_PAGE = 9
+const ITEMS_PER_PAGE = 15
 
 const ListingBlog = () => {
-  // fetch filter terms
-  const data = useStaticQuery(graphql`
-    {
-      allTaxonomyTermAudience: allTaxonomyTermAudience {
-        nodes {
-          id
-          name
-        }
-      }
-    }
-  `)
-
-  const categoryNames = data.allTaxonomyTermAudience.nodes.map(term => {
-    return { id: term.id, name: term.name }
-  })
-
-  const isMobile = useMediaQuery({ query: '(max-width: 767px)' })
-
   // listing state
   const [baseUrl, setBaseUrl] = useState(null)
   const [initialLoad, setInitialLoad] = useState(false)
@@ -47,10 +26,6 @@ const ListingBlog = () => {
   const [listingHeight, setListingHeight] = useState('auto')
   const listingRef = useRef(null)
 
-  // filters state
-  const [categoryFilterOpen, setCategoryFilterOpen] = useState(false)
-  const [categoryFilterVal, setCategoryFilterVal] = useState([])
-
   useEffect(() => {
     const currentUrl = window.location.href
     const urlParsed = parseUrl(currentUrl)
@@ -61,15 +36,13 @@ const ListingBlog = () => {
     // apply filters from url params on initial load
     if (currentUrl.includes('#')) {
       const urlParams = parse(currentUrl.split('#').pop())
-      const { page, category } = urlParams
+      const { page } = urlParams
 
       if (page) {
         const paginationOffset = getPaginationOffset(page, ITEMS_PER_PAGE)
         setOffset(paginationOffset)
         setCurrentPage(parseInt(page) - 1)
       }
-
-      if (category) setCategoryFilterVal(category.split(','))
     }
 
     setReady(true)
@@ -129,7 +102,6 @@ const ListingBlog = () => {
   const silentlyPushUrlParams = (pageNumber = currentPage) => {
     const stringifiedParams = stringify({
       page: pageNumber > 0 ? pageNumber + 1 : '',
-      category: categoryFilterVal.length > 0 ? categoryFilterVal.join(',') : ''
     }, {
       skipEmptyString: true,
       skipNull: true,
@@ -140,40 +112,15 @@ const ListingBlog = () => {
     navigate(navigationUrl, { replace: true })
   }
 
-  const expandFilter = (setMethod, openState) => {
-    // close any open filters before opening new filter
-
-    // if the filter already open just close it
-    if (openState) {
-      setMethod(false)
-    } else {
-      setCategoryFilterOpen(false)
-      setMethod(true)
-    }
-  }
-
-  // filters functionality  
-  const createFilterQuery = () => {
-    let filterValue = '';
-
-    if (categoryFilterVal.length > 0) {
-      filterValue += `&fq=sm_audience:("${categoryFilterVal.join('" OR "')}")`
-    }
-
-    return filterValue
-  }
-
   // data fetching functionality
   const requestResults = offsetVal => {
     setLoading(true)
     
-    const filterQuery = createFilterQuery()
     const requestOffset = Number.isInteger(offsetVal) ? offsetVal : offset
 
     fetchBlogPosts({
       itemsPerPage: ITEMS_PER_PAGE,
       offset: requestOffset,
-      queryCategories: filterQuery
     })
     .then(res => {
       if (res.response) {
@@ -185,7 +132,6 @@ const ListingBlog = () => {
           return {
             id: doc.its_nid,
             title: doc.ss_title,
-            tags: doc.sm_tags,
             link: doc.ss_alias,
             audience: doc.sm_audience,
             body: doc.tm_X3b_en_body,
@@ -219,19 +165,6 @@ const ListingBlog = () => {
     })
   }
 
-  const resetFilters = () => {
-    navigate(baseUrl)
-
-    const listingScrollPos = listingRef?.current?.offsetTop - 100
-
-    window.scrollTo({
-      top: listingScrollPos,
-      behavior: 'smooth'
-    })
-
-    setCategoryFilterVal([])
-  }
-
   // initial request
   useEffect(() => {
     if (ready) {
@@ -247,50 +180,12 @@ const ListingBlog = () => {
       requestResults(0)
       silentlyPushUrlParams(0)
     }
-  }, [categoryFilterVal])
+  }, [])
 
   return (
     <>
       <div ref={listingRef} style={{ opacity: 0, visibility: 'hidden', pointerEvents: 'none' }} />
       <div id="blog-listing" className="blog-listing" style={{ minHeight: listingHeight }}>
-        <div className="blog-listing-controls">
-          {/* Filter expand toggles */}
-          <div className="blog-listing-controls__wrapper">
-            <div className="blog-listing-controls__filter">
-              <button
-                type="button"
-                className={`blog-listing-controls__filter-button ${categoryFilterOpen ? 'blog-listing-controls__filter-button--active' : ''}`}
-                onClick={() => expandFilter(setCategoryFilterOpen, categoryFilterOpen)}
-              >
-                <img src={FilterArrow} role="presentation" aria-hidden alt="" />
-                Category
-              </button>
-
-              {isMobile && categoryFilterOpen && (
-                <TermsFilter
-                  terms={categoryNames}
-                  openState={categoryFilterOpen}
-                  filterVal={categoryFilterVal}
-                  setMethod={setCategoryFilterVal}
-                />
-              )}
-            </div>
-
-            <div className="blog-listing-controls__reset">
-              <ResetButton clickMethod={resetFilters} icon text="Reset filters" />
-            </div>
-          </div>
-
-          {/* Filter inputs for tablet+ */}
-          {!isMobile && categoryFilterOpen && (
-            <TermsFilter
-              terms={categoryNames}
-              openState={categoryFilterOpen}
-              filterVal={categoryFilterVal}
-              setMethod={setCategoryFilterVal}
-            />
-          )}
-        </div>
 
         {results && !loading && (
           <ContentListing
@@ -305,6 +200,7 @@ const ListingBlog = () => {
             classes="search-results"
             setListingHeight={setListingHeight}
             columns="4"
+            noscriptMessage
           />
         )}
       </div>

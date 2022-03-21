@@ -1,7 +1,7 @@
 .header-submenu {
-  position: fixed;
+  position: absolute;
   width: 100%;
-  top: 63px;
+  top: 100%;
   left: 0;
   display: none;
   z-index: 100;
@@ -10,10 +10,6 @@
     display: block;
   }
 
-  @include media('>=desktop-wide') {
-    top: 85px;
-  }
-  
   &__inner-wrapper {
     max-width: $desktop-wide;
     margin: 0 auto;
@@ -27,7 +23,7 @@
       padding-top: 0;
       padding-bottom: 0;
     }
-    
+
     a {
       color: $white;
       text-decoration: underline;
@@ -57,10 +53,14 @@
 }
 
 .header-submenu__outer-wrapper {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
   height: calc(100vh - 63px);
   display: flex;
   flex-direction: column;
-  
+
   @include media('>=desktop-wide') {
     height: calc(100vh - 85px);
   }

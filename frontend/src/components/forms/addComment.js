@@ -4,7 +4,7 @@ import { Field, Form, Formik, ErrorMessage } from 'formik'
 import { object, string, boolean } from 'yup'
 import { encode } from 'js-base64'
 import ReCAPTCHA from 'react-google-recaptcha';
- 
+
 import { verifyRecaptcha } from '../../utils/utils'
 
 import SubmitButton from './elements/submitButton'
@@ -13,9 +13,9 @@ const AddComment = ({nid}) => {
 
     const SUBMISSION_ENDPOINT = `${process.env.API_ROOT}/comment`
     const COMMENT_NOTIFY_ENDPOINT = `${process.env.API_ROOT}/bbd_custom_rest_api/set-comment-notify-setting`
-    
+
     const [recaptchaValue, setRecaptchaValue] = useState(null);
-  
+
     // handle form submission
     const handleFormSubmission = async (values, actions) => {
       if (values.email_address === values.field_confirm_email_address) {
@@ -79,22 +79,22 @@ const AddComment = ({nid}) => {
           const authUser = process.env.AUTH_USER
           const authPass = process.env.AUTH_PASS
           const authToken = encode(`${authUser}:${authPass}`)
-  
+
           headers.append('Authorization',`Basic ${authToken}`)
         }
-  
+
         const options = {
           method: 'POST',
           headers,
           body: JSON.stringify(payload)
         }
-  
+
         const recaptchaResponse = await verifyRecaptcha(recaptchaValue)
 
         if (recaptchaResponse.success) {
           try {
             const response = await fetch(SUBMISSION_ENDPOINT, options)
-            
+
             if (response.ok) {
               // submission successful
               const data = await response.json()
@@ -132,7 +132,7 @@ const AddComment = ({nid}) => {
                     headers,
                     body: JSON.stringify(followBlogPayload)
                   }
-                  
+
                   fetch(`${process.env.API_ROOT}/webform_rest/submit?_format=json`, followBlogOptions)
                 }
               }
@@ -161,7 +161,7 @@ const AddComment = ({nid}) => {
           message: 'Please ensure both emails are the same.',
         })
       }
-  
+
       actions.setSubmitting(false)
     }
 
@@ -184,11 +184,11 @@ const AddComment = ({nid}) => {
         console.log(e)
       }
     }
-  
+
     const handleRecaptcha = value => {
       setRecaptchaValue(value);
     }
-  
+
     return (
         <div className="add-comment__wrapper">
           <div className="columns">
@@ -196,7 +196,7 @@ const AddComment = ({nid}) => {
               <div className="h add-comment__title">
                   Add new comment
               </div>
-      
+
               <Formik
                   initialValues={{
                     first_name: '',
@@ -240,18 +240,28 @@ const AddComment = ({nid}) => {
                       <legend>
                         <span className="accessibility">Add comment: your details</span>
                       </legend>
-      
+
                       <div className="columns">
                         <div className={`field field--add-comment column is-6 field--first_name ${errors.first_name ? 'field--invalid' : ''}`}>
                           <label htmlFor="first_name" aria-label="First name (required)">First name*</label>
                           <Field id="first_name" type="text" name="first_name" autoComplete="given-name" />
-                          <ErrorMessage name="first_name" component="span" />
+                          <ErrorMessage
+                            name="first_name"
+                            component="span"
+                            aria-live={errors?.first_name ? "polite" : null}
+                            role={errors?.first_name ? "alert" : null}
+                          />
                         </div>
 
                         <div className={`field field--add-comment column is-6 field--field_last_name ${errors.field_last_name ? 'field--invalid' : ''}`}>
                           <label htmlFor="field_last_name" aria-label="Last name (required)">Last name*</label>
                           <Field id="field_last_name" type="text" name="field_last_name" autoComplete="family-name" />
-                          <ErrorMessage name="field_last_name" component="span" />
+                          <ErrorMessage
+                            name="field_last_name"
+                            component="span"
+                            aria-live={errors?.field_last_name ? "polite" : null}
+                            role={errors?.field_last_name ? "alert" : null}
+                          />
                         </div>
                       </div>
 
@@ -259,13 +269,23 @@ const AddComment = ({nid}) => {
                         <div className={`field field--add-comment column is-6 field--field_confirm_email_address ${errors.field_confirm_email_address ? 'field--invalid' : ''}`}>
                           <label htmlFor="field_confirm_email_address" aria-label="Email address (required)">Email address*</label>
                           <Field id="field_confirm_email_address" type="email" name="field_confirm_email_address" autoComplete="email" />
-                          <ErrorMessage name="field_confirm_email_address" component="span" />
+                          <ErrorMessage
+                            name="field_confirm_email_address"
+                            component="span"
+                            aria-live={errors?.field_confirm_email_address ? "polite" : null}
+                            role={errors?.field_confirm_email_address ? "alert" : null}
+                          />
                         </div>
 
                         <div className={`field field--add-comment column is-6 field--email_address ${errors.email_address ? 'field--invalid' : ''}`}>
                           <label htmlFor="email_address" aria-label="Confirm email address (required)">Confirm email address*</label>
                           <Field id="email_address" type="email" name="email_address" />
-                          <ErrorMessage name="email_address" component="span" />
+                          <ErrorMessage
+                            name="email_address"
+                            component="span"
+                            aria-live={errors?.email_address ? "polite" : null}
+                            role={errors?.email_address ? "alert" : null}
+                          />
                         </div>
                       </div>
                     </fieldset>
@@ -274,13 +294,18 @@ const AddComment = ({nid}) => {
                       <legend>
                         <span className="accessibility">Add comment: comment details</span>
                       </legend>
-      
+
                       <div className={`field field--field_comment ${errors.field_comment ? 'field--invalid' : ''}`}>
                         <label htmlFor="field_comment" aria-label="Comment (required)">Comment*</label>
                         <Field id="field_comment" name="field_comment" as="textarea"/>
-                        <ErrorMessage name="field_comment" component="span" />
+                        <ErrorMessage
+                          name="field_comment"
+                          component="span"
+                          aria-live={errors?.field_comment ? "polite" : null}
+                          role={errors?.field_comment ? "alert" : null}
+                        />
                       </div>
-                        
+
                       <div className={`field field--add-comment field--consent  ${errors.field_i_would_like_to_follow_the_post ? 'field--invalid' : ''}`}>
                         <div className="field__inner-wrapper">
                           <Field id="field_i_would_like_to_follow_the_post" type="checkbox" name="field_i_would_like_to_follow_the_post"/>
@@ -288,7 +313,12 @@ const AddComment = ({nid}) => {
                             I would like to follow the Human Tissue Authority blog to receive a notification for all new blog posts
                           </label>
                         </div>
-                        <ErrorMessage name="field_i_would_like_to_follow_the_post" component="span" />
+                        <ErrorMessage
+                          name="field_i_would_like_to_follow_the_post"
+                          component="span"
+                          aria-live={errors?.field_i_would_like_to_follow_the_post ? "polite" : null}
+                          role={errors?.field_i_would_like_to_follow_the_post ? "alert" : null}
+                        />
                       </div>
 
                       <div className={`field field--add-comment field--consent ${errors.field_i_would_like_to_follow_the_comments ? 'field--invalid' : ''}`}>
@@ -298,7 +328,12 @@ const AddComment = ({nid}) => {
                             I would like to follow this blog post and receive an update on any other comments added
                           </label>
                         </div>
-                        <ErrorMessage name="field_i_would_like_to_follow_the_comments" component="span" />
+                        <ErrorMessage
+                          name="field_i_would_like_to_follow_the_comments"
+                          component="span"
+                          aria-live={errors?.field_i_would_like_to_follow_the_comments ? "polite" : null}
+                          role={errors?.field_i_would_like_to_follow_the_comments ? "alert" : null}
+                        />
                       </div>
 
                       <div className={`field field--add-comment field--consent field--privacy-policy ${errors.privacy_policy ? 'field--invalid' : ''}`}>
@@ -319,10 +354,11 @@ const AddComment = ({nid}) => {
                           sitekey={process.env.RECAPTCHA_SITE_KEY}
                           onChange={handleRecaptcha}
                           className="field--recaptcha"
+                          theme="dark"
                         />
                       </div>
                     </div>
-      
+
                     <SubmitButton
                       text="Sign up"
                       isSubmitting={isSubmitting}

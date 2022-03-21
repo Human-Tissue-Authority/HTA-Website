@@ -55,7 +55,7 @@ const ListingEstablishments = () => {
   const listingRef = useRef(null)
 
   // filters state
-  const [searchFilterOpen, setSearchFilterOpen] = useState(false)
+  const [searchFilterOpen, setSearchFilterOpen] = useState(true)
   const [searchFilterVal, setSearchFilterVal] = useState('')
 
   const [sectorFilterOpen, setSectorFilterOpen] = useState(false)
@@ -189,11 +189,6 @@ const ListingEstablishments = () => {
 
   const createFilterQuery = () => {
     let filterValue = '';
-    const searchFilterTrimmed = searchFilterVal.trim()
-
-    if (searchFilterTrimmed) {
-      filterValue += `&fq=tm_X3b_en_field_search_all:${searchFilterTrimmed}*`
-    }
 
     if (sectorFilterVal.length > 0) {
       filterValue += `&fq=sm_sector_tags:("${sectorFilterVal.join('" OR "')}")`
@@ -224,7 +219,8 @@ const ListingEstablishments = () => {
       itemsPerPage: ITEMS_PER_PAGE,
       offset: requestOffset,
       querySort: sortByQuery,
-      queryFilters: filterQuery
+      queryFilters: filterQuery,
+      keyword: searchFilterVal.trim()
     })
     .then(res => {
       if (res.response) {
@@ -460,6 +456,7 @@ const ListingEstablishments = () => {
             classes="establishments-results"
             setListingHeight={setListingHeight}
             columns="12"
+            noscriptMessage
           />
         )}
       </section>

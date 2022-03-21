@@ -1,0 +1,119 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the bbd_error_urls module.
+ */
+
+/**
+ * Implements createOrUpdateDB().
+ *
+ * @param String $pathInfo .
+ */
+function createOrUpdateDB($pathInfo) {
+  $database = \Drupal::database();
+  $finder = $database->select('bbd_error_urls', 'u');
+
+  // Add extra detail to this query object: a condition, fields and a range.
+  $finder->condition('u.url', $pathInfo, '=');
+  $finder->fields('u', ['url', 'count']);
+  $finder->distinct();
+  $result = $finder->execute()->fetchAll();
+
+  try {
+    if (count($result) == 1) {
+      $database->update('bbd_error_urls')->fields([
+          'count' => $result[0]->count + 1,
+        ])->condition('url', $result[0]->url, '=')->execute();
+    }
+    else {
+      $connection = \Drupal::service('database');
+      $query = $connection->insert('bbd_error_urls')->fields([
+          'url' => $pathInfo,
+          'count' => 1,
+        ])->execute();
+    }
+  } catch (Exception $e) {
+    watchdog_exception('type', $e);
+  }
+}
+
+/**
+ * Implements hook_install().
+ */
+function bbd_error_urls_install() {
+  // Create an object of type Select.
+  $database = \Drupal::database();
+  $query = $database->select('watchdog', 'u');
+
+  // Add extra detail to this query object: a condition, fields and a range.
+  $query->condition('u.type', 'page not found', '=');
+  $query->fields('u', ['wid', 'variables']);
+  $query->range(0, 5000);
+
+  $result = $query->execute();
+
+  foreach ($result as $record) {
+    // Do something with each $record.
+    $val = strpos($record->variables, '/');
+    $first_slash = substr($record->variables, ($val));
+    $url = explode('"', $first_slash);
+    createOrUpdateDB($url[0]);
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function bbd_error_urls_uninstall() {
+  \Drupal::messenger()->addStatus(__FUNCTION__);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function bbd_error_urls_schema() {
+  $schema['bbd_error_urls'] = [
+    'description' => t('Table description.'),
+    'fields' => [
+      'count' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {users}.uid of the user who created the record.'),
+      ],
+      'url' => [
+        'type' => 'varchar_ascii',
+        'length' => 500,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => t('Type of the 404 url hit.'),
+      ],
+    ],
+    'primary key' => ['url'],
+    'indexes' => [
+      'count' => ['count'],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function bbd_error_urls_requirements($phase) {
+  $requirements = [];
+
+  if ($phase == 'runtime') {
+    $value = mt_rand(0, 100);
+    $requirements['bbd_error_urls_status'] = [
+      'title' => t('bbd_error_urls status'),
+      'value' => t('bbd_error_urls value: @value', ['@value' => $value]),
+      'severity' => $value > 50 ? REQUIREMENT_INFO : REQUIREMENT_WARNING,
+    ];
+  }
+
+  return $requirements;
+}

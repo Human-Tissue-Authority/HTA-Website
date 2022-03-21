@@ -15,6 +15,7 @@ import TagGroup from "../components/content/tagGroup"
 import KeyInformation from "../components/content/keyInformation"
 import CMS from "../components/content/cms"
 import FileDownloadGroup from "../components/content/fileDownloadGroup"
+import ConditionalWrapper from "../components/helpers/ConditionalWrapper"
 
 const Meeting = ({ data }) => {
   const { nodeMeeting } = data
@@ -77,9 +78,21 @@ const Meeting = ({ data }) => {
 
       <div className="section--overlay">
         <div className="section--overlay--wrapper columns is-multiline">
-          <animated.div
-            style={animationAside}
-            className="in-this-section column is-4"
+          <ConditionalWrapper
+            condition={typeof document !== 'undefined'}
+            wrapper={children => (
+              <animated.div
+                style={animationAside}
+                className="in-this-section column is-4"
+              >
+                {children}
+              </animated.div>
+            )}
+            elseWrapper={children => (
+              <div className="in-this-section column is-4">
+                {children}
+              </div>
+            )}
           >
             <div className="in-this-section__inner-wrapper">
               <Link to="/meetings">
@@ -87,8 +100,7 @@ const Meeting = ({ data }) => {
                 Back to meetings
               </Link>
             </div>
-
-          </animated.div>
+          </ConditionalWrapper>
         </div>
       </div>
     </Layout>

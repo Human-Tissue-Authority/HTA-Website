@@ -15,33 +15,9 @@ import FilterArrow from '../../images/filter-arrow.svg'
 import TermsFilter from '../misc/termsFilter'
 
 
-const ITEMS_PER_PAGE = 6
+const ITEMS_PER_PAGE = 16
 
 const ListingNews = () => {
-  // fetch filter terms
-  const data = useStaticQuery(graphql`
-    {
-      allTaxonomyTermAudience: allTaxonomyTermAudience {
-        nodes {
-          id
-          name
-        }
-      }
-      allTaxonomyTermSector: allTaxonomyTermSector {
-        nodes {
-          name
-          id
-        }
-      }
-      allTaxonomyTermTags: allTaxonomyTermTags {
-        nodes {
-          name
-          id
-        }
-      }
-    }
-  `)
-
   // const yearsList = Array((dayjs().year() - 2014)).map((val, i, arr) => arr.fill(2014 + i, i))
   const yearsOptions = Array.from({length: (dayjs().year() + 1)  - 2014}, (element, i) => dayjs().year() - i).map(val => {
     return {
@@ -49,9 +25,6 @@ const ListingNews = () => {
       name: val.toString()
     }
   })
-  const audienceOptions = data.allTaxonomyTermAudience.nodes.map(term => ({ id: term.id, name: term.name }))
-  const sectorOptions = data.allTaxonomyTermSector.nodes.map(term => ({ id: term.id, name: term.name }))
-  const tagOptions = data.allTaxonomyTermTags.nodes.map(term => ({ id: term.id, name: term.name }))
 
   const isMobile = useMediaQuery({ query: '(max-width: 767px)' })
   
@@ -68,15 +41,6 @@ const ListingNews = () => {
   const listingRef = useRef(null)
 
   // filters state
-  const [audienceFilterOpen, setAudienceFilterOpen] = useState(false)
-  const [audienceFilterVal, setAudienceFilterVal] = useState([])
-
-  const [sectorFilterOpen, setSectorFilterOpen] = useState(false)
-  const [sectorFilterVal, setSectorFilterVal] = useState([])
-
-  const [tagFilterOpen, setTagFilterOpen] = useState(false)
-  const [tagFilterVal, setTagFilterVal] = useState([])
-
   const [yearFilterOpen, setYearFilterOpen] = useState(false)
   const [yearFilterVal, setYearFilterVal] = useState([])
 
@@ -90,7 +54,7 @@ const ListingNews = () => {
     // apply filters from url params on initial load
     if (currentUrl.includes('#')) {
       const urlParams = parse(currentUrl.split('#').pop())
-      const { page, audience, sector, year, tags } = urlParams
+      const { page, year } = urlParams
 
       if (page) {
         const paginationOffset = getPaginationOffset(page, ITEMS_PER_PAGE)
@@ -98,9 +62,6 @@ const ListingNews = () => {
         setCurrentPage(parseInt(page) - 1)
       }
 
-      if (audience) setAudienceFilterVal(audience.split(','))
-      if (sector) setSectorFilterVal(sector.split(','))
-      if (tags) setTagFilterVal(tags.split(','))
       if (year) setYearFilterVal(year.split(','))
     }
 
@@ -110,9 +71,6 @@ const ListingNews = () => {
   const silentlyPushUrlParams = (pageNumber = currentPage) => {
     const stringifiedParams = stringify({
       page: pageNumber > 0 ? pageNumber + 1 : '',
-      audience: audienceFilterVal.length > 0 ? audienceFilterVal.join(',') : '',
-      sector: sectorFilterVal.length > 0 ? sectorFilterVal.join(',') : '',
-      tags: tagFilterVal.length > 0 ? tagFilterVal.join(',') : '',
       year: yearFilterVal.length > 0 ? yearFilterVal.join(',') : ''
     }, {
       skipEmptyString: true,
@@ -131,9 +89,6 @@ const ListingNews = () => {
     if (openState) {
       setMethod(false)
     } else {
-      setAudienceFilterOpen(false)
-      setSectorFilterOpen(false)
-      setTagFilterOpen(false)
       setYearFilterOpen(false)
       setMethod(true)
     }
@@ -143,19 +98,6 @@ const ListingNews = () => {
   const createFilterQuery = () => {
     const dateSolrFormat = date => date.format('YYYY-MM-DDTHH\\:mm\\:ss') + 'Z'
     let filterValue = '';
-
-    if (audienceFilterVal.length > 0) {
-      filterValue += `&fq=sm_audience:("${audienceFilterVal.join('" OR "')}")`
-    }
-
-    if (sectorFilterVal.length > 0) {
-      filterValue += `&fq=sm_sector_tags:("${sectorFilterVal.join('" OR "')}")`
-    }
-
-    if (tagFilterVal.length > 0) {
-      filterValue += `&fq=sm_tags:("${tagFilterVal.join('" OR "')}")`
-    }
-    
 
     if (yearFilterVal.length > 0) {      
       const dateRangeQueries = yearFilterVal.map(y => `[${dateSolrFormat(dayjs(y).startOf('year').startOf('day').startOf('month'))} TO ${dateSolrFormat(dayjs(y).endOf('year').endOf('day').endOf('month'))}]`)
@@ -196,7 +138,6 @@ const ListingNews = () => {
           return {
             id: doc.its_nid,
             title: doc.ss_title,
-            tags: doc.sm_tags,
             link: doc.ss_alias,
             sector: doc.sm_sector_tags,
             audience: doc.sm_audience,
@@ -242,9 +183,6 @@ const ListingNews = () => {
       behavior: 'smooth'
     })
 
-    setAudienceFilterVal([])
-    setSectorFilterVal([])
-    setTagFilterVal([])
     setYearFilterVal([])
   }
 
@@ -263,7 +201,7 @@ const ListingNews = () => {
       requestResults(0)
       silentlyPushUrlParams(0)
     }
-  }, [audienceFilterVal, sectorFilterVal, tagFilterVal, yearFilterVal])
+  }, [yearFilterVal])
 
   return (
     <>
@@ -272,65 +210,6 @@ const ListingNews = () => {
       <div className="article-listing-controls">
           {/* Filter expand toggles */}
           <div className="article-listing-controls__wrapper">
-            <div className="article-listing-controls__filter">
-              <button
-                type="button"
-                className={`article-listing-controls__filter-button ${audienceFilterOpen ? 'article-listing-controls__filter-button--active' : ''}`}
-                onClick={() => expandFilter(setAudienceFilterOpen, audienceFilterOpen)}
-              >
-                <img src={FilterArrow} role="presentation" aria-hidden alt="" />
-                Audience
-              </button>
-
-              {isMobile && audienceFilterOpen && (
-                <TermsFilter
-                  terms={audienceOptions}
-                  openState={audienceFilterOpen}
-                  filterVal={audienceFilterVal}
-                  setMethod={setAudienceFilterVal}
-                />
-              )}
-            </div>
-
-            <div className="article-listing-controls__filter">
-              <button
-                type="button"
-                className={`article-listing-controls__filter-button ${sectorFilterOpen ? 'article-listing-controls__filter-button--active' : ''}`}
-                onClick={() => expandFilter(setSectorFilterOpen, sectorFilterOpen)}
-              >
-                <img src={FilterArrow} role="presentation" aria-hidden alt="" />
-                Sector
-              </button>
-
-              {isMobile && sectorFilterOpen && (
-                <TermsFilter
-                  terms={sectorOptions}
-                  openState={sectorFilterOpen}
-                  filterVal={sectorFilterVal}
-                  setMethod={setSectorFilterVal}
-                />
-              )}
-            </div>
-
-            <div className="article-listing-controls__filter">
-              <button
-                type="button"
-                className={`article-listing-controls__filter-button ${tagFilterOpen ? 'article-listing-controls__filter-button--active' : ''}`}
-                onClick={() => expandFilter(setTagFilterOpen, tagFilterOpen)}
-              >
-                <img src={FilterArrow} role="presentation" aria-hidden alt="" />
-                Tags
-              </button>
-
-              {isMobile && tagFilterOpen && (
-                <TermsFilter
-                  terms={tagOptions}
-                  openState={tagFilterOpen}
-                  filterVal={tagFilterVal}
-                  setMethod={setTagFilterVal}
-                />
-              )}
-            </div>
 
             <div className="article-listing-controls__filter">
               <button
@@ -339,7 +218,7 @@ const ListingNews = () => {
                 onClick={() => expandFilter(setYearFilterOpen, yearFilterOpen)}
               >
                 <img src={FilterArrow} role="presentation" aria-hidden alt="" />
-                News archive
+                Filter by year
               </button>
 
               {isMobile && yearFilterOpen && (
@@ -360,33 +239,6 @@ const ListingNews = () => {
           {/* Filter inputs for tablet+ */}
           {!isMobile && (
             <>
-              {audienceFilterOpen && (
-                <TermsFilter
-                  terms={audienceOptions}
-                  openState={audienceFilterOpen}
-                  filterVal={audienceFilterVal}
-                  setMethod={setAudienceFilterVal}
-                />
-              )}
-
-              {sectorFilterOpen && (
-                <TermsFilter
-                  terms={sectorOptions}
-                  openState={sectorFilterOpen}
-                  filterVal={sectorFilterVal}
-                  setMethod={setSectorFilterVal}
-                />
-              )}
-
-              {tagFilterOpen && (
-                <TermsFilter
-                  terms={tagOptions}
-                  openState={tagFilterOpen}
-                  filterVal={tagFilterVal}
-                  setMethod={setTagFilterVal}
-                />
-              )}
-
               {yearFilterOpen && (
                 <TermsFilter
                   terms={yearsOptions}
@@ -413,6 +265,7 @@ const ListingNews = () => {
             setListingHeight={setListingHeight}
             columns="4"
             columnsResponsive="12"
+            noscriptMessage
           />
         )}
       </div>
